@@ -1,22 +1,38 @@
-import Image from 'next/image'
-import { getUsers } from './components/users'
+"use client";
+import Image from "next/image";
+import { getUsers } from "./components/users";
+import Form from "./components/form";
+import { createContext, useEffect, useState } from "react";
 
-export default async function Home() {
-  const data = await getUsers()
-  const filteredData = data.filter((item: { id: number; }) => item.id === 100 || item.id === 99);
+type Value = {
+  val: string;
+};
 
+// 1. Create Context
+export const ValueContext = createContext<Value | null>(null);
+
+export default function Home() {
+  const [value, setValue] = useState<Value>({ val: "" });
+  const fetchData = async () => {
+    const data = await getUsers();
+    setValue({ val: data[0].title });
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  console.log(value);
   return (
     <div>
       Welcome to SSR Home
-      <ul>
-        {filteredData.map((i: any) =>{
-          return <div key={i.userId}>
-            <li >{i.userId}</li>
-            <li>{i.id}</li>
-            <li>{i.title}</li>
-          </div>
-        })}
-      </ul>
+      {value.val === "" ? (
+        <div>Loading...</div>
+      ) : (
+        <ValueContext.Provider value={value}>
+          <Form>{}</Form>
+        </ValueContext.Provider>
+      )}
     </div>
-  )
+  );
 }
