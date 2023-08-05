@@ -20,9 +20,7 @@ export default function RootLayout({
   return (
     <html lang={params.lang}>
       <head>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2560444930658861"
-          crossOrigin="anonymous"></script>
-      </head>
+     </head>
       <body>{children}</body>
     </html>
   );
