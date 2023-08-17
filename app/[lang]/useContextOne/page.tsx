@@ -1,5 +1,6 @@
 "use client";
 import React, { Children, createContext, useContext, useState } from "react";
+import IndexPage from "../page";
 
 type Value = {
   val: string;
@@ -13,7 +14,10 @@ export default function MyApp() {
   const [value, setValue] = useState<Value>({ val: "" });
   // 3. define provider
   return (
-    <ValueContext.Provider value={value}>
+    <IndexPage params={{
+      lang: "en"
+    }}>
+      <ValueContext.Provider value={value}>
       <Form>{}</Form>
       <label>
         <button onClick={() => setValue({ val: "New Value" })}>
@@ -21,6 +25,7 @@ export default function MyApp() {
         </button>
       </label>
     </ValueContext.Provider>
+    </IndexPage>
   );
 }
 

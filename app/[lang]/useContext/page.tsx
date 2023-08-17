@@ -1,5 +1,7 @@
 "use client";
+import BreadCrumbs from "@/app/components/breadCrumbs/breadCrumbs";
 import React, { Children, createContext, useContext, useState } from "react";
+import PageLayout from "../pageLayout";
 
 type Theme = "light" | "dark";
 
@@ -9,19 +11,23 @@ export default function MyApp() {
   const [theme, setTheme] = useState<Theme>("light");
 
   return (
-    <ThemeContext.Provider value={theme}>
-      <Form>{}</Form>
-      <label>
-        <input
-          type="checkbox"
-          checked={theme === "dark"}
-          onChange={(e) => {
-            setTheme(e.target.checked ? "dark" : "light");
-          }}
-        />
-        Use dark mode
-      </label>
-    </ThemeContext.Provider>
+    <div>
+      <PageLayout>
+        <ThemeContext.Provider value={theme}>
+          <Form>{ }</Form>
+          <label>
+            <input
+              type="checkbox"
+              checked={theme === "dark"}
+              onChange={(e) => {
+                setTheme(e.target.checked ? "dark" : "light");
+              }}
+            />
+            Use dark mode
+          </label>
+        </ThemeContext.Provider>
+      </PageLayout>
+    </div>
   );
 }
 
