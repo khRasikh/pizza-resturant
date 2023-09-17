@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 import { createTranslator, NextIntlClientProvider } from "next-intl";
 import { ReactNode } from "react";
-import Navigation from "@/components/Navigation";
+import Navigation from "@/components/layout/Navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,10 +14,7 @@ type Props = {
 
 async function getMessages(locale: string) {
   try {
-    const getDynamicMessage = await import(`../../../messages/${locale}.json`);
-    // const getStaticMessage = await import(`../../../messages/en.json`);
-    // const messages = { ...getDynamicMessage, ...getStaticMessage };
-    return getDynamicMessage;
+    return await import(`../../../messages/${locale}.json`);
   } catch (error) {
     notFound();
   }

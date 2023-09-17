@@ -8,7 +8,7 @@ export default function Publishes() {
     <PageLayout title={t("title")}>
       <div className="max-w-[460px]">
         {t.rich("description", {
-          p: (chunks) => <p className="mt-4">{chunks}</p>,
+          p: (chunks) => <div className="mt-4">{chunks}</div>,
           code: (chunks) => (
             <code className="font-mono text-green-500">{chunks}</code>
           ),
