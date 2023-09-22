@@ -9,8 +9,10 @@ type Props = {
 
 export default function PageLayout({ children, title }: Props) {
   return (
-    <div className="relative flex grow flex-col bg-slate-200 py-12">
-      <Body title={title}>{children} </Body>
+    <div className="bg-slate-200 h-screen">
+      <div className="relative flex grow flex-col ">
+        <Body title={title}>{children} </Body>
+      </div>
       <Footer />
     </div>
   );
