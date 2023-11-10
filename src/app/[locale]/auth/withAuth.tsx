@@ -1,22 +1,35 @@
 "use client"
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const withAuth = (WrappedComponent: React.ComponentType, allowedRoles: string[]) => {
   const WithAuth: React.FC = (props: any) => {
     const router = useRouter();
+    const [userRole, setUserRole] = useState<string | null>(null);
 
     // Replace this function with your logic to get the user's role
-    const getUserRole = (): string => {
-      // Example: Retrieve the user's role from your authentication system
-      // For now, returning 'user' for demonstration purposes
-      return 'user';
+    const getUserRole = async (): Promise<string | null> => {
+      try {
+        return await (await fetch("/api/roles", { method: 'GET', headers: { 'Content-Type': 'application/json' }, })).json();
+      } catch (error) {
+        console.error("Error fetching user roles:", error);
+        return null;
+      }
     };
 
-    // Logic to check if the user has the required role
-    const userRole = getUserRole();
+    // Load user role on component mount
     useEffect(() => {
-      if (!allowedRoles.includes(userRole)) {
+      const loadUserRole = async () => {
+        const role:any = await getUserRole();
+        console.log("test", role[0].modules)
+        setUserRole(role[0].modules);
+      };
+      loadUserRole();
+    }, []);
+
+    // Logic to check if the user has the required role
+    useEffect(() => {
+      if (userRole && !allowedRoles.includes(userRole)) {
         // Redirect to unauthorized page or login page
         router.push('/unauthorized');
       }
@@ -33,4 +46,3 @@ const withAuth = (WrappedComponent: React.ComponentType, allowedRoles: string[])
 };
 
 export default withAuth;
-

@@ -44,5 +44,10 @@
         "href": "https://github.com/amannn/next-intl/tree/main/examples/example-next-13"
       }
     }
+  },
+  "Error": {
+    "unAuthorized": "Not Authorized",
+    "requestAccess": "Request Admin to grant you access",
+    "back": "Return Back"
   }
 }

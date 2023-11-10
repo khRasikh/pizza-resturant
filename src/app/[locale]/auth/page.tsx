@@ -1,5 +1,4 @@
 "use client"
-// AuthorizationPage.tsx
 import React from 'react';
 import PageLayout from '@/components/PageLayout';
 import { useTranslations } from 'next-intl';
