@@ -52,4 +52,4 @@ AuthorizationPage.displayName = 'AuthorizationPage';
 // Wrap AuthorizationPage with the withAuth HOC
 export default withAuth(AuthorizationPage, ['admin', "user"]);
 
- 
+

@@ -29,7 +29,8 @@
   "Navigation": {
     "home": "Home",
     "about": "About",
-    "publishes": "Publishes"
+    "publishes": "Publishes",
+    "authorization": "Authorization"
   },
   "PageLayout": {
     "links": {

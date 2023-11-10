@@ -1,8 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import LocaleSwitcher from "../LocaleSwitcher";
-import NavigationLink from "../NavigationLink";
+import LocaleSwitcher from "../shared/LocaleSwitcher";
+import NavigationLink from "../shared/NavigationLink";
 
 export default function Navigation() {
   const t = useTranslations("Navigation");
@@ -15,6 +15,7 @@ export default function Navigation() {
             <NavigationLink href="/">{t("home")}</NavigationLink>
             <NavigationLink href="/about">{t("about")}</NavigationLink>
             <NavigationLink href="/publishes">{t("publishes")}</NavigationLink>
+            <NavigationLink href="/auth">{t("authorization")}</NavigationLink>
           </div>
           <LocaleSwitcher />
         </nav>

@@ -37,7 +37,7 @@ export async function generateMetadata({ params: { locale } }: Props) {
   };
 }
 
-export default async function LocaleLayout({ children, params: { locale } }: Props) {
+export default async function LocaleLayout({ children, params: { locale } }: Readonly<Props>) {
   const messages = await getMessages(locale);
 
   return (
