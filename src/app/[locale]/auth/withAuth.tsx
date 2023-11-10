@@ -20,9 +20,9 @@ const withAuth = (WrappedComponent: React.ComponentType, allowedRoles: string[])
     // Load user role on component mount
     useEffect(() => {
       const loadUserRole = async () => {
-        const role:any = await getUserRole();
-        console.log("test", role[0].modules)
-        setUserRole(role[0].modules);
+        const role: any = await getUserRole();
+        console.log("test", role[0].role)
+        setUserRole(role[0].role);
       };
       loadUserRole();
     }, []);
@@ -46,3 +46,5 @@ const withAuth = (WrappedComponent: React.ComponentType, allowedRoles: string[])
 };
 
 export default withAuth;
+
+
