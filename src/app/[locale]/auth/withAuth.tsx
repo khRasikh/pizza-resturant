@@ -1,5 +1,5 @@
 "use client"
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 const withAuth = (WrappedComponent: React.ComponentType, allowedRoles: string[]) => {
@@ -27,7 +27,7 @@ const withAuth = (WrappedComponent: React.ComponentType, allowedRoles: string[])
   };
 
   // Set displayName for the HOC
-  WithAuth.displayName = `withAuth(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
+  WithAuth.displayName = `withAuth(${(WrappedComponent.displayName ?? WrappedComponent.name) || 'Component'})`;
 
   return WithAuth;
 };
