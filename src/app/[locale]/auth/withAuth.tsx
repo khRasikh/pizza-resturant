@@ -1,10 +1,9 @@
 "use client"
-// withAuth.tsx
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
 const withAuth = (WrappedComponent: React.ComponentType, allowedRoles: string[]) => {
-  return (props: any) => {
+  const WithAuth: React.FC = (props: any) => {
     const router = useRouter();
 
     // Replace this function with your logic to get the user's role
@@ -26,6 +25,12 @@ const withAuth = (WrappedComponent: React.ComponentType, allowedRoles: string[])
     // Render the wrapped component if the user has the required role
     return <WrappedComponent {...props} />;
   };
+
+  // Set displayName for the HOC
+  WithAuth.displayName = `withAuth(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
+
+  return WithAuth;
 };
 
 export default withAuth;
+
