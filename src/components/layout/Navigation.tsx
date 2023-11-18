@@ -1,10 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import LocaleSwitcher from "../LocaleSwitcher";
-import NavigationLink from "../NavigationLink";
 import { SessionProvider } from "next-auth/react";
 import Component from "../auth/signin";
+import NavigationLink from "../shared/NavigationLink";
 
 export default function Navigation() {
   const t = useTranslations("Navigation");
