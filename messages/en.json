@@ -30,7 +30,7 @@
     "home": "Home",
     "about": "About",
     "publishes": "Publishes",
-    "authorization": "Authorization"
+    "authorized": "Authorized"
   },
   "PageLayout": {
     "links": {

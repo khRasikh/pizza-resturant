@@ -25,7 +25,9 @@
   "Navigation": {
     "home": "Start",
     "about": "Über",
-    "publishes": "Veröffentlichungen"
+    "publishes": "Veröffentlichungen",
+    "authorized": "Authorized"
+
   },
   "PageLayout": {
     "links": {
