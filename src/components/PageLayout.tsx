@@ -8,7 +8,8 @@ type Props = {
   title: ReactNode;
 };
 
-export default function PageLayout({ children, title }: Props) {
+export default function PageLayout({ children, title }: Readonly<
+  Props>) {
   return (
     <div className="bg-slate-200 h-screen">
       <div className="relative flex grow flex-col ">
