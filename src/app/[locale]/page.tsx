@@ -2,17 +2,16 @@
 
 import PageLayout from "@/components/PageLayout";
 import { useTranslations } from "next-intl";
-import { ErrorBoundary, useErrorBoundary } from "react-error-boundary";
+import { ErrorBoundary } from "react-error-boundary";
 
 function fallback({ error, resetErrorBoundary }: any) {
   // Call resetErrorBoundary() to reset the error boundary and retry the render.
-  const { resetBoundary } = useErrorBoundary();
 
   return (
     <div role="alert">
       <p>Something went wrong:</p>
       <pre style={{ color: "red" }}>{error.message}</pre>
-      <button onClick={resetBoundary}>Try again</button>
+      <button onClick={resetErrorBoundary}>Try again</button>
     </div>
   );
 }
