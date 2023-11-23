@@ -1,4 +1,5 @@
 "use client";
+import { createPool } from "@vercel/postgres";
 import PageLayout from "@/components/PageLayout";
 import { useTranslations } from "next-intl";
 
@@ -9,9 +10,7 @@ export default function Publishes() {
       <div className="max-w-[460px]">
         {t.rich("description", {
           p: (chunks) => <div className="mt-4">{chunks}</div>,
-          code: (chunks) => (
-            <code className="font-mono text-green-500">{chunks}</code>
-          ),
+          code: (chunks) => <code className="font-mono text-green-500">{chunks}</code>,
         })}
       </div>
     </PageLayout>
