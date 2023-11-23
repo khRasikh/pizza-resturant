@@ -1,7 +1,6 @@
 import { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import "./auth.style.css"
 
 export const authOptions: AuthOptions = {
   // Configure one or more authentication providers
@@ -24,6 +23,9 @@ export const authOptions: AuthOptions = {
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
         const user = { id: "1", name: "sajad", email: "sajad@gmail.com", password: "sajad123" };
+
+        const getUser = await fetch("/api/db")
+        console.log("test", getUser)
 
         if (credentials?.username === user.name && credentials.password === user.password) {
           // Any object returned will be saved in `user` property of the JWT
