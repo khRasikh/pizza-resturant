@@ -34,7 +34,8 @@
     "home": "Home",
     "about": "About",
     "publishes": "Publishes",
-    "authorized": "Authorized"
+    "authorized": "Authorized",
+    "protected": "Protected"
   },
   "PageLayout": {
     "links": {
