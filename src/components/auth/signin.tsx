@@ -5,7 +5,6 @@ export default function Component() {
   const { data: session }: any = useSession();
 
   if (session) {
-    console.log("test", session);
     return (
       <div className="flex flex-row">
         <span className="m-2 text-sm font-bold text-gray-700">{session.user.email}</span>

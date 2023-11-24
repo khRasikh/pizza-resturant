@@ -22,6 +22,7 @@ export default function Navigation() {
             </div>
             <div>
               <Component />
+              
             </div>
           </nav>
         </div>
