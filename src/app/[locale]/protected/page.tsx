@@ -57,9 +57,9 @@ export const Table: FC<ITable> = (data) => {
                 <tbody>
                   {data.Customers.length > 0
                     ? data.Customers.map((i) => (
-                      <tr
+                      <tr key={i.id}
                         className="border-b bg-neutral-100 dark:border-neutral-500 dark:bg-neutral-600">
-                        <td className="whitespace-nowrap px-6 py-4">{i.id}</td>
+                        <td className="whitespace-nowrap px-6 py-4" >{i.id}</td>
                         <td className="whitespace-nowrap px-6 py-4">{i.first_name} </td>
                         <td className="whitespace-nowrap px-6 py-4">{i.last_name} </td>
                         <td className="whitespace-nowrap px-6 py-4">{i.phone_number} </td>
