@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import Footer from "./layout/footer";
 import Body from "./layout/body";
+import { SessionProvider } from "next-auth/react";
 
 type Props = {
   children?: ReactNode;
@@ -10,11 +11,13 @@ type Props = {
 export default function PageLayout({ children, title }: Readonly<
   Props>) {
   return (
-    <div className="bg-slate-200 h-screen">
-      <div className="relative flex grow flex-col ">
-        <Body title={title}>{children} </Body>
+    <SessionProvider>
+      <div className="bg-white h-screen">
+        <div className="relative flex grow flex-col ">
+          <Body title={title}>{children} </Body>
+        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </SessionProvider>
   );
 }

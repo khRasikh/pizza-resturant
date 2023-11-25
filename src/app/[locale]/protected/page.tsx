@@ -1,63 +1,68 @@
 "use client";
-import { createPool } from "@vercel/postgres";
 import PageLayout from "@/components/PageLayout";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import SearchBar from "@/components/shared/Search";
+import { Table } from "@/components/protected/table";
+import { createPool } from "@vercel/postgres";
+import { useState, useEffect } from "react";
 
 export default function Publishes() {
   const t = useTranslations("ProtectedPage");
   const [customers, setCustomer] = useState<any[]>([{}]);
-
-
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const fetchData = async () => {
     const pool = createPool({
       connectionString: process.env.NEXT_PUBLIC_POSTGRES_URL,
     });
     const data = await pool.sql`SELECT * FROM customers;`;
-    console.log("test data", data.rows);
     setCustomer(data.rows);
+    setIsLoading(false)
   };
 
   useEffect(() => {
     fetchData();
   }, []);
 
+  //search & filter
+  const [searchTerm, setsearchTerm] = useState("");
+  const handleSearch = (value: string) => {
+    setsearchTerm(value);
+  };
+  const filterCustomers = (customer: any): boolean => {
+    if (!searchTerm) {
+      return true; // No search term provided, return all customers
+    }
+
+    const searchTermLowerCase = searchTerm.toString().toLowerCase();
+
+    const matchProperties = [
+      'first_name',
+      'last_name',
+      'address',
+      'phone_number',
+      'id'
+    ];
+
+    for (const prop of matchProperties) {
+      if (customer[prop]?.toString().toLowerCase().includes(searchTermLowerCase)) {
+        return true; // Customer matches the search term in any property
+      }
+    }
+    return false; // No match found in any customer property
+  };
+
+  const filteredCustumers = customers.filter(filterCustomers);
+
   return (
     <PageLayout title={t("title")}>
-      <div className="flex flex-col ">
+      <div className="justify-center items-center">
         <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-            <div className="overflow-hidden">
-              <table className="min-w-full text-left text-sm font-light">
-                <thead
-                  className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
-                  <tr>
-                    <th scope="col" className="px-6 py-4">ID#</th>
-                    <th scope="col" className="px-6 py-4">Name</th>
-                    <th scope="col" className="px-6 py-4">Last Name</th>
-                    <th scope="col" className="px-6 py-4">Phone Number</th>
-                    <th scope="col" className="px-6 py-4">Address</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {customers.length > 0
-                    ? customers.map((i) => (
-                      <tr key={i.id}
-                        className="border-b bg-neutral-100 dark:border-neutral-500 dark:bg-neutral-600">
-                        <td className="whitespace-nowrap px-6 py-4" >{i.id}</td>
-                        <td className="whitespace-nowrap px-6 py-4">{i.first_name} </td>
-                        <td className="whitespace-nowrap px-6 py-4">{i.last_name} </td>
-                        <td className="whitespace-nowrap px-6 py-4">{i.phone_number} </td>
-                        <td className="whitespace-nowrap px-6 py-4">{i.address} </td>
-                      </tr>
-
-                    )
-                    ) : <tr className="text-black my-12 py-16">Loading ...</tr>
-                  }
-                </tbody>
-              </table>
-              {customers.length === 0 && <p>No posts available.</p>}
-            </div>
+            <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
+            {filteredCustumers.length > 0 ? <Table data={filteredCustumers} isLoading={isLoading} /> :
+              <div className="text-black my-2 py-2 justify-center items-center">
+                <div className="whitespace-nowrap px-6 py-4">Loading ...</div>
+              </div>}
           </div>
         </div>
       </div>
