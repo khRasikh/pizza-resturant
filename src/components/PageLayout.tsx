@@ -12,7 +12,7 @@ export default function PageLayout({ children, title }: Readonly<
   Props>) {
   return (
     <SessionProvider>
-      <div className="bg-slate-200 h-screen">
+      <div className="bg-white h-screen">
         <div className="relative flex grow flex-col ">
           <Body title={title}>{children} </Body>
         </div>

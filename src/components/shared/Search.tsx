@@ -17,7 +17,7 @@ const SearchBar = ({ onSearch, placeholderValue = "" }: SearchBarProps) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto py-6">
+    <div className="max-w-2xl mx-auto pb-6">
       <form className="flex items-center">
         <div className="w-full">
           <div className="flex absolute pt-4 items-center pl-3 pointer-events-none">
