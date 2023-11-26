@@ -1,13 +1,30 @@
 "use client"
 import clsx from 'clsx';
-import { type FC } from 'react';
+import { useState, type FC, useEffect } from 'react';
 
 interface tableProps {
     data: any[]
     isLoading: boolean
+    itemsPerPage: number
 }
-export const Table: FC<tableProps> = (props) => {
 
+export const Table: FC<tableProps> = (props) => {
+    const { data, isLoading, itemsPerPage } = props;
+    const [currentPage, setCurrentPage] = useState(1);
+    const [currentItems, setCurrentItems] = useState<any[]>([]);
+
+    useEffect(() => {
+        const indexOfLastItem = currentPage * itemsPerPage;
+        const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+        const updatedCurrentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+        setCurrentItems(updatedCurrentItems);
+    }, [currentPage, data, itemsPerPage]);
+
+    const totalPages = Math.ceil(data.length / itemsPerPage);
+
+    const changePage = (page: number) => {
+        setCurrentPage(page);
+    };
     return (
         <div>
             <div className="overflow-hidden">
@@ -24,8 +41,9 @@ export const Table: FC<tableProps> = (props) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.data.length > 0
-                            && props.data.map((i) => (
+                        {isLoading && <tr><td colSpan={6}>Loading...</td></tr>}
+                        {!isLoading && currentItems.length > 0 ? (
+                            currentItems.map((i) => (
                                 <tr key={i.id}
                                     className={clsx(`${i.id % 2 !== 0 ? "bg-neutral-100" : "bg-white"} "border-b  dark:border-neutral-500 dark:bg-neutral-600`)}>
                                     <td className="whitespace-nowrap px-6 py-4" >{i.id}</td>
@@ -64,10 +82,85 @@ export const Table: FC<tableProps> = (props) => {
 
                             )
                             )
+                        )
+                            : (
+                                <tr><td colSpan={6}>No posts available.</td></tr>
+                            )
                         }
                     </tbody>
                 </table>
-                {props.data.length === 0 && <p>No posts available.</p>}
+                {totalPages > 1 && (
+                    <div className="pagination text-sm font-bold">
+                        <button
+                            className={clsx('my-2', {
+                                'text-green-500': currentPage > 1,
+                                'text-gray-500': currentPage === 1,
+                            })}
+                            onClick={() => changePage(currentPage - 1)}
+                            disabled={currentPage === 1}
+                        >
+                            Previous
+                        </button>
+                        {Array.from({ length: totalPages > 5 ? 5 : totalPages }, (_, index) => (
+                            <button
+                                key={index + 1}
+                                className={clsx('mx-2', {
+                                    'text-green-500': index + 1 !== currentPage,
+                                    'text-gray-500': index + 1 === currentPage,
+                                })}
+                                onClick={() => changePage(index + 1)}
+                            >
+                                {index + 1}
+                            </button>
+                        ))}
+                        {totalPages > 5 && currentPage >= 4 && (
+                            <span className="text-gray-500 mx-2">1</span>
+                        )}
+                        {totalPages > 5 && currentPage >= 4 && (
+                            <span className="text-gray-500 mx-2">...</span>
+                        )}
+                        {totalPages > 5 && currentPage >= 4 && (
+                            Array.from({ length: totalPages - currentPage >= 3 ? 3 : totalPages - currentPage }, (_, index) => (
+                                <button
+                                    key={currentPage + index}
+                                    className={clsx('mx-2', {
+                                        'text-green-500': currentPage + index !== currentPage,
+                                        'text-gray-500': currentPage + index === currentPage,
+                                    })}
+                                    onClick={() => changePage(currentPage + index)}
+                                >
+                                    {currentPage + index}
+                                </button>
+                            ))
+                        )}
+                        {currentPage <= totalPages - 1 && (
+                            <span className="text-gray-500 mx-2">...</span>
+                        )}
+                        {currentPage <= totalPages - 1 && (
+                            <button
+                                className={clsx('mx-2', {
+                                    'text-green-500': currentPage < totalPages,
+                                    'text-gray-500': currentPage === totalPages,
+                                })}
+                                onClick={() => changePage(totalPages)}
+                                disabled={currentPage === totalPages}
+                            >
+                                {totalPages}
+                            </button>
+                        )}
+                        <button
+                            className={clsx('mx-2', {
+                                'text-green-500': currentPage < totalPages,
+                                'text-gray-500': currentPage === totalPages,
+                            })}
+                            onClick={() => changePage(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                        >
+                            Next
+                        </button>
+                    </div>
+                )}
+
             </div>
         </div>
     );
