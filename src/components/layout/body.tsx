@@ -25,7 +25,7 @@ export default function Body({ children, title }: Props) {
   }
 
   const { user } = session
-  if (session && user.email === "kh.rasikh542@gmail.com" || user.email === "mohammadalirahimi1440@gmail.com") {
+  if (session && user.email === "kh.rasikh542@gmail.com") {
     return (
       <div className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
         <div className="absolute inset-0 overflow-hidden">
