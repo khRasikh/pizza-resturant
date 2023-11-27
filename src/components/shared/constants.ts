@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 export const dateTimeFormat: Record<string, string | number> = {
   month: "short",
   day: "numeric",
@@ -18,4 +20,13 @@ export const clearCustomerForm = {
   Last_Name: "",
   Phone_Number: "",
   Address: "",
+};
+
+export const toastMessages = {
+  ERROR_CONTENT: "Failed to delete customer",
+  SUCCESS_CONTENT: "Customer deleted successfully",
+  OPTION: {
+    position: toast.POSITION.TOP_RIGHT,
+    autoClose: 2000,
+  },
 };

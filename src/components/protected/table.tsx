@@ -1,9 +1,8 @@
 "use client"
 import clsx from 'clsx';
 import { useState, type FC, useEffect } from 'react';
-import { dateTimeFormat, timeZone } from '../shared/constants';
+import { dateTimeFormat, timeZone, toastMessages } from '../shared/constants';
 import { tableProps } from '../interface/general';
-import Form from './form';
 import { toast } from 'react-toastify';
 
 
@@ -41,7 +40,7 @@ export const Table: FC<tableProps> = (props) => {
 
     //delete 
     const handleDeleteCustomer = async (customerId: string) => {
-        
+
         try {
             const response = await fetch('/api/psql/delete', {
                 method: 'DELETE',
@@ -52,33 +51,18 @@ export const Table: FC<tableProps> = (props) => {
             });
 
             if (response.ok) {
-                // Handle success (optional)
-                toast.success('Customer deleted successfully', {
-                    position: toast.POSITION.TOP_RIGHT,
-                    autoClose: 2000,
-                });
+                toast.success(toastMessages.SUCCESS_CONTENT, toastMessages.OPTION);
             } else {
-                // Handle failure (optional)
-                toast.error('Failed to delete customer', {
-                    position: toast.POSITION.TOP_RIGHT,
-                    autoClose: 2000,
-                });
+                toast.error(toastMessages.ERROR_CONTENT, toastMessages.OPTION);
             }
         } catch (error) {
-            toast.error('Failed to delete customer', {
-                position: toast.POSITION.TOP_RIGHT,
-                autoClose: 2000,
-                style: {
-                    background: 'red',
-                    color: 'black',
-                  },
-            });
+            toast.error(toastMessages.ERROR_CONTENT, toastMessages.OPTION);
             console.error('Error deleting customer:', error);
         }
     };
+
     return (
         <div>
-            <Form />
             <div className="overflow-hidden">
                 <table className="min-w-full text-left text-sm font-light">
                     <thead
