@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
     const data = await request.json();
 
     const pool = createPool({
-      connectionString: process.env.NEXT_PUBLIC_POSTGRES_URL,
+      connectionString: process.env.POSTGRES_URL as string,
     });
 
     // Assuming the incoming JSON data structure matches the columns in your Customers table

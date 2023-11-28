@@ -4,11 +4,11 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const pool = createPool({
-      connectionString: process.env.NEXT_PUBLIC_POSTGRES_URL as string,
+      connectionString: process.env.POSTGRES_URL as string,
     });
 
     const query = {
-      text: "SELECT * FROM Customers",
+      text: "SELECT * FROM customers",
     };
 
     const result = await pool.query(query);

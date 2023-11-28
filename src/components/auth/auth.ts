@@ -39,5 +39,5 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
-  secret: process.env.NEXT_PUBLIC_SECRET as string
+  secret: process.env.SECRET as string
 };

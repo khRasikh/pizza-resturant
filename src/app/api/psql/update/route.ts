@@ -7,7 +7,7 @@ export async function PATCH(request: NextRequest) {
     console.log("test data", data)
 
     const pool = createPool({
-      connectionString: process.env.NEXT_PUBLIC_POSTGRES_URL,
+      connectionString: process.env.POSTGRES_URL as string,
     });
 
     const { Id, /* Add other fields to update */ } = data;
