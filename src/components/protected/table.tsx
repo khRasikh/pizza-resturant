@@ -1,12 +1,10 @@
 "use client"
 import clsx from 'clsx';
 import { useState, type FC, useEffect } from 'react';
+import { dateTimeFormat, timeZone, toastMessages } from '../shared/constants';
+import { tableProps } from '../interface/general';
+import { toast } from 'react-toastify';
 
-interface tableProps {
-    data: any[]
-    isLoading: boolean
-    itemsPerPage: number
-}
 
 export const Table: FC<tableProps> = (props) => {
     const { data, isLoading, itemsPerPage } = props;
@@ -25,6 +23,44 @@ export const Table: FC<tableProps> = (props) => {
     const changePage = (page: number) => {
         setCurrentPage(page);
     };
+
+    //current time
+    const getDateTime = new Date().toLocaleString(timeZone.deutch, dateTimeFormat)
+    const [currentDateTime, setCurrentDateTime] = useState(getDateTime);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentDateTime(getDateTime);
+        }, 1000);
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
+
+    //delete 
+    const handleDeleteCustomer = async (customerId: string) => {
+
+        try {
+            const response = await fetch('/api/psql/delete', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ Id: customerId }),
+            });
+
+            if (response.ok) {
+                toast.success(toastMessages.SUCCESS_CONTENT, toastMessages.OPTION);
+            } else {
+                toast.error(toastMessages.ERROR_CONTENT, toastMessages.OPTION);
+            }
+        } catch (error) {
+            toast.error(toastMessages.ERROR_CONTENT, toastMessages.OPTION);
+            console.error('Error deleting customer:', error);
+        }
+    };
+
     return (
         <div>
             <div className="overflow-hidden">
@@ -53,7 +89,7 @@ export const Table: FC<tableProps> = (props) => {
                                     <td className="whitespace-nowrap px-6 py-4">{i.address} </td>
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className='flex flex-row'>
-                                            <button>
+                                            <button onClick={() => handleDeleteCustomer(i.id)}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
                                                     <g fill="#f60303" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(5.33333,5.33333)"><path d="M24,4c-3.50831,0 -6.4296,2.62143 -6.91992,6h-10.58008c-0.54095,-0.00765 -1.04412,0.27656 -1.31683,0.74381c-0.27271,0.46725 -0.27271,1.04514 0,1.51238c0.27271,0.46725 0.77588,0.75146 1.31683,0.74381h2.13672l2.51953,26.0293c0.274,2.833 2.62956,4.9707 5.47656,4.9707h14.73438c2.847,0 5.20156,-2.1377 5.47656,-4.9707l2.51953,-26.0293h2.13672c0.54095,0.00765 1.04412,-0.27656 1.31683,-0.74381c0.27271,-0.46725 0.27271,-1.04514 0,-1.51238c-0.27271,-0.46725 -0.77588,-0.75146 -1.31683,-0.74381h-10.58008c-0.49032,-3.37857 -3.41161,-6 -6.91992,-6zM24,7c1.87916,0 3.42077,1.26816 3.86133,3h-7.72266c0.44056,-1.73184 1.98217,-3 3.86133,-3zM19.5,18c0.828,0 1.5,0.671 1.5,1.5v15c0,0.829 -0.672,1.5 -1.5,1.5c-0.828,0 -1.5,-0.671 -1.5,-1.5v-15c0,-0.829 0.672,-1.5 1.5,-1.5zM28.5,18c0.828,0 1.5,0.671 1.5,1.5v15c0,0.829 -0.672,1.5 -1.5,1.5c-0.828,0 -1.5,-0.671 -1.5,-1.5v-15c0,-0.829 0.672,-1.5 1.5,-1.5z"></path></g></g>
                                                 </svg>
@@ -89,77 +125,81 @@ export const Table: FC<tableProps> = (props) => {
                         }
                     </tbody>
                 </table>
-                {totalPages > 1 && (
-                    <div className="pagination text-sm font-bold">
-                        <button
-                            className={clsx('my-2', {
-                                'text-green-500': currentPage > 1,
-                                'text-gray-500': currentPage === 1,
-                            })}
-                            onClick={() => changePage(currentPage - 1)}
-                            disabled={currentPage === 1}
-                        >
-                            Previous
-                        </button>
-                        {Array.from({ length: totalPages > 5 ? 5 : totalPages }, (_, index) => (
+                <div className='flex flex-row justify-between  text-sm font-bold'>
+                    <div>{totalPages > 1 && (
+                        <div className="pagination">
                             <button
-                                key={index + 1}
-                                className={clsx('mx-2', {
-                                    'text-green-500': index + 1 !== currentPage,
-                                    'text-gray-500': index + 1 === currentPage,
+                                className={clsx('my-2', {
+                                    'text-green-500': currentPage > 1,
+                                    'text-gray-500': currentPage === 1,
                                 })}
-                                onClick={() => changePage(index + 1)}
+                                onClick={() => changePage(currentPage - 1)}
+                                disabled={currentPage === 1}
                             >
-                                {index + 1}
+                                Previous
                             </button>
-                        ))}
-                        {totalPages > 5 && currentPage >= 4 && (
-                            <span className="text-gray-500 mx-2">1</span>
-                        )}
-                        {totalPages > 5 && currentPage >= 4 && (
-                            <span className="text-gray-500 mx-2">...</span>
-                        )}
-                        {totalPages > 5 && currentPage >= 4 && (
-                            Array.from({ length: totalPages - currentPage >= 3 ? 3 : totalPages - currentPage }, (_, index) => (
+                            {Array.from({ length: totalPages > 5 ? 5 : totalPages }, (_, index) => (
                                 <button
-                                    key={currentPage + index}
+                                    key={index + 1}
                                     className={clsx('mx-2', {
-                                        'text-green-500': currentPage + index !== currentPage,
-                                        'text-gray-500': currentPage + index === currentPage,
+                                        'text-green-500': index + 1 !== currentPage,
+                                        'text-gray-500': index + 1 === currentPage,
                                     })}
-                                    onClick={() => changePage(currentPage + index)}
+                                    onClick={() => changePage(index + 1)}
                                 >
-                                    {currentPage + index}
+                                    {index + 1}
                                 </button>
-                            ))
-                        )}
-                        {currentPage <= totalPages - 1 && (
-                            <span className="text-gray-500 mx-2">...</span>
-                        )}
-                        {currentPage <= totalPages - 1 && (
+                            ))}
+                            {totalPages > 5 && currentPage >= 4 && (
+                                <span className="text-gray-500 mx-2">1</span>
+                            )}
+                            {totalPages > 5 && currentPage >= 4 && (
+                                <span className="text-gray-500 mx-2">...</span>
+                            )}
+                            {totalPages > 5 && currentPage >= 4 && (
+                                Array.from({ length: totalPages - currentPage >= 3 ? 3 : totalPages - currentPage }, (_, index) => (
+                                    <button
+                                        key={currentPage + index}
+                                        className={clsx('mx-2', {
+                                            'text-green-500': currentPage + index !== currentPage,
+                                            'text-gray-500': currentPage + index === currentPage,
+                                        })}
+                                        onClick={() => changePage(currentPage + index)}
+                                    >
+                                        {currentPage + index}
+                                    </button>
+                                ))
+                            )}
+                            {currentPage <= totalPages - 1 && (
+                                <span className="text-gray-500 mx-2">...</span>
+                            )}
+                            {currentPage <= totalPages - 1 && (
+                                <button
+                                    className={clsx('mx-2', {
+                                        'text-green-500': currentPage < totalPages,
+                                        'text-gray-500': currentPage === totalPages,
+                                    })}
+                                    onClick={() => changePage(totalPages)}
+                                    disabled={currentPage === totalPages}
+                                >
+                                    {totalPages}
+                                </button>
+                            )}
                             <button
                                 className={clsx('mx-2', {
                                     'text-green-500': currentPage < totalPages,
                                     'text-gray-500': currentPage === totalPages,
                                 })}
-                                onClick={() => changePage(totalPages)}
+                                onClick={() => changePage(currentPage + 1)}
                                 disabled={currentPage === totalPages}
                             >
-                                {totalPages}
+                                Next
                             </button>
-                        )}
-                        <button
-                            className={clsx('mx-2', {
-                                'text-green-500': currentPage < totalPages,
-                                'text-gray-500': currentPage === totalPages,
-                            })}
-                            onClick={() => changePage(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                        >
-                            Next
-                        </button>
-                    </div>
-                )}
+                        </div>
+                    )}</div>
+                    <div className='p-2 text-green-500 font-bold'>{currentDateTime}</div>
+                    <div className='p-2'>Total: {props.data.length}</div>
+                </div>
 
             </div>
         </div>
