@@ -10,11 +10,11 @@ export async function POST(request: NextRequest) {
     });
 
     // Assuming the incoming JSON data structure matches the columns in your Customers table
-    const { Id, First_Name, Last_Name, Age, Phone_Number, Address, Birth_Date } = data;
+    const { Id, First_Name, Last_Name, Phone_Number, Address, Birth_Date } = data;
 
     await pool.query(
-      "INSERT INTO Customers (Id, First_Name, Last_Name, Age, Phone_Number, Address, Birth_Date) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-      [Id, First_Name, Last_Name, Age, Phone_Number, Address, Birth_Date]
+      "INSERT INTO Customers (Id, First_Name, Last_Name, Phone_Number, Address, Birth_Date) VALUES ($1, $2, $3, $4, $5, $6)",
+      [Id, First_Name, Last_Name, Phone_Number, Address, Birth_Date]
     );
 
     return NextResponse.json({ message: "Data inserted successfully" });
