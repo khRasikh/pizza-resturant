@@ -1,43 +1,14 @@
 "use client"
-import React, { useState } from 'react';
-import { clearCustomerForm, toastMessages } from '../shared/constants';
-import { toast } from 'react-toastify';
-
-const Form = () => {
-    const [formData, setFormData] = useState(clearCustomerForm);
-
-    const handleSubmit = async (e: any) => {
-        e.preventDefault();
-        // Here, implement your code to send formData to your backend API
-        const addCustomer = await fetch('/api/psql/add', {
-            method: 'POST',
-            body: JSON.stringify(formData),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (addCustomer.ok) {
-            setFormData(clearCustomerForm);
-            toast.success('A new customer has been added', toastMessages.OPTION);
-        } else {
-            toast.error('Faild to add new record', toastMessages.OPTION);
-        }
-
-    };
-
-    const handleChange = (e: any) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
-    };
-
-
+import React, { ChangeEvent, FormEvent } from 'react';
+interface FormProps {
+    formData: any;
+    handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
+}
+const Form = ({ formData, handleChange, handleSubmit }: FormProps) => {
     return (
         <form onSubmit={handleSubmit}>
-            <div className="overflow-hidden">
+            <div className="overflow-hidden bg-slate-200">
                 <table className="min-w-full text-left text-sm font-light">
                     <tbody>
                         <tr>
@@ -54,7 +25,7 @@ const Form = () => {
                             <td className="whitespace-nowrap px-2 py-4">
                                 <input
                                     type="text"
-                                    name="First Name"
+                                    name="First_Name"
                                     value={formData.First_Name}
                                     onChange={handleChange}
                                     className="w-full p-2 border rounded-md"
@@ -92,8 +63,8 @@ const Form = () => {
                                 />
                             </td>
                             <td className="whitespace-nowrap px-2 py-4">
-                                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    add
+                                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-lg text-white font-bold py-1 px-3 rounded">
+                                    +
                                 </button>
                             </td>
                         </tr>

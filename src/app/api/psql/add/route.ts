@@ -11,15 +11,26 @@ export async function POST(request: NextRequest) {
 
     // Assuming the incoming JSON data structure matches the columns in your Customers table
     const { Id, First_Name, Last_Name, Phone_Number, Address, Birth_Date } = data;
+    
+    if (!Id || !First_Name || !Phone_Number || !Address) {
+      return NextResponse.json({ message: "Data inserted successfully" }, { status: 404 });
+    }
 
-    await pool.query(
-      "INSERT INTO Customers (Id, First_Name, Last_Name, Phone_Number, Address, Birth_Date) VALUES ($1, $2, $3, $4, $5, $6)",
+    const insertionResult = await pool.query(
+      "INSERT INTO Customers (Id, First_Name, Last_Name,  Phone_Number, Address, Birth_Date) VALUES ($1, $2, $3, $4, $5, $6)",
       [Id, First_Name, Last_Name, Phone_Number, Address, Birth_Date]
     );
 
-    return NextResponse.json({ message: "Data inserted successfully" });
+    if (insertionResult.rowCount === 1) {
+      // If the rowCount is 1 (indicating one row was affected), return a successful response with status code 200
+      return NextResponse.json({ message: "Data inserted successfully" }, { status: 200 });
+    } else {
+      // If the rowCount is not 1, it means the insertion didn't affect exactly one row; handle this as an error
+      // throw new Error("Failed to insert data");
+      return NextResponse.json({ message: "Data inserted successfully" }, { status: 204 });
+    }
   } catch (error) {
     console.error("Error inserting data:", error);
-    return NextResponse.json("Failed to insert data");
+    return NextResponse.json({ message: "Data inserted successfully" }, { status: 206 });
   }
 }

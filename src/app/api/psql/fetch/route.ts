@@ -8,7 +8,7 @@ export async function GET() {
     });
 
     const query = {
-      text: "SELECT * FROM customers",
+      text: "SELECT * FROM customers ORDER BY Birth_Date DESC",
     };
 
     const result = await pool.query(query);
