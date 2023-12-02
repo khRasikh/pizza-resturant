@@ -1,12 +1,21 @@
 "use client"
 import clsx from 'clsx';
 import { useState, type FC, useEffect } from 'react';
-import { dateTimeFormat, timeZone, toastMessages } from '../shared/constants';
-import { tableProps } from '../interface/general';
+import { dateTimeFormat, timeZone, toastMessages } from './constants';
 import { toast } from 'react-toastify';
+import { ITable, NoResultFoundProps } from '../interface/general';
 
+export const NoResultFound = ({ message }: NoResultFoundProps) => {
+    return (
+        <div className="text-black my-2 py-2 flex justify-center items-center">
+            <div className="whitespace-nowrap px-6 py-4 font-bold">
+                {message}
+            </div>
+        </div>
+    );
+};
 
-export const Table: FC<tableProps> = (props) => {
+export const Table: FC<ITable> = (props) => {
     const { data, isLoading, itemsPerPage } = props;
     const [currentPage, setCurrentPage] = useState(1);
     const [currentItems, setCurrentItems] = useState<any[]>([]);

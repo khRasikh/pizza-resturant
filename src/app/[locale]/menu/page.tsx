@@ -1,10 +1,9 @@
 "use client";
-import { createPool } from "@vercel/postgres";
 import PageLayout from "@/components/PageLayout";
 import { useTranslations } from "next-intl";
 
-export default function Publishes() {
-  const t = useTranslations("PublishesPage");
+export default function Menu() {
+  const t = useTranslations("MenuPage");
   return (
     <PageLayout title={t("title")}>
       <div className="max-w-[460px]">

@@ -1,15 +1,11 @@
-import { ReactNode } from "react";
 import Footer from "./layout/footer";
 import Body from "./layout/body";
 import { SessionProvider } from "next-auth/react";
+import { IPageLayout } from "./interface/general";
 
-type Props = {
-  children?: ReactNode;
-  title: ReactNode;
-};
 
 export default function PageLayout({ children, title }: Readonly<
-  Props>) {
+  IPageLayout>) {
   return (
     <SessionProvider>
       <div className="bg-white h-screen">

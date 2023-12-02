@@ -16,9 +16,8 @@ export default function Navigation() {
             <div>
               <NavigationLink href="/">{t("home")}</NavigationLink>
               <NavigationLink href="/about">{t("about")}</NavigationLink>
-              <NavigationLink href="/publishes">{t("publishes")}</NavigationLink>
-              <NavigationLink href="/authorized">{t("authorized")}</NavigationLink>
-              <NavigationLink href="/protected">{t("protected")}</NavigationLink>
+              <NavigationLink href="/menu">{t("menu")}</NavigationLink>
+              <NavigationLink href="/customers">{t("customers")}</NavigationLink>
             </div>
             <div>
               <Component />

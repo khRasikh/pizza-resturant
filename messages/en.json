@@ -11,13 +11,13 @@
     "title": "Authorization",
     "description": "We are practicing custom RBAC authorization."
   },
-  "PublishesPage": {
-    "title": "Publishes",
+  "CustomerPage": {
+    "title": "Customers",
     "description": "<p>The routing is internationalized too.</p><p>If you're using the default language English, you'll see <code>/about</code> in the browser address bar on this page.</p><p>If you change the locale to German, the URL is prefixed with the locale (<code>/de/about</code>).</p>"
   },
-  "ProtectedPage": {
-    "title": "Protected",
-    "description": "This page is protected"
+  "MenuPage": {
+    "title": "Menu",
+    "description": "This page is Menu"
   },
   "NotFoundPage": {
     "title": "Page not found",
@@ -33,9 +33,9 @@
   "Navigation": {
     "home": "Home",
     "about": "About",
-    "publishes": "Publishes",
+    "customers": "Customers",
     "authorized": "Authorized",
-    "protected": "Protected"
+    "menu": "Menu"
   },
   "PageLayout": {
     "links": {

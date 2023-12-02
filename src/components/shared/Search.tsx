@@ -1,14 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { ISearchBar } from "../interface/general";
 
-interface SearchBarProps {
-  onSearch: (value: string) => void;
-  placeholderValue?: string; 
-  searchTerm?: string;
-}
-
-const SearchBar = ({ onSearch, placeholderValue = "" }: SearchBarProps) => {
+const SearchBar = ({ onSearch, placeholderValue = "" }: ISearchBar) => {
   const t = useTranslations("PageLayout");
 
   const handleSearchTerm = (e: any) => {
@@ -17,7 +12,7 @@ const SearchBar = ({ onSearch, placeholderValue = "" }: SearchBarProps) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto pb-6">
+    <div className="max-w-2xl mx-auto p-2">
       <form className="flex items-center">
         <div className="w-full">
           <div className="flex absolute pt-4 items-center pl-3 pointer-events-none">
@@ -30,7 +25,7 @@ const SearchBar = ({ onSearch, placeholderValue = "" }: SearchBarProps) => {
             maxLength={50}
             type="text"
             id="simple-search"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-green block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-md font-bold rounded-lg focus:ring-blue-500 focus:border-green block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder={placeholderValue || t("search.name") + " ..."}
             onChange={handleSearchTerm}
           />

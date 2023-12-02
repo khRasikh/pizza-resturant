@@ -1,19 +1,19 @@
 "use client";
 import PageLayout from "@/components/PageLayout";
 import { useTranslations } from "next-intl";
-import SearchBar from "@/components/shared/Search";
-import { Table } from "@/components/protected/table";
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Form from "@/components/protected/form";
 import { clearCustomerForm, toastMessages } from "@/components/shared/constants";
+import Form from "@/components/customers/form";
+import { NoResultFound, Table } from "@/components/shared/table";
+import SearchBar from "@/components/shared/Search";
 
-export default function Publishes() {
-  const t = useTranslations("ProtectedPage");
-  const [customers, setCustomer] = useState<any[]>([{}]);
+export default function Customers() {
+  const t = useTranslations("CustomerPage");
+  const [customers, setCustomer] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [showForm, setShowForm] = useState(true); 
+  const [showForm, setShowForm] = useState(true);
 
 
   const fetchData = async () => {
@@ -90,7 +90,6 @@ export default function Publishes() {
       },
     });
 
-    console.log("test te", addCustomer.status)
     if (addCustomer.status == 200) {
       setFormData(clearCustomerForm);
       toast.success('A new customer has been added', toastMessages.OPTION);
@@ -109,30 +108,50 @@ export default function Publishes() {
     });
   };
 
-
-
   const toggleForm = () => {
-    setShowForm(!showForm); // Toggle form visibility
+    setShowForm(!showForm);
   };
+
+
+
+  const fields = [
+    { name: 'Id', value: formData.Id, placeholder: 'ID#' },
+    { name: 'First_Name', value: formData.First_Name, placeholder: 'First Name' },
+    { name: 'Last_Name', value: formData.Last_Name, placeholder: 'Last Name' },
+    { name: 'Phone_Number', value: formData.Phone_Number, placeholder: 'Phone' },
+    { name: 'Address', value: formData.Address, placeholder: 'Address' },
+  ];
+
   return (
     <PageLayout title={t("title")}>
       <ToastContainer />
       <div className="justify-center items-center">
         <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-            <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
-            <div className="flex flex-col items-center">
-              {showForm ? <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold text-sm py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
+          <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8" >
+            <div className="flex flex-col items-center ">
+              {showForm ? <div className="flex flex-row"><div><SearchBar searchTerm={searchTerm} onSearch={handleSearch} /></div> <div><button
+                className="bg-green-500 hover:bg-green-700 my-2 py-2 text-white font-bold text-md px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
                 onClick={toggleForm}
               >
-                New Customer
-              </button> : <Form handleChange={handleChange} handleSubmit={handleSubmit} formData={formData} />}
-            </div>
-            {filteredCustumers.length > 0 ? <Table data={filteredCustumers} isLoading={isLoading} itemsPerPage={10} /> :
-              <div className="text-black my-2 py-2 justify-center items-center">
-                <div className="whitespace-nowrap px-6 py-4">Loading ...</div>
+                +  New
+              </button></div></div> : <div className="bg-slate-200 rounded-md px-8">
+                {/* <Form handleChange={handleChange} handleSubmit={handleSubmit} formData={formData} handleClose={toggleForm} /> */}
+                <Form
+                  formData={formData}
+                  fields={fields}
+                  handleChange={handleChange}
+                  handleSubmit={handleSubmit}
+                  handleClose={toggleForm}
+                />
               </div>}
+            </div>
+            {filteredCustumers.length > 0 && !isLoading ? (
+              <Table data={filteredCustumers} isLoading={isLoading} itemsPerPage={5} />
+            ) : (
+              <div>
+                {filteredCustumers.length === 0 && !isLoading ? <NoResultFound message={"No Customer Found!"} /> : <NoResultFound message={"Loading..."} />}
+              </div>
+            )}
           </div>
         </div>
       </div>
