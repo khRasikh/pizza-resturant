@@ -29,7 +29,7 @@ export type NoResultFoundProps = {
 
 export interface IField {
   name: string;
-  value: string;
+  value: string | object;
   placeholder: string;
 }
 

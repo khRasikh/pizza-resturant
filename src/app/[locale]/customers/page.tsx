@@ -17,7 +17,7 @@ export default function Customers() {
 
 
   const fetchData = async () => {
-    const getCustomers = await fetch("/api/psql/fetch", { method: "GET", cache: "no-cache" })
+    const getCustomers = await fetch("/api/psql/customers", { method: "GET", cache: "no-cache" })
     const consumersList = await getCustomers.json()
     if (getCustomers.ok) {
       setCustomer(consumersList.data)

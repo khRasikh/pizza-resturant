@@ -22,6 +22,16 @@ export const clearCustomerForm = {
   Address: "",
 };
 
+export const clearMenuForm = {
+  id: "",
+  name: "",
+  category: "",
+  description: "",
+  extra: {}, // Assuming extra is an empty object
+  price: "", // Assuming price is a string
+  currency: "",
+};
+
 export const toastMessages = {
   ERROR_CONTENT: "Failed to delete customer",
   SUCCESS_CONTENT: "Customer deleted successfully",
@@ -35,4 +45,6 @@ export const CustomerColumns = ["ID#", "Name", "Last Name", "Phone Number", "Add
 
 export const CustomerProperties = ["first_name", "last_name", "address", "phone_number", "id"];
 
-export const DefaultPageNumber = 5
+export const MenuColumns = ["ID#", "Name", "Category", "Description", "Extra", "Price", "Actions"];
+
+export const DefaultPageNumber = 10;
