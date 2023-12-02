@@ -1,5 +1,5 @@
 import { useSession, signIn, signOut } from "next-auth/react";
-import LocaleSwitcher from "../shared/LocaleSwitcher";
+import LocaleSwitcher from "../shared/localeSwitcher";
 
 export default function Component() {
   const { data: session }: any = useSession();

@@ -10,7 +10,7 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
             <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
                 <tr>
                     {columns.map((l) => {
-                        return (<th scope="col" className="px-6 py-4">{l}</th>)
+                        return (<th scope="col" key={l} className="px-6 py-4">{l}</th>)
                     })}
                 </tr>
             </thead>
@@ -72,7 +72,7 @@ export const TableMenu: React.FC<ITable> = ({ isLoading, items, columns, deleteR
             <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
                 <tr>
                     {columns.map((l) => {
-                        return (<th scope="col" className="px-6 py-4">{l}</th>)
+                        return (<th key={l} scope="col" className="px-6 py-4">{l}</th>)
                     })}
                 </tr>
             </thead>

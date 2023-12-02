@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { MenuColumns, CustomerProperties, DefaultPageNumber, clearMenuForm, toastMessages } from "@/components/shared/constants";
 import { FormMenu } from "@/components/customers/form";
-import { NoResultFound, Pagination, Table, TableMenu } from "@/components/shared/table";
+import { NoResultFound, Pagination, TableMenu } from "@/components/shared/table";
 
 export default function Menu() {
   const t = useTranslations("MenuPage");
