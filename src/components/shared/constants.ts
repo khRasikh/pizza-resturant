@@ -30,3 +30,9 @@ export const toastMessages = {
     autoClose: 2000,
   },
 };
+
+export const CustomerColumns = ["ID#", "Name", "Last Name", "Phone Number", "Address", "Actions"];
+
+export const CustomerProperties = ["first_name", "last_name", "address", "phone_number", "id"];
+
+export const DefaultPageNumber = 5

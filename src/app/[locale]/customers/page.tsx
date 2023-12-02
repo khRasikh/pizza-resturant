@@ -2,12 +2,12 @@
 import PageLayout from "@/components/PageLayout";
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { clearCustomerForm, toastMessages } from "@/components/shared/constants";
+import { CustomerColumns, CustomerProperties, DefaultPageNumber, clearCustomerForm, toastMessages } from "@/components/shared/constants";
 import Form from "@/components/customers/form";
-import { NoResultFound, Table } from "@/components/shared/table";
-import SearchBar from "@/components/shared/Search";
+import { NoResultFound, Pagination, Table } from "@/components/shared/table";
+import SearchBar from "@/components/shared/search";
 
 export default function Customers() {
   const t = useTranslations("CustomerPage");
@@ -44,15 +44,7 @@ export default function Customers() {
 
     const searchTermLowerCase = searchTerm.toString().toLowerCase();
 
-    const matchProperties = [
-      'first_name',
-      'last_name',
-      'address',
-      'phone_number',
-      'id'
-    ];
-
-    for (const prop of matchProperties) {
+    for (const prop of CustomerProperties) {
       if (customer[prop]?.toString().toLowerCase().startsWith(searchTermLowerCase)) {
         return true; // Customer matches the search term in any property
       }
@@ -66,7 +58,7 @@ export default function Customers() {
   // form
   const [formData, setFormData] = useState(clearCustomerForm);
 
-  const handleSubmit = async (e: any) => {
+  const submit = async (e: any) => {
     e.preventDefault();
 
     const { Id, First_Name, Phone_Number, Address } = formData;
@@ -100,7 +92,7 @@ export default function Customers() {
 
   };
 
-  const handleChange = (e: any) => {
+  const change = (e: any) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -114,7 +106,7 @@ export default function Customers() {
 
 
 
-  const fields = [
+  const inputFields = [
     { name: 'Id', value: formData.Id, placeholder: 'ID#' },
     { name: 'First_Name', value: formData.First_Name, placeholder: 'First Name' },
     { name: 'Last_Name', value: formData.Last_Name, placeholder: 'Last Name' },
@@ -122,9 +114,50 @@ export default function Customers() {
     { name: 'Address', value: formData.Address, placeholder: 'Address' },
   ];
 
+  //TABLE 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentItems, setCurrentItems] = useState<any[]>([]);
+  const itemsPerPage = DefaultPageNumber
+
+  useEffect(() => {
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const updatedCurrentItems = filteredCustumers.slice(indexOfFirstItem, indexOfLastItem);
+    setCurrentItems(updatedCurrentItems);
+  }, [customers, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(filteredCustumers.length / itemsPerPage);
+
+  const changePage = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  //delete 
+  const deleteCustomer = async (customerId: string) => {
+
+    try {
+      const response = await fetch('/api/psql/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ Id: customerId }),
+      });
+
+      if (response.ok) {
+        toast.success(toastMessages.SUCCESS_CONTENT, toastMessages.OPTION);
+      } else {
+        toast.error(toastMessages.ERROR_CONTENT, toastMessages.OPTION);
+      }
+    } catch (error) {
+      toast.error(toastMessages.ERROR_CONTENT, toastMessages.OPTION);
+      console.error('Error deleting customer:', error);
+    }
+  };
+
+
   return (
     <PageLayout title={t("title")}>
-      <ToastContainer />
       <div className="justify-center items-center">
         <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8" >
@@ -135,18 +168,14 @@ export default function Customers() {
               >
                 +  New
               </button></div></div> : <div className="bg-slate-200 rounded-md px-8">
-                {/* <Form handleChange={handleChange} handleSubmit={handleSubmit} formData={formData} handleClose={toggleForm} /> */}
-                <Form
-                  formData={formData}
-                  fields={fields}
-                  handleChange={handleChange}
-                  handleSubmit={handleSubmit}
-                  handleClose={toggleForm}
-                />
+                <Form formData={formData} fields={inputFields} handleChange={change} handleSubmit={submit} handleClose={toggleForm} />
               </div>}
             </div>
             {filteredCustumers.length > 0 && !isLoading ? (
-              <Table data={filteredCustumers} isLoading={isLoading} itemsPerPage={5} />
+              <div>
+                <Table isLoading={isLoading} items={currentItems} deleteRow={deleteCustomer} columns={CustomerColumns} />
+                <Pagination currentPage={currentPage} totalPages={currentItems.length} changePage={changePage} rowCount={totalPages} />
+              </div>
             ) : (
               <div>
                 {filteredCustumers.length === 0 && !isLoading ? <NoResultFound message={"No Customer Found!"} /> : <NoResultFound message={"Loading..."} />}

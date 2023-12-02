@@ -1,9 +1,10 @@
 import { ChangeEvent, FormEvent, ReactNode } from "react";
 
 export interface ITable {
-  data: any[];
   isLoading: boolean;
-  itemsPerPage: number;
+  items: any[];
+  columns: any[];
+  deleteRow: (id: string) => void;
 }
 
 export type IBody = {
@@ -18,7 +19,7 @@ export type IPageLayout = {
 
 export interface ISearchBar {
   onSearch: (value: string) => void;
-  placeholderValue?: string; 
+  placeholderValue?: string;
   searchTerm?: string;
 }
 
@@ -37,5 +38,12 @@ export interface IForm {
   fields: IField[];
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
-  handleClose: () => void
+  handleClose: () => void;
+}
+
+export interface IPagination {
+  currentPage: number;
+  totalPages: number;
+  changePage: (pageNumber: number) => void;
+  rowCount: number;
 }
