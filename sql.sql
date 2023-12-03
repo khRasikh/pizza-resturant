@@ -127,18 +127,18 @@ VALUES
     (9, 'Fried Calamari', 'Crispy fried calamari rings served with marinara sauce.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     (10, 'Veggie Platter', 'Assorted fresh vegetables served with dipping sauce.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO customer (first_name, last_name, address, home_number, street_name, postal_code, phone_number, description, created_date, updated_date)
+INSERT INTO customer (first_name, last_name, home_number, street_name, postal_code, phone_number, description, created_date, updated_date)
 VALUES
-    ('Sophia', 'Müller', 'Munich Address 1', '12', 'Bavaria Strasse', '80331', '00491234567', 'Regular customer', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Lukas', 'Schmidt', 'Munich Address 2', '24', 'Bavarian Weg', '80335', '00492345678', 'Monthly subscriber', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Elena', 'Fischer', 'Munich Address 3', '36', 'Bavarian Platz', '80336', '00493456789', 'Occasional visitor', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Jonas', 'Weber', 'Munich Address 4', '48', 'Bavaria Allee', '80337', '00494567890', 'Preferred diner', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Laura', 'Wagner', 'Munich Address 5', '60', 'Bavarian Ring', '80339', '00495678901', 'Regular customer', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('David', 'Hofmann', 'Munich Address 6', '72', 'Bavarian Platz', '80331', '00496789012', 'Monthly subscriber', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Emma', 'Klein', 'Munich Address 7', '84', 'Bavaria Strasse', '80335', '00497890123', 'Occasional visitor', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Felix', 'Schneider', 'Munich Address 8', '96', 'Bavarian Weg', '80336', '00498901234', 'Preferred diner', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Sophie', 'Mayer', 'Munich Address 9', '108', 'Bavaria Allee', '80337', '00499012345', 'Regular customer', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Julian', 'Herrmann', 'Munich Address 10', '120', 'Bavarian Ring', '80339', '00490123456', 'Monthly subscriber', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+    ('Sophia', 'Müller', 'Munich Address 1', '12', 'Bavaria Strasse', '80331', '00491234567',  CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Lukas', 'Schmidt', 'Munich Address 2', '24', 'Bavarian Weg', '80335', '00492345678', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Elena', 'Fischer', 'Munich Address 3', '36', 'Bavarian Platz', '80336', '00493456789',  CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Jonas', 'Weber', 'Munich Address 4', '48', 'Bavaria Allee', '80337', '00494567890',  CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Laura', 'Wagner', 'Munich Address 5', '60', 'Bavarian Ring', '80339', '00495678901',  CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('David', 'Hofmann', 'Munich Address 6', '72', 'Bavarian Platz', '80331', '00496789012', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Emma', 'Klein', 'Munich Address 7', '84', 'Bavaria Strasse', '80335', '00497890123',  CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Felix', 'Schneider', 'Munich Address 8', '96', 'Bavarian Weg', '80336', '00498901234',  CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Sophie', 'Mayer', 'Munich Address 9', '108', 'Bavaria Allee', '80337', '00499012345',  CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Julian', 'Herrmann', 'Munich Address 10', '120', 'Bavarian Ring', '80339', '00490123456', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO orders (user_id, id, order_date, total_amount, status)
 VALUES

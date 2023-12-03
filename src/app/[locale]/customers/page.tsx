@@ -16,7 +16,8 @@ export default function Customers() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [showForm, setShowForm] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  
+  const [isEdited, setIsEdited] = useState(false)
+
   const handleSearch = (value: string) => {
     setSearchTerm(value);
     setPageNumber(1);
@@ -61,21 +62,39 @@ export default function Customers() {
       return toast.error('Please fill in the Phone Number field', toastMessages.OPTION);
     }
 
+    if (isEdited) {
+      // Here, implement your code to send formData to your backend API
+      const addCustomer = await fetch('/api/psql/add', {
+        method: 'POST',
+        body: JSON.stringify(formData),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (addCustomer.status == 200) {
+        setFormData(clearCustomerForm);
+        toast.success('A new customer has been added', toastMessages.OPTION);
+        setShowForm(true)
+      } else {
+        toast.error('Faild to add new record', toastMessages.OPTION);
+      }
+    }
+
     // Here, implement your code to send formData to your backend API
-    const addCustomer = await fetch('/api/psql/add', {
-      method: 'POST',
+    const addCustomer = await fetch('/api/psql/edit', {
+      method: 'PATCH',
       body: JSON.stringify(formData),
       headers: {
         'Content-Type': 'application/json',
       },
     });
-
     if (addCustomer.status == 200) {
       setFormData(clearCustomerForm);
-      toast.success('A new customer has been added', toastMessages.OPTION);
+      toast.success('A customer has been updated', toastMessages.OPTION);
       setShowForm(true)
     } else {
-      toast.error('Faild to add new record', toastMessages.OPTION);
+      toast.error('Faild to update a record', toastMessages.OPTION);
     }
 
   };
@@ -139,6 +158,26 @@ export default function Customers() {
     }
   };
 
+  //edit
+  const displayConsumer = async (id: any) => {
+    const getCustomer = await fetch('/api/psql/customers/' + id, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    const { data } = await getCustomer.json()
+    if (getCustomer.status == 200) {
+      toggleForm()
+      setFormData(data);
+      setIsEdited(false)
+    } else {
+      console.error('Faild to update a record');
+    }
+
+  };
+
   return (
     <PageLayout title={t("title")}>
       <div className="justify-center items-center">
@@ -156,7 +195,7 @@ export default function Customers() {
             </div>
             {currentItems.length > 0 && !isLoading ? (
               <div>
-                <Table isLoading={isLoading} items={currentItems} deleteRow={deleteCustomer} columns={CustomerColumns} />
+                <Table isLoading={isLoading} items={currentItems} deleteRow={deleteCustomer} editRow={displayConsumer} columns={CustomerColumns} />
                 <PaginationCustomized pageItemsSize={pageItemsSize} totalItems={filteredCustumers.length} pageNumber={pageNumber} setPageItemsSize={setPageItemsSize} setPageNumber={setPageNumber} />
               </div>
             ) : (
