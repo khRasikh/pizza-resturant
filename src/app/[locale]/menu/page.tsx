@@ -124,6 +124,9 @@ export default function Menu() {
     setCurrentPage(pageNumber)
   }, [menus, pageItemsSize])
 
+  const displayMenu = () => {
+    console.log("menu displayed")
+  }
 
   return (
     <PageLayout title={t("title")}>
@@ -137,7 +140,7 @@ export default function Menu() {
             </div>
             {menus.length > 0 && !isLoading ? (
               <div>
-                <TableMenu isLoading={isLoading} items={currentItems} deleteRow={deleteMenu} columns={MenuColumns} />
+                <TableMenu isLoading={isLoading} items={currentItems} deleteRow={deleteMenu} columns={MenuColumns} editRow={displayMenu} />
                 <PaginationCustomized pageItemsSize={pageItemsSize} totalItems={menus.length} pageNumber={pageNumber} setPageItemsSize={setPageItemsSize} setPageNumber={setPageNumber} />
               </div>
             ) : (
