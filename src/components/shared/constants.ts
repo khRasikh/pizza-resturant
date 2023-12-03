@@ -15,11 +15,14 @@ export const timeZone = {
 };
 
 export const clearCustomerForm = {
-  Id: "",
-  First_Name: "",
-  Last_Name: "",
-  Phone_Number: "",
-  Address: "",
+  id: "",
+  first_name: "",
+  last_name: "",
+  home_number: "",
+  street_name: "",
+  postal_code: "",
+  phone_number: "",
+  description: "",
 };
 
 export const clearMenuForm = {
@@ -30,6 +33,7 @@ export const clearMenuForm = {
   extra: {}, // Assuming extra is an empty object
   price: "", // Assuming price is a string
   currency: "",
+  shift: "",
 };
 
 export const toastMessages = {
@@ -41,7 +45,7 @@ export const toastMessages = {
   },
 };
 
-export const CustomerColumns = ["ID#", "Name", "Last Name", "Phone Number", "Address", "Actions"];
+export const CustomerColumns = ["ID#", "Name", "Last Name", "Phone Number", "Address", "Description", "Actions"];
 
 export const CustomerProperties = ["first_name", "last_name", "address", "phone_number", "id"];
 

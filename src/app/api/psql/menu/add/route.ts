@@ -10,15 +10,15 @@ export async function POST(request: NextRequest) {
     });
 
     // Assuming the incoming JSON data structure matches the columns in your Customers table
-    const { id, name, category, description, price, currency } = data;
+    const { id, name, category, shift, description, price } = data;
     console.log(data)
     if (!id || !name || !category || !price) {
       return NextResponse.json({ message: "Data inserted successfully" }, { status: 404 });
     }
 
     const insertionResult = await pool.query(
-      "INSERT INTO menu (id, name, category,  description, price, currency) VALUES ($1, $2, $3, $4, $5, $6)",
-      [id, name, category, description, price, currency]
+      "INSERT INTO menu (id, name, category, shift, description, price) VALUES ($1, $2, $3, $4, $5, $6)",
+      [id, name, category, shift, description, price]
     );
 
     if (insertionResult.rowCount === 1) {

@@ -28,7 +28,8 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
                             <td className="whitespace-nowrap px-6 py-4">{i.first_name}</td>
                             <td className="whitespace-nowrap px-6 py-4">{i.last_name}</td>
                             <td className="whitespace-nowrap px-6 py-4">{i.phone_number}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.address}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.postal_code}  {i.street_name} {i.home_number}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.description}</td>
                             <td className="whitespace-nowrap px-6 py-4">
                                 <div className='flex flex-row'>
                                     <button onClick={() => deleteRow(i.id)}>

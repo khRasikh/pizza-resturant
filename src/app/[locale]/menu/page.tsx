@@ -29,7 +29,7 @@ export default function Menu() {
 
   //search & filter
   const [searchTerm, setsearchTerm] = useState("");
- 
+
   const filterMenus = (customer: any): boolean => {
     if (!searchTerm) {
       return true; // No search term provided, return all customers
@@ -54,7 +54,7 @@ export default function Menu() {
   const submit = async (e: any) => {
     e.preventDefault();
 
-    const { id, name, category, description, extra, price, currency } = formData;
+    const { id, name, category, price, currency, shift } = formData;
 
 
     if (!id) {
@@ -65,6 +65,10 @@ export default function Menu() {
       return toast.error('Please fill in the category field', toastMessages.OPTION);
     } else if (!price) {
       return toast.error('Please fill in the price field', toastMessages.OPTION);
+    } else if (!shift) {
+      return toast.error('Please fill in the shift field', toastMessages.OPTION);
+    } else if (!shift) {
+      return toast.error('Please fill in the shift field', toastMessages.OPTION);
     }
 
     // Here, implement your code to send formData to your backend API
@@ -105,7 +109,7 @@ export default function Menu() {
     { name: 'description', value: formData.description, placeholder: 'Description' },
     { name: 'extra', value: formData.extra, placeholder: 'Extra' },
     { name: 'price', value: formData.price, placeholder: 'Price' },
-    { name: 'currency', value: formData.currency, placeholder: 'Currency' },
+    { name: 'shift', value: formData.shift, placeholder: 'shift' },
   ];
 
 

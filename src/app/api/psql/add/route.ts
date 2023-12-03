@@ -9,16 +9,16 @@ export async function POST(request: NextRequest) {
       connectionString: process.env.POSTGRES_URL as string,
     });
 
-    // Assuming the incoming JSON data structure matches the columns in your Customers table
-    const { Id, First_Name, Last_Name, Phone_Number, Address, Birth_Date } = data;
-    
-    if (!Id || !First_Name || !Phone_Number || !Address) {
+    // Assuming the incoming JSON data structure matches the columns in your customer table
+    const { first_name, last_name, home_number, street_name, postal_code, phone_number, description } = data;
+
+    if (!first_name || !home_number || !street_name || !postal_code || !phone_number) {
       return NextResponse.json({ message: "Data inserted successfully" }, { status: 404 });
     }
 
     const insertionResult = await pool.query(
-      "INSERT INTO Customers (Id, First_Name, Last_Name,  Phone_Number, Address, Birth_Date) VALUES ($1, $2, $3, $4, $5, $6)",
-      [Id, First_Name, Last_Name, Phone_Number, Address, Birth_Date]
+      "INSERT INTO customer (first_name, last_name,  home_number, street_name, postal_code, phone_number, description) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+      [first_name, last_name, home_number, street_name, postal_code, phone_number, description]
     );
 
     if (insertionResult.rowCount === 1) {

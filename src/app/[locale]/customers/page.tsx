@@ -61,16 +61,20 @@ export default function Customers() {
   const submit = async (e: any) => {
     e.preventDefault();
 
-    const { Id, First_Name, Phone_Number, Address } = formData;
+    const { first_name, last_name, home_number, street_name, postal_code, phone_number, description } = formData;
 
-    if (!Id) {
-      return toast.error('Please fill in the ID field', toastMessages.OPTION);
-    } else if (!First_Name) {
+    if (!first_name) {
       return toast.error('Please fill in the First Name field', toastMessages.OPTION);
-    } else if (!Phone_Number) {
+    } else if (!last_name) {
+      return toast.error('Please fill in the Last Name field', toastMessages.OPTION);
+    } else if (!home_number) {
+      return toast.error('Please fill in the Home Number field', toastMessages.OPTION);
+    } else if (!street_name) {
+      return toast.error('Please fill in the Street Name field', toastMessages.OPTION);
+    } else if (!postal_code) {
+      return toast.error('Please fill in the Postal Code field', toastMessages.OPTION);
+    } else if (!phone_number) {
       return toast.error('Please fill in the Phone Number field', toastMessages.OPTION);
-    } else if (!Address) {
-      return toast.error('Please fill in the Address field', toastMessages.OPTION);
     }
 
     // Here, implement your code to send formData to your backend API
@@ -107,11 +111,13 @@ export default function Customers() {
 
 
   const inputFields = [
-    { name: 'Id', value: formData.Id, placeholder: 'ID#' },
-    { name: 'First_Name', value: formData.First_Name, placeholder: 'First Name' },
-    { name: 'Last_Name', value: formData.Last_Name, placeholder: 'Last Name' },
-    { name: 'Phone_Number', value: formData.Phone_Number, placeholder: 'Phone' },
-    { name: 'Address', value: formData.Address, placeholder: 'Address' },
+    { name: 'first_name', value: formData.first_name, placeholder: 'First Name' },
+    { name: 'last_name', value: formData.last_name, placeholder: 'Last Name' },
+    { name: 'home_number', value: formData.home_number, placeholder: 'Home#' },
+    { name: 'street_name', value: formData.street_name, placeholder: 'Street Name' },
+    { name: 'postal_code', value: formData.postal_code, placeholder: 'POSTAL CODE' },
+    { name: 'phone_number', value: formData.phone_number, placeholder: '0049163000000' },
+    { name: 'description', value: formData.description, placeholder: 'Description' },
   ];
 
   //TABLE 

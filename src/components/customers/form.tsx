@@ -42,9 +42,8 @@ export interface MENUFORM {
     fields: IField[];
     handleChange: (e: any) => void;
     handleSubmit: (e: any) => void;
-    handleClose: () => void;
 }
-export const FormMenu = ({ formData, fields, handleChange, handleSubmit, handleClose }: MENUFORM) => {
+export const FormMenu = ({ formData, fields, handleChange, handleSubmit }: MENUFORM) => {
     return (
         <form onSubmit={handleSubmit}>
             <div className="overflow-hidden">

@@ -11,7 +11,7 @@ export async function DELETE(request: NextRequest) {
 
     const { Id } = data;
 
-    await pool.query("DELETE FROM Customers WHERE Id = $1", [Id]);
+    await pool.query("DELETE FROM customer WHERE Id = $1", [Id]);
     console.info(`A record with ID#${Id} has been deleted successfully!`);
     return NextResponse.json({ message: "Data deleted successfully" });
   } catch (error) {
