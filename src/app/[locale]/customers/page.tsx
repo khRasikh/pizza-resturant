@@ -4,19 +4,26 @@ import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { CustomerColumns, CustomerProperties, DefaultPageNumber, clearCustomerForm, toastMessages } from "@/components/shared/constants";
+import { CustomerColumns, clearCustomerForm, toastMessages } from "@/components/shared/constants";
 import Form from "@/components/customers/form";
-import { NoResultFound, Pagination, Table } from "@/components/shared/table";
+import { NoResultFound, PaginationCustomized, Table } from "@/components/shared/table";
 import SearchBar from "@/components/shared/search";
+import { filterData } from "@/components/lib/filter";
 
 export default function Customers() {
   const t = useTranslations("CustomerPage");
   const [customers, setCustomer] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [showForm, setShowForm] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    setPageNumber(1);
 
+  };
 
-  const fetchData = async () => {
+  const fetchCustomers = async () => {
     const getCustomers = await fetch("/api/psql/customers", { method: "GET", cache: "no-cache" })
     const consumersList = await getCustomers.json()
     if (getCustomers.ok) {
@@ -28,32 +35,9 @@ export default function Customers() {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [customers]);
-
+  useEffect(() => { fetchCustomers() }, [customers])
   //search & filter
-  const [searchTerm, setsearchTerm] = useState("");
-  const handleSearch = (value: string) => {
-    setsearchTerm(value);
-  };
-  const filterCustomers = (customer: any): boolean => {
-    if (!searchTerm) {
-      return true; // No search term provided, return all customers
-    }
-
-    const searchTermLowerCase = searchTerm.toString().toLowerCase();
-
-    for (const prop of CustomerProperties) {
-      if (customer[prop]?.toString().toLowerCase().startsWith(searchTermLowerCase)) {
-        return true; // Customer matches the search term in any property
-      }
-    }
-    return false; // No match found in any customer property
-  };
-
-  const filteredCustumers = customers.filter(filterCustomers);
-
+  const filteredCustumers = filterData(customers, searchTerm)
 
   // form
   const [formData, setFormData] = useState(clearCustomerForm);
@@ -61,7 +45,7 @@ export default function Customers() {
   const submit = async (e: any) => {
     e.preventDefault();
 
-    const { first_name, last_name, home_number, street_name, postal_code, phone_number, description } = formData;
+    const { first_name, last_name, home_number, street_name, postal_code, phone_number, } = formData;
 
     if (!first_name) {
       return toast.error('Please fill in the First Name field', toastMessages.OPTION);
@@ -108,8 +92,6 @@ export default function Customers() {
     setShowForm(!showForm);
   };
 
-
-
   const inputFields = [
     { name: 'first_name', value: formData.first_name, placeholder: 'First Name' },
     { name: 'last_name', value: formData.last_name, placeholder: 'Last Name' },
@@ -120,23 +102,19 @@ export default function Customers() {
     { name: 'description', value: formData.description, placeholder: 'Description' },
   ];
 
-  //TABLE 
+  //pagination 
   const [currentPage, setCurrentPage] = useState(1);
   const [currentItems, setCurrentItems] = useState<any[]>([]);
-  const itemsPerPage = DefaultPageNumber
+  const [pageItemsSize, setPageItemsSize] = useState<number>(5);
+  const [pageNumber, setPageNumber] = useState<number>(1);
 
   useEffect(() => {
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const indexOfLastItem = currentPage * pageItemsSize;
+    const indexOfFirstItem = indexOfLastItem - pageItemsSize;
     const updatedCurrentItems = filteredCustumers.slice(indexOfFirstItem, indexOfLastItem);
     setCurrentItems(updatedCurrentItems);
-  }, [customers, currentPage, itemsPerPage]);
-
-  const totalPages = Math.ceil(filteredCustumers.length / itemsPerPage);
-
-  const changePage = (page: number) => {
-    setCurrentPage(page);
-  };
+    setCurrentPage(pageNumber)
+  }, [customers, pageItemsSize])
 
   //delete 
   const deleteCustomer = async (customerId: string) => {
@@ -161,7 +139,6 @@ export default function Customers() {
     }
   };
 
-
   return (
     <PageLayout title={t("title")}>
       <div className="justify-center items-center">
@@ -177,10 +154,10 @@ export default function Customers() {
                 <Form formData={formData} fields={inputFields} handleChange={change} handleSubmit={submit} handleClose={toggleForm} />
               </div>}
             </div>
-            {filteredCustumers.length > 0 && !isLoading ? (
+            {currentItems.length > 0 && !isLoading ? (
               <div>
                 <Table isLoading={isLoading} items={currentItems} deleteRow={deleteCustomer} columns={CustomerColumns} />
-                <Pagination currentPage={currentPage} totalPages={currentItems.length} changePage={changePage} rowCount={totalPages} />
+                <PaginationCustomized pageItemsSize={pageItemsSize} totalItems={filteredCustumers.length} pageNumber={pageNumber} setPageItemsSize={setPageItemsSize} setPageNumber={setPageNumber} />
               </div>
             ) : (
               <div>

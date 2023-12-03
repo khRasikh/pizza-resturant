@@ -1,6 +1,6 @@
 "use client"
 import clsx from 'clsx';
-import { ITable, NoResultFoundProps, IPagination } from '../interface/general';
+import { ITable, NoResultFoundProps } from '../interface/general';
 import { useState, useEffect } from 'react';
 import { timeZone, dateTimeFormat } from './constants';
 
@@ -130,13 +130,47 @@ export const TableMenu: React.FC<ITable> = ({ isLoading, items, columns, deleteR
     );
 };
 
-export const Pagination: React.FC<IPagination> = ({
-    currentPage,
-    totalPages,
-    changePage,
-    rowCount
-}) => {
+export const NoResultFound = ({ message }: NoResultFoundProps) => {
+    return (
+        <div className="text-black my-2 py-2 flex justify-center items-center">
+            <div className="whitespace-nowrap px-6 py-4 font-bold">
+                {message}
+            </div>
+        </div>
+    );
+};
 
+
+export const PaginationCustomized = ({ totalItems, pageNumber, pageItemsSize, setPageItemsSize, setPageNumber }: any) => {
+    const totalPages = Math.ceil(totalItems / pageItemsSize);
+    const [isPageSizeDropdownOpen, setIsPageSizeDropdownOpen] = useState(false);
+    const handlePrevClick = () => {
+        if (pageNumber > 1) {
+            onPageChange(pageNumber - 1, pageItemsSize);
+        }
+    };
+
+    const handleNextClick = () => {
+        if (pageNumber < totalPages) {
+            onPageChange(pageNumber + 1, pageItemsSize);
+        }
+    };
+
+
+    const onPageChange = (pageNumber: number, pageItemsize: number) => {
+        setPageNumber(pageNumber);
+        setPageItemsSize(pageItemsize)
+    };
+
+
+
+    const handlePageSizeChange = (value: number) => {
+        setPageItemsSize(value);
+        onPageChange(1, value);
+        setIsPageSizeDropdownOpen(false);
+    };
+
+    // time 
     const getDateTime = new Date().toLocaleString(timeZone.deutch, dateTimeFormat)
     const [currentDateTime, setCurrentDateTime] = useState(getDateTime);
 
@@ -148,62 +182,156 @@ export const Pagination: React.FC<IPagination> = ({
         return () => {
             clearInterval(interval);
         };
-    }, []);
-
+    }, [1000]);
     return (
-        <div className='flex flex-row justify-between text-sm font-bold'>
-            <div>
-                {totalPages > 1 && (
-                    <div className="pagination">
+        <div className='flex  flex-row justify-between'>
+            <div className="items-center flex flex-col-reverse sm:flex-row-reverse  py-3 pl-4 ">
+                <div className='p-2 text-green-500 font-bold'>{currentDateTime}</div>
+            </div>
+            <div className="items-center flex flex-col-reverse sm:flex-row-reverse  py-3 pl-4 ">
+                <div className="flex items-center justify-end pl-4 ">
+                    <div className="py-2 pl-4">
+                        <p className="text-sm text-gray-700">
+                            <span className="font-medium ">{(pageNumber - 1) * pageItemsSize + 1}</span>{'-'}
+                            <span className="font-medium pr-2">{Math.min(pageNumber * pageItemsSize, totalItems)}</span>
+                            of <span className="font-medium pr-2">{totalItems} </span>
+                        </p>
+                    </div>
+                    <div>
+                        <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                            <button
+                                onClick={handlePrevClick}
+                                disabled={pageNumber === 1}
+                                className={`relative inline-flex items-center rounded-l-md px-2 py-2 ${pageNumber === 1
+                                    ? 'primary-text'
+                                    : 'primary-text ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0'
+                                    } ${pageNumber === 1 ? 'disabled-arrow' : ''}`}
+                            >
+                                <span className="sr-only">Previous</span>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke={pageNumber === 1 ? 'gray' : 'currentColor'}
+                                    className="w-6 h-6"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                                </svg>
+                            </button>
+
+                            <button
+                                onClick={handleNextClick}
+                                disabled={pageNumber === totalPages}
+                                className={`relative inline-flex items-center rounded-r-md px-2 py-2 ${pageNumber === totalPages
+                                    ? 'primary-text'
+                                    : 'primary-text ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0'
+                                    } ${pageNumber === totalPages ? 'disabled-arrow' : ''}`}
+                            >
+                                <span className="sr-only">Next</span>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke={pageNumber === totalPages ? 'gray' : 'currentColor'}
+                                    className="w-6 h-6"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                </svg>
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+
+                <div className="flex items-center justify-end">
+                    <p className="text-title-xsm font-arboriabook font-semibold py-1 px-3"> Per Page :</p>
+                    <div className="relative mt-2">
                         <button
-                            className={clsx('my-2', {
-                                'text-green-500': currentPage > 1,
-                                'text-gray-500': currentPage === 1,
-                            })}
-                            onClick={() => changePage(currentPage - 1)}
-                            disabled={currentPage === 1}
+                            type="button"
+                            className="relative w-full cursor-pointer rounded-md bg-white py-1.5 pl-3 pr-10   ring-0  primary-border     sm:text-sm sm:leading-6"
+                            aria-haspopup="listbox"
+                            aria-expanded="true"
+                            aria-labelledby="listbox-label"
+                            onClick={() => setIsPageSizeDropdownOpen(!isPageSizeDropdownOpen)}
                         >
-                            Previous
+                            <span className="flex items-center">
+                                <span className="ml-3 block truncate" >{pageItemsSize}</span>
+                            </span>
+                            <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
+                                <svg
+                                    className={`w-5 h-5 pt-1`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        d="M19 9l-7 7-7-7"
+                                    />
+                                </svg>
+                            </span>
                         </button>
-                        {Array.from({ length: totalPages > 5 ? 5 : totalPages }, (_, index) => (
-                            <button
-                                key={index + 1}
-                                className={clsx('mx-2', {
-                                    'text-green-500': index + 1 !== currentPage,
-                                    'text-gray-500': index + 1 === currentPage,
-                                })}
-                                onClick={() => changePage(index + 1)}
+                        {isPageSizeDropdownOpen && (
+                            <ul
+                                className="absolute z-10 mt-1 max-h-56 w-18 overflow-auto rounded-md bg-white py-1 text-base  ring-0  focus:outline-none sm:text-sm border primary-border"
+                                tabIndex={-1}
+                                role="listbox"
+                                aria-labelledby="listbox-label"
+                                aria-activedescendant="listbox-option-3"
                             >
-                                {index + 1}
-                            </button>
-                        ))}
-                        {currentPage < totalPages && (
-                            <button
-                                className={clsx('mx-2', {
-                                    'text-green-500': currentPage < totalPages,
-                                    'text-gray-500': currentPage === totalPages,
-                                })}
-                                onClick={() => changePage(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                            >
-                                Next
-                            </button>
+                                <li
+                                    className="relative cursor-pointer select-none py-2 pl-3 "
+                                    id="listbox-option-0"
+                                    onClick={() => handlePageSizeChange(5)}
+                                >
+                                    <div className="flex items-end">
+                                        <span className=" pl-8 font-normal block truncate">5</span>
+                                    </div>
+                                </li>
+                                <li
+                                    className="relative cursor-pointer select-none py-2 pl-3 "
+                                    id="listbox-option-0"
+                                    onClick={() => handlePageSizeChange(10)}
+                                >
+                                    <div className="flex items-end">
+                                        <span className=" pl-7 font-normal block truncate">10</span>
+                                    </div>
+                                </li><li
+                                    className="relative cursor-pointer select-none py-2 pl-3 "
+                                    id="listbox-option-0"
+                                    onClick={() => handlePageSizeChange(25)}
+                                >
+                                    <div className="flex items-end">
+                                        <span className="font-normal pl-7 block truncate">25</span>
+                                    </div>
+                                </li><li
+                                    className="relative cursor-pointer select-none py-2 pl-3 "
+                                    id="listbox-option-0"
+                                    onClick={() => handlePageSizeChange(50)}
+                                >
+                                    <div className="flex items-end">
+                                        <span className="font-normal pl-7 block truncate">50</span>
+                                    </div>
+                                </li><li
+                                    className="relative cursor-pointer select-none py-2 pl-3 "
+                                    id="listbox-option-0"
+                                    onClick={() => handlePageSizeChange(100)}
+                                >
+                                    <div className="flex items-end">
+                                        <span className="font-normal pl-6 block truncate">100</span>
+                                    </div>
+                                </li>
+                            </ul>
                         )}
                     </div>
-                )}
+                </div>
             </div>
-            <div className='p-2 text-green-500 font-bold'>{currentDateTime}</div>
-            <div className='p-2'>Total: {rowCount}</div>
-        </div>
-    );
-};
 
-export const NoResultFound = ({ message }: NoResultFoundProps) => {
-    return (
-        <div className="text-black my-2 py-2 flex justify-center items-center">
-            <div className="whitespace-nowrap px-6 py-4 font-bold">
-                {message}
-            </div>
         </div>
     );
 };

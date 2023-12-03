@@ -4,15 +4,14 @@ import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { MenuColumns, CustomerProperties, DefaultPageNumber, clearMenuForm, toastMessages } from "@/components/shared/constants";
+import { MenuColumns, clearMenuForm, toastMessages } from "@/components/shared/constants";
 import { FormMenu } from "@/components/customers/form";
-import { NoResultFound, Pagination, TableMenu } from "@/components/shared/table";
+import { NoResultFound, PaginationCustomized, TableMenu } from "@/components/shared/table";
 
 export default function Menu() {
   const t = useTranslations("MenuPage");
   const [menus, setMenus] = useState<any[]>([]); // Updated state variable name from customers to menus
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [showForm, setShowForm] = useState(true);
 
   const fetchData = async () => {
     const getMenus = await fetch("/api/psql/menu/list", { method: "GET", cache: "no-cache" });
@@ -26,36 +25,13 @@ export default function Menu() {
     }
   };
 
-
-  //search & filter
-  const [searchTerm, setsearchTerm] = useState("");
-
-  const filterMenus = (customer: any): boolean => {
-    if (!searchTerm) {
-      return true; // No search term provided, return all customers
-    }
-
-    const searchTermLowerCase = searchTerm.toString().toLowerCase();
-
-    for (const prop of CustomerProperties) {
-      if (customer[prop]?.toString().toLowerCase().startsWith(searchTermLowerCase)) {
-        return true; // Customer matches the search term in any property
-      }
-    }
-    return false; // No match found in any customer property
-  };
-
-  const filteredMenus = menus.filter(filterMenus);
-
-
   // form
   const [formData, setFormData] = useState(clearMenuForm);
 
   const submit = async (e: any) => {
     e.preventDefault();
 
-    const { id, name, category, price, currency, shift } = formData;
-
+    const { id, name, category, price, shift } = formData;
 
     if (!id) {
       return toast.error('Please fill in the ID field', toastMessages.OPTION);
@@ -83,7 +59,6 @@ export default function Menu() {
     if (addMenu.status == 200) {
       setFormData(clearMenuForm);
       toast.success('A new customer has been added', toastMessages.OPTION);
-      setShowForm(true)
     } else {
       toast.error('Faild to add new record', toastMessages.OPTION);
     }
@@ -98,10 +73,6 @@ export default function Menu() {
     });
   };
 
-  const toggleForm = () => {
-    setShowForm(!showForm);
-  };
-
   const inputFields = [
     { name: 'id', value: formData.id, placeholder: 'ID#' },
     { name: 'name', value: formData.name, placeholder: 'Name' },
@@ -113,27 +84,8 @@ export default function Menu() {
   ];
 
 
-  //TABLE 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentItems, setCurrentItems] = useState<any[]>([]);
-  const itemsPerPage = DefaultPageNumber
-
-  useEffect(() => {
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const updatedCurrentItems = filteredMenus.slice(indexOfFirstItem, indexOfLastItem);
-    setCurrentItems(updatedCurrentItems);
-  }, [menus, itemsPerPage]);
-
-  const totalPages = Math.ceil(filteredMenus.length / itemsPerPage);
-
-  const changePage = (page: number) => {
-    setCurrentPage(page);
-  };
-
   //delete 
   const deleteMenu = async (menuId: string) => {
-
     try {
       const response = await fetch('/api/psql/menu/delete', {
         method: 'DELETE',
@@ -157,6 +109,22 @@ export default function Menu() {
   useEffect(() => {
     fetchData();
   }, [menus]);
+
+  //pagination 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentItems, setCurrentItems] = useState<any[]>([]);
+  const [pageItemsSize, setPageItemsSize] = useState<number>(5);
+  const [pageNumber, setPageNumber] = useState<number>(1);
+
+  useEffect(() => {
+    const indexOfLastItem = currentPage * pageItemsSize;
+    const indexOfFirstItem = indexOfLastItem - pageItemsSize;
+    const updatedCurrentItems = menus.slice(indexOfFirstItem, indexOfLastItem);
+    setCurrentItems(updatedCurrentItems);
+    setCurrentPage(pageNumber)
+  }, [menus, pageItemsSize])
+
+
   return (
     <PageLayout title={t("title")}>
       <div className="justify-center items-center">
@@ -167,14 +135,14 @@ export default function Menu() {
                 <FormMenu formData={formData} fields={inputFields} handleChange={change} handleSubmit={submit} />
               </div>
             </div>
-            {filteredMenus.length > 0 && !isLoading ? (
+            {menus.length > 0 && !isLoading ? (
               <div>
                 <TableMenu isLoading={isLoading} items={currentItems} deleteRow={deleteMenu} columns={MenuColumns} />
-                <Pagination currentPage={currentPage} totalPages={currentItems.length} changePage={changePage} rowCount={totalPages} />
+                <PaginationCustomized pageItemsSize={pageItemsSize} totalItems={menus.length} pageNumber={pageNumber} setPageItemsSize={setPageItemsSize} setPageNumber={setPageNumber} />
               </div>
             ) : (
               <div>
-                {filteredMenus.length === 0 && !isLoading ? <NoResultFound message={"No Menu Found!"} /> : <NoResultFound message={"Loading..."} />}
+                {menus.length === 0 && !isLoading ? <NoResultFound message={"No Menu Found!"} /> : <NoResultFound message={"Loading..."} />}
               </div>
             )}
           </div>
