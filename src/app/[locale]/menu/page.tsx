@@ -164,7 +164,7 @@ export default function Menu() {
           <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
             <div className="flex flex-col items-center">
               <div className="bg-slate-200 rounded-md px-8">
-                <FormMenu formData={formData} fields={inputFields} handleChange={change} handleSubmit={submit} handleClose={toggleForm} />
+                <FormMenu formData={formData} fields={inputFields} handleChange={change} handleSubmit={submit} />
               </div>
             </div>
             {filteredMenus.length > 0 && !isLoading ? (
