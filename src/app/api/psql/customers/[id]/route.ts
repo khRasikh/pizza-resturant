@@ -19,7 +19,14 @@ export async function GET(request: NextRequest, { params }: any) {
     const customer = result.rows[0]; // Assuming there is only one customer with the provided 'id'
 
     if (customer) {
-      return NextResponse.json({ data: customer });
+      return NextResponse.json({
+        data: customer,
+        headers: {
+          "Cache-Control": "public, s-maxage=1",
+          "CDN-Cache-Control": "public, s-maxage=60",
+          "Vercel-CDN-Cache-Control": "public, s-maxage=3600",
+        },
+      });
     } else {
       return NextResponse.json({ message: "Customer not found" }, { status: 404 });
     }

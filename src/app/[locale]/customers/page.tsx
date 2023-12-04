@@ -16,7 +16,6 @@ export default function Customers() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [showForm, setShowForm] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isEdited, setIsEdited] = useState(false)
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
@@ -62,42 +61,23 @@ export default function Customers() {
       return toast.error('Please fill in the Phone Number field', toastMessages.OPTION);
     }
 
-    if (isEdited) {
-      // Here, implement your code to send formData to your backend API
-      const addCustomer = await fetch('/api/psql/add', {
-        method: 'POST',
-        body: JSON.stringify(formData),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        cache: "no-cache"
-      });
-
-      if (addCustomer.status == 200) {
-        setFormData(clearCustomerForm);
-        toast.success('A new customer has been added', toastMessages.OPTION);
-        setShowForm(true)
-      } else {
-        toast.error('Faild to add new record', toastMessages.OPTION);
-      }
-    }
-
     // Here, implement your code to send formData to your backend API
-    const addCustomer = await fetch('/api/psql/edit', {
-      method: 'PATCH',
+    const addCustomer = await fetch('/api/psql/add', {
+      method: 'POST',
       body: JSON.stringify(formData),
       headers: {
         'Content-Type': 'application/json',
       },
+      cache: "no-cache"
     });
+
     if (addCustomer.status == 200) {
       setFormData(clearCustomerForm);
-      toast.success('A customer has been updated', toastMessages.OPTION);
+      toast.success('A new customer has been added', toastMessages.OPTION);
       setShowForm(true)
     } else {
-      toast.error('Faild to update a record', toastMessages.OPTION);
+      toast.error('Faild to add new record', toastMessages.OPTION);
     }
-
   };
 
   const change = (e: any) => {
@@ -173,7 +153,6 @@ export default function Customers() {
     if (getCustomer.status == 200) {
       toggleForm()
       setFormData(data);
-      setIsEdited(false)
     } else {
       console.error('Faild to update a record');
     }
@@ -197,7 +176,7 @@ export default function Customers() {
             </div>
             {currentItems.length > 0 && !isLoading ? (
               <div>
-                <Table isLoading={isLoading} items={currentItems} deleteRow={deleteCustomer} editRow={displayConsumer} columns={CustomerColumns} />
+                <Table isLoading={isLoading} items={currentItems} deleteRow={deleteCustomer} columns={CustomerColumns} />
                 <PaginationCustomized pageItemsSize={pageItemsSize} totalItems={filteredCustumers.length} pageNumber={pageNumber} setPageItemsSize={setPageItemsSize} setPageNumber={setPageNumber} />
               </div>
             ) : (

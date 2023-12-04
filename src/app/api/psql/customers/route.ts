@@ -14,7 +14,14 @@ export async function GET() {
     const result = await pool.query(query);
 
     const customers = result.rows;
-    return NextResponse.json({ data: customers });
+    return NextResponse.json({
+      data: customers,
+      headers: {
+        "Cache-Control": "public, s-maxage=1",
+        "CDN-Cache-Control": "public, s-maxage=60",
+        "Vercel-CDN-Cache-Control": "public, s-maxage=3600",
+      },
+    });
   } catch (error) {
     console.error("Error fetching data:", error);
     return NextResponse.json("Failed to fetch data");

@@ -8,6 +8,8 @@ import { MenuColumns, clearMenuForm, toastMessages } from "@/components/shared/c
 import { FormMenu } from "@/components/customers/form";
 import { NoResultFound, PaginationCustomized, TableMenu } from "@/components/shared/table";
 
+export const fetchCache = 'force-no-store'
+
 export default function Menu() {
   const t = useTranslations("MenuPage");
   const [menus, setMenus] = useState<any[]>([]); // Updated state variable name from customers to menus
@@ -125,10 +127,6 @@ export default function Menu() {
     setCurrentPage(pageNumber)
   }, [menus, pageItemsSize])
 
-  const displayMenu = () => {
-    console.log("menu displayed")
-  }
-
   return (
     <PageLayout title={t("title")}>
       <div className="justify-center items-center">
@@ -141,7 +139,7 @@ export default function Menu() {
             </div>
             {menus.length > 0 && !isLoading ? (
               <div>
-                <TableMenu isLoading={isLoading} items={currentItems} deleteRow={deleteMenu} columns={MenuColumns} editRow={displayMenu} />
+                <TableMenu isLoading={isLoading} items={currentItems} deleteRow={deleteMenu} columns={MenuColumns} />
                 <PaginationCustomized pageItemsSize={pageItemsSize} totalItems={menus.length} pageNumber={pageNumber} setPageItemsSize={setPageItemsSize} setPageNumber={setPageNumber} />
               </div>
             ) : (
