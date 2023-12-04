@@ -70,6 +70,7 @@ export default function Customers() {
         headers: {
           'Content-Type': 'application/json',
         },
+        cache: "no-cache"
       });
 
       if (addCustomer.status == 200) {
@@ -165,6 +166,7 @@ export default function Customers() {
       headers: {
         'Content-Type': 'application/json',
       },
+      cache: "no-cache"
     })
 
     const { data } = await getCustomer.json()

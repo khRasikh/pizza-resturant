@@ -54,6 +54,7 @@ export default function Menu() {
       headers: {
         'Content-Type': 'application/json',
       },
+      cache: "no-cache"
     });
 
     if (addMenu.status == 200) {
