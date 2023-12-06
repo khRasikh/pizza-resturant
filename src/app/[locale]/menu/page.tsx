@@ -2,14 +2,14 @@
 import PageLayout from "@/components/PageLayout";
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { MenuColumns, clearMenuForm, toastMessages } from "@/components/shared/constants";
 import { FormMenu } from "@/components/customers/form";
 import { NoResultFound, PaginationCustomized, TableMenu } from "@/components/shared/table";
 import { fetchMenu } from "@/components/shared/menu";
 
-export const fetchCache = 'force-no-store'
+export const fetchCache = "force-no-store";
 
 export default function Menu() {
   const t = useTranslations("MenuPage");
@@ -17,10 +17,9 @@ export default function Menu() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const fetchData = async () => {
-    const getMenus = await fetchMenu()
-    const menusList = await getMenus.json();
-    if (getMenus.ok) {
-      setMenus(menusList.data);
+    const getMenus = await fetchMenu();
+    if (getMenus) {
+      setMenus(getMenus);
       setIsLoading(false);
     } else {
       setMenus([]);
@@ -37,36 +36,35 @@ export default function Menu() {
     const { id, name, category, price, shift } = formData;
 
     if (!id) {
-      return toast.error('Please fill in the ID field', toastMessages.OPTION);
+      return toast.error("Please fill in the ID field", toastMessages.OPTION);
     } else if (!name) {
-      return toast.error('Please fill in the Name field', toastMessages.OPTION);
+      return toast.error("Please fill in the Name field", toastMessages.OPTION);
     } else if (!category) {
-      return toast.error('Please fill in the category field', toastMessages.OPTION);
+      return toast.error("Please fill in the category field", toastMessages.OPTION);
     } else if (!price) {
-      return toast.error('Please fill in the price field', toastMessages.OPTION);
+      return toast.error("Please fill in the price field", toastMessages.OPTION);
     } else if (!shift) {
-      return toast.error('Please fill in the shift field', toastMessages.OPTION);
+      return toast.error("Please fill in the shift field", toastMessages.OPTION);
     } else if (!shift) {
-      return toast.error('Please fill in the shift field', toastMessages.OPTION);
+      return toast.error("Please fill in the shift field", toastMessages.OPTION);
     }
 
     // Here, implement your code to send formData to your backend API
-    const addMenu = await fetch('/api/psql/menu/add', {
-      method: 'POST',
+    const addMenu = await fetch("/api/psql/menu/add", {
+      method: "POST",
       body: JSON.stringify(formData),
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      cache: "no-cache"
+      cache: "no-cache",
     });
 
     if (addMenu.status == 200) {
       setFormData(clearMenuForm);
-      toast.success('A new customer has been added', toastMessages.OPTION);
+      toast.success("A new customer has been added", toastMessages.OPTION);
     } else {
-      toast.error('Faild to add new record', toastMessages.OPTION);
+      toast.error("Faild to add new record", toastMessages.OPTION);
     }
-
   };
 
   const change = (e: any) => {
@@ -78,23 +76,22 @@ export default function Menu() {
   };
 
   const inputFields = [
-    { name: 'id', value: formData.id, placeholder: 'ID#' },
-    { name: 'name', value: formData.name, placeholder: 'Name' },
-    { name: 'category', value: formData.category, placeholder: 'Category' },
-    { name: 'description', value: formData.description, placeholder: 'Description' },
-    { name: 'extra', value: formData.extra, placeholder: 'Extra' },
-    { name: 'price', value: formData.price, placeholder: 'Price' },
-    { name: 'shift', value: formData.shift, placeholder: 'shift' },
+    { name: "id", value: formData.id, placeholder: "ID#" },
+    { name: "name", value: formData.name, placeholder: "Name" },
+    { name: "category", value: formData.category, placeholder: "Category" },
+    { name: "description", value: formData.description, placeholder: "Description" },
+    { name: "extra", value: formData.extra, placeholder: "Extra" },
+    { name: "price", value: formData.price, placeholder: "Price" },
+    { name: "shift", value: formData.shift, placeholder: "shift" },
   ];
 
-
-  //delete 
+  //delete
   const deleteMenu = async (menuId: string) => {
     try {
-      const response = await fetch('/api/psql/menu/delete', {
-        method: 'DELETE',
+      const response = await fetch("/api/psql/menu/delete", {
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ id: menuId }),
       });
@@ -106,15 +103,15 @@ export default function Menu() {
       }
     } catch (error) {
       toast.error(toastMessages.ERROR_CONTENT, toastMessages.OPTION);
-      console.error('Error deleting customer:', error);
+      console.error("Error deleting customer:", error);
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [menus]);
 
-  //pagination 
+  //pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [currentItems, setCurrentItems] = useState<any[]>([]);
   const [pageItemsSize, setPageItemsSize] = useState<number>(5);
@@ -125,8 +122,8 @@ export default function Menu() {
     const indexOfFirstItem = indexOfLastItem - pageItemsSize;
     const updatedCurrentItems = menus.slice(indexOfFirstItem, indexOfLastItem);
     setCurrentItems(updatedCurrentItems);
-    setCurrentPage(pageNumber)
-  }, [menus, pageItemsSize])
+    setCurrentPage(pageNumber);
+  }, [menus, pageItemsSize]);
 
   return (
     <PageLayout title={t("title")}>
@@ -141,11 +138,21 @@ export default function Menu() {
             {menus.length > 0 && !isLoading ? (
               <div>
                 <TableMenu isLoading={isLoading} items={currentItems} deleteRow={deleteMenu} columns={MenuColumns} />
-                <PaginationCustomized pageItemsSize={pageItemsSize} totalItems={menus.length} pageNumber={pageNumber} setPageItemsSize={setPageItemsSize} setPageNumber={setPageNumber} />
+                <PaginationCustomized
+                  pageItemsSize={pageItemsSize}
+                  totalItems={menus.length}
+                  pageNumber={pageNumber}
+                  setPageItemsSize={setPageItemsSize}
+                  setPageNumber={setPageNumber}
+                />
               </div>
             ) : (
               <div>
-                {menus.length === 0 && !isLoading ? <NoResultFound message={"No Menu Found!"} /> : <NoResultFound message={"Loading..."} />}
+                {menus.length === 0 && !isLoading ? (
+                  <NoResultFound message={"No Menu Found!"} />
+                ) : (
+                  <NoResultFound message={"Loading..."} />
+                )}
               </div>
             )}
           </div>
