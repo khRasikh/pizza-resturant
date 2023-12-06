@@ -1,5 +1,5 @@
+"use server"
 import { createPool } from "@vercel/postgres";
-import { NextResponse } from "next/server";
 
 export async function fetchMenu() {
   try {
@@ -13,17 +13,9 @@ export async function fetchMenu() {
 
     const result = await pool.query(query);
 
-    const customers = result.rows;
-    return NextResponse.json({
-      data: customers,
-      headers: {
-        "Cache-Control": "public, s-maxage=1",
-        "CDN-Cache-Control": "public, s-maxage=60",
-        "Vercel-CDN-Cache-Control": "public, s-maxage=3600",
-      },
-    });
+    const menu = result.rows;
+    return menu
   } catch (error) {
     console.error("Error fetching data:", error);
-    return NextResponse.json("Failed to fetch data");
   }
 }
