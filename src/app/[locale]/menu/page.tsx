@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { MenuColumns, clearMenuForm, toastMessages } from "@/components/shared/constants";
 import { FormMenu } from "@/components/customers/form";
 import { NoResultFound, PaginationCustomized, TableMenu } from "@/components/shared/table";
+import { fetchMenu } from "@/components/shared/menu";
 
 export const fetchCache = 'force-no-store'
 
@@ -16,7 +17,7 @@ export default function Menu() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const fetchData = async () => {
-    const getMenus = await fetch("/api/psql/menu/list", { method: "GET", cache: "no-cache" });
+    const getMenus = await fetchMenu()
     const menusList = await getMenus.json();
     if (getMenus.ok) {
       setMenus(menusList.data);
@@ -111,7 +112,7 @@ export default function Menu() {
 
   useEffect(() => {
     fetchData();
-  }, [menus]);
+  }, []);
 
   //pagination 
   const [currentPage, setCurrentPage] = useState(1);
