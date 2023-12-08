@@ -48,3 +48,10 @@ export interface IPagination {
   changePage: (pageNumber: number) => void;
   rowCount: number;
 }
+
+export interface MENUFORM {
+  formData: any;
+  fields: IField[];
+  handleChange: (e: any) => void;
+  handleSubmit: (e: any) => void;
+}

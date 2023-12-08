@@ -1,46 +1,90 @@
 {
   "IndexPage": {
-    "title": "next-intl Beispiel",
-    "description": "Dies ist ein Beispiel, das die Verwendung von <code>next-intl</code> mit dem Next.js App Router demonstriert. Bei Ändern der Sprache rechts oben ändert sich der Inhalt dieser Seite."
+    "title": "Mein-Nextjs-13",
+    "description": "Dies ist ein grundlegendes Beispiel, das die Verwendung von <code>next-intl</code> mit dem Next.js-App-Router demonstriert. Versuchen Sie, die Sprache rechts oben zu ändern, und sehen Sie, wie sich der Inhalt ändert."
   },
   "AboutPage": {
     "title": "Über",
-    "description": "<p>Auch das Routing ist internationalisiert.</p><p>Wenn du die Standardsprache Englisch verwendest, siehst du <code>/about</code> in der Adressleiste des Browsers auf dieser Seite.</p><p>Wenn du die Sprache auf Deutsch änderst, wird die URL mit der Locale ergänzt (<code>/de/about</code>).</p>"
+    "description": "<p>Willkommen im Pizza-Restaurant-Informations-System</p>. <p>In diesem System ist alles auf drei Seiten kompakt zusammengefasst. Dies ist die erste Seite.</p><p> Auf der zweiten Seite (Menü) können Sie Ihre eigenen individualisierten Speisen unter verschiedenen Kategorien hinzufügen.</p><p> Auf der letzten Seite (Kunden) können Sie Ihre Kunden überprüfen, suchen, hinzufügen, aktualisieren und löschen.</p><p>Falls Sie auf Probleme oder Fragen stoßen, zögern Sie bitte nicht, mich über den folgenden Link zu kontaktieren!</p><p>Danke.</p>"
   },
-  "PublishesPage": {
-    "title": "Veröffentlichungen",
-    "description": "<p>Die Routenführung ist ebenfalls internationalisiert.</p><p>Wenn Sie die Standardsprache Englisch verwenden, sehen Sie auf dieser Seite <code>/about</code> in der Adressleiste des Browsers.</p><p>Wenn Sie die Sprache auf Deutsch ändern, wird die URL mit dem Ländercode vorangestellt (<code>/de/about</code>).</p>"
+  "AuthorizationPage": {
+    "title": "Autorisierung",
+    "description": "Wir üben benutzerdefinierte RBAC-Autorisierung."
+  },
+  "CustomerPage": {
+    "title": "Kunden",
+    "description": "<p>Auch die Routen sind internationalisiert.</p><p>Wenn Sie die Standardsprache Englisch verwenden, sehen Sie <code>/about</code> in der Browser-Adressleiste auf dieser Seite.</p><p>Wenn Sie die Sprache auf Deutsch ändern, ist die URL mit der Sprachkennung versehen (<code>/de/about</code>).</p>"
+  },
+  "MenuPage": {
+    "title": "Menü",
+    "description": "Diese Seite ist das Menü."
   },
   "NotFoundPage": {
     "title": "Seite nicht gefunden",
-    "description": "Bitte überprüfe die Addressleiste deines Browsers oder verwende die Navigation um zu einer bekannten Seite zu wechseln."
+    "description": "Bitte überprüfen Sie die Browser-Adressleiste oder verwenden Sie die Navigation, um zu einer bekannten Seite zu gelangen."
   },
   "LocaleLayout": {
-    "title": "next-intl Beispiel"
+    "title": "Mein-Nextjs-13"
   },
   "LocaleSwitcher": {
     "label": "Sprache ändern",
     "locale": "{locale, select, de {Deutsch} en {Englisch} other {Unbekannt}}"
   },
   "Navigation": {
-    "home": "Start",
+    "home": "Startseite",
     "about": "Über",
-    "publishes": "Veröffentlichungen",
-    "authorized": "Authorized"
-
+    "customers": "Kunden",
+    "authorized": "Autorisiert",
+    "menu": "Menü",
+    "signOut": "Abmelden",
+    "login": "Anmelden"
   },
   "PageLayout": {
     "links": {
       "docs": {
-        "title": "Dokumentation",
-        "description": "Erfahre mehr über next-intl in der offiziellen Dokumentation.",
+        "title": "Dokumente",
+        "description": "Erfahren Sie mehr über next-intl in der offiziellen Dokumentation.",
         "href": "https://next-intl-docs.vercel.app/"
       },
       "source": {
         "title": "Quellcode",
-        "description": "Sieh dir den Quellcode dieses Beispiels auf GitHub an.",
+        "description": "Durchsuchen Sie den Quellcode dieses Beispiels auf GitHub.",
         "href": "https://github.com/amannn/next-intl/tree/main/examples/example-next-13"
       }
+    },
+    "search": {
+      "name": "Suche"
     }
+  },
+  "Error": {
+    "unAuthorized": "Nicht autorisiert",
+    "requestAccess": "Beantragen Sie von einem Administrator den Zugriff",
+    "back": "Zurück"
+  },
+  "Body": {
+    "Form": {
+      "id": "ID-Nummer",
+      "name": "Name",
+      "lastName": "Nachname",
+      "homeNumber": "Telefonnummer zu Hause",
+      "street": "Straßenname",
+      "postalCode": "Postleitzahl",
+      "phone": "Telefonnummer",
+      "category": "Kategorie",
+      "description": "Beschreibung",
+      "extra": "Extra",
+      "price": "Preis",
+      "shift": "Schicht",
+      "actions": "Aktionen",
+      "select": "auswählen",
+      "successMessage": "Ein neuer Datensatz wurde hinzugefügt",
+      "inCompleteMessage": "Bitte füllen Sie das Feld 'ID' aus",
+      "errorMessage": "Fehler beim Hinzufügen eines neuen Datensatzes"
+    },
+    "Button": {
+      "add": "Neuer"
+    },
+    "notFound": "Kein Menü gefunden!",
+    "loading": "Wird geladen..."
   }
 }

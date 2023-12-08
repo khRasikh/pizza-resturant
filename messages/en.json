@@ -35,7 +35,9 @@
     "about": "About",
     "customers": "Customers",
     "authorized": "Authorized",
-    "menu": "Menu"
+    "menu": "Menu",
+    "signOut": "Sign Out",
+    "login": "Login"
   },
   "PageLayout": {
     "links": {
@@ -58,5 +60,31 @@
     "unAuthorized": "Not Authorized",
     "requestAccess": "Request Admin to grant you access",
     "back": "Return Back"
+  },
+  "Body": {
+    "Form": {
+      "id": "ID Number",
+      "name": "Name",
+      "lastName": "Last Name",
+      "homeNumber": "Home Number",
+      "street": "Street Name",
+      "postalCode": "Postal Code",
+      "phone": "Phone Number",
+      "category": "category",
+      "description": "Description",
+      "extra": "Extra",
+      "price": "Price",
+      "shift": "Shift",
+      "actions": "Actions",
+      "select": "select",
+      "successMessage": "A new record has been added",
+      "inCompleteMessage": "Please fill in the ID field",
+      "errorMessage": "Faild to add new record"
+    },
+    "Button": {
+      "add": "New Record"
+    },
+    "notFound": "No Menu Found!",
+    "loading": "Loading..."
   }
 }

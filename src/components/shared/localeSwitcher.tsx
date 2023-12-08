@@ -22,7 +22,7 @@ export default function LocaleSwitcher() {
   return (
     <label
       className={clsx(
-        'relative text-gray-400',
+        'relative text-black',
         isPending && 'transition-opacity [&:disabled]:opacity-30'
       )}
     >

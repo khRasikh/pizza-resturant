@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { MenuColumns, clearMenuForm, toastMessages } from "@/components/shared/constants";
+import { DefaultPageNumber, MenuColumns, clearMenuForm, toastMessages } from "@/components/shared/constants";
 import { FormMenu } from "@/components/customers/form";
 import { NoResultFound, PaginationCustomized, TableMenu } from "@/components/shared/table";
 import { fetchMenu } from "@/components/shared/menu";
@@ -13,6 +13,7 @@ export const fetchCache = "force-no-store";
 
 export default function Menu() {
   const t = useTranslations("MenuPage");
+  const t1 = useTranslations("Body")
   const [menus, setMenus] = useState<any[]>([]); // Updated state variable name from customers to menus
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -36,17 +37,17 @@ export default function Menu() {
     const { id, name, category, price, shift } = formData;
 
     if (!id) {
-      return toast.error("Please fill in the ID field", toastMessages.OPTION);
+      return toast.error(t1("Form.errorMessage").replace("ID", id), toastMessages.OPTION);
     } else if (!name) {
-      return toast.error("Please fill in the Name field", toastMessages.OPTION);
+      return toast.error(t1("Form.errorMessage").replace("Name", name), toastMessages.OPTION);
     } else if (!category) {
-      return toast.error("Please fill in the category field", toastMessages.OPTION);
+      return toast.error(t1("Form.errorMessage").replace("category", category), toastMessages.OPTION);
     } else if (!price) {
-      return toast.error("Please fill in the price field", toastMessages.OPTION);
+      return toast.error(t1("Form.errorMessage").replace("price", price), toastMessages.OPTION);
     } else if (!shift) {
-      return toast.error("Please fill in the shift field", toastMessages.OPTION);
+      return toast.error(t1("Form.errorMessage").replace("shift", shift), toastMessages.OPTION);
     } else if (!shift) {
-      return toast.error("Please fill in the shift field", toastMessages.OPTION);
+      return toast.error(t1("Form.errorMessage").replace("shift", shift), toastMessages.OPTION);
     }
 
     // Here, implement your code to send formData to your backend API
@@ -61,9 +62,9 @@ export default function Menu() {
 
     if (addMenu.status == 200) {
       setFormData(clearMenuForm);
-      toast.success("A new customer has been added", toastMessages.OPTION);
+      toast.success(t1("Form.inCompleteMessage").replace("record", "menu"), toastMessages.OPTION);
     } else {
-      toast.error("Faild to add new record", toastMessages.OPTION);
+      toast.error(t1("Form.errorMessage").replace("record", "menu"), toastMessages.OPTION);
     }
   };
 
@@ -76,13 +77,13 @@ export default function Menu() {
   };
 
   const inputFields = [
-    { name: "id", value: formData.id, placeholder: "ID#" },
-    { name: "name", value: formData.name, placeholder: "Name" },
-    { name: "category", value: formData.category, placeholder: "Category" },
-    { name: "description", value: formData.description, placeholder: "Description" },
-    { name: "extra", value: formData.extra, placeholder: "Extra" },
-    { name: "price", value: formData.price, placeholder: "Price" },
-    { name: "shift", value: formData.shift, placeholder: "shift" },
+    { name: "id", value: formData.id, placeholder: `${t1("Form.id")}` },
+    { name: "name", value: formData.name, placeholder: `${t1("Form.name")}` },
+    { name: "category", value: formData.category, placeholder: `${t1("Form.category")}` },
+    { name: "description", value: formData.description, placeholder: `${t1("Form.description")}` },
+    { name: "extra", value: formData.extra, placeholder: `${t1("Form.extra")}` },
+    { name: "price", value: formData.price, placeholder: `${t1("Form.price")}` },
+    { name: "shift", value: formData.shift, placeholder: `${t1("Form.shift")}` },
   ];
 
   //delete
@@ -114,7 +115,7 @@ export default function Menu() {
   //pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [currentItems, setCurrentItems] = useState<any[]>([]);
-  const [pageItemsSize, setPageItemsSize] = useState<number>(5);
+  const [pageItemsSize, setPageItemsSize] = useState<number>(DefaultPageNumber);
   const [pageNumber, setPageNumber] = useState<number>(1);
 
   useEffect(() => {
@@ -127,14 +128,12 @@ export default function Menu() {
 
   return (
     <PageLayout title={t("title")}>
-      <div className="justify-center items-center">
+      <div className="justify-between items-between">
+        <div className="bg-slate-200 rounded-md px-8">
+          <FormMenu formData={formData} fields={inputFields} handleChange={change} handleSubmit={submit} />
+        </div>
         <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-            <div className="flex flex-col items-center">
-              <div className="bg-slate-200 rounded-md px-8">
-                <FormMenu formData={formData} fields={inputFields} handleChange={change} handleSubmit={submit} />
-              </div>
-            </div>
             {menus.length > 0 && !isLoading ? (
               <div>
                 <TableMenu isLoading={isLoading} items={currentItems} deleteRow={deleteMenu} columns={MenuColumns} />
@@ -149,9 +148,9 @@ export default function Menu() {
             ) : (
               <div>
                 {menus.length === 0 && !isLoading ? (
-                  <NoResultFound message={"No Menu Found!"} />
+                  <NoResultFound message={t1("notFound")} />
                 ) : (
-                  <NoResultFound message={"Loading..."} />
+                  <NoResultFound message={t1("loading")} />
                 )}
               </div>
             )}
