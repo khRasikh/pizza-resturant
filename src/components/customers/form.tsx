@@ -1,6 +1,55 @@
 "use client"
-import { IForm, MENUFORM, } from '../interface/general';
+import { ChangeEvent, FormEvent } from 'react';
+import { IField, IForm, MENUFORM, } from '../interface/general';
 import { useTranslations } from 'next-intl';
+
+export interface IFormModal {
+    formDataModal: any;
+    fields: IField[];
+    handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
+    handleClose: () => void;
+}
+
+export const FormCreateOrder = ({ formDataModal, fields, handleChange, handleSubmit, handleClose }: IFormModal) => {
+    return (
+        <form onSubmit={handleSubmit}>
+            <div className="overflow-hidden">
+                <div className="w-full">
+                    <table className="min-w-full text-left text-sm font-light items-center justify-center">
+                        <tbody>
+                            <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-2">
+                                {fields.map((field, index) => (
+                                    <td key={index} className={`${"pl-1 py-4 border-gray-500"}`}>
+                                        <input
+                                            type="text"
+                                            name={field.name}
+                                            value={formDataModal[field.name]}
+                                            onChange={handleChange}
+                                            className="w-full p-2 border rounded-md"
+                                            placeholder={field.placeholder}
+                                        />
+                                    </td>
+                                ))}
+                                <td></td>
+                                <td></td>
+                                <td className="whitespace-nowrap px-2 py-4 col-span-2 flex items-center justify-center md:justify-end lg:justify-center">
+                                    <button onClick={handleClose} type="button" className="bg-red-500 hover:bg-red-700 text-lg text-white font-extrabold py-1 px-3 rounded">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" className="bg-green-500 hover:bg-green-700 text-lg text-white font-extrabold py-1 px-3 ml-2 rounded">
+                                        Add
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </form>
+    );
+};
 
 const Form = ({ formData, fields, handleChange, handleSubmit, handleClose }: IForm) => {
     return (
@@ -10,8 +59,8 @@ const Form = ({ formData, fields, handleChange, handleSubmit, handleClose }: IFo
                     <table className="min-w-full text-left text-sm font-light items-between justify-between">
                         <tbody>
                             <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-2 ">
-                                {fields.map((field) => (
-                                    <td key={field.name} className={`${"pl-1 py-4 border-gray-500"}`}>
+                                {fields.map((field, index) => (
+                                    <td key={index} className={`${"pl-1 py-4 border-gray-500"}`}>
                                         <input
                                             type="text"
                                             name={field.name}
@@ -52,7 +101,7 @@ export const FormMenu = ({ formData, fields, handleChange, handleSubmit }: MENUF
                                 {fields.map((field, index) => {
                                     if (field.name === "category") {
                                         return (
-                                            <td key={field.name} className={`${"pl-1 py-4 border-gray-500"}`}>
+                                            <td key={index} className={`${"pl-1 py-4 border-gray-500"}`}>
                                                 <select
                                                     role="text"
                                                     name={field.name}

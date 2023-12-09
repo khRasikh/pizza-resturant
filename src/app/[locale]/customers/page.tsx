@@ -139,85 +139,67 @@ export default function Customers() {
     }
   };
 
-  //edit
-  const addOrder = async (id: string) => {
-    const getCustomer = await fetch("/api/psql/customers/" + id, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      cache: "no-cache",
-    });
 
-    const { data } = await getCustomer.json();
-    if (getCustomer.status == 200) {
-      toggleForm();
-      setFormData(data);
-    } else {
-      console.error("Faild to update a record");
-    }
-  };
 
   return (
     <PageLayout title={t("title")}>
-      <div className="justify-center items-center">
-        {showForm ? (
-          <div className="flex flex-col items-center ">
-            <div className="flex flex-row">
-              <div>
-                <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
-              </div>{" "}
-              <div>
-                <button
-                  className="bg-green-500 hover:bg-green-700 my-2 py-2 text-white font-bold text-md px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
-                  onClick={toggleForm}
-                >
-                  {t1("Button.add").replace("Record", "Customer")}
-                </button>
-              </div>
+      {showForm ? (
+        <div className="flex flex-col items-center ">
+          <div className="flex flex-row">
+            <div>
+              <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
+            </div>{" "}
+            <div>
+              <button
+                className="bg-green-500 hover:bg-green-700 my-2 py-2 text-white font-bold text-md px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
+                onClick={toggleForm}
+              >
+                {t1("Button.add").replace("Record", "Customer")}
+              </button>
             </div>
           </div>
-        ) : (
-          <div className="bg-slate-200 rounded-md px-8">
-            <Form
-              formData={formData}
-              fields={inputFields}
-              handleChange={change}
-              handleSubmit={submit}
-              handleClose={toggleForm}
-            />
-          </div>
-        )}
+        </div>
+      ) : (
+        <div className="bg-slate-200 rounded-md px-8">
 
-        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+          <Form
+            formData={formData}
+            fields={inputFields}
+            handleChange={change}
+            handleSubmit={submit}
+            handleClose={toggleForm}
+          />
+        </div>
+      )}
 
-            {currentItems.length > 0 && !isLoading ? (
-              <div>
-                <Table
-                  isLoading={isLoading}
-                  items={currentItems}
-                  deleteRow={deleteCustomer}
-                  columns={CustomerColumns}
-                />
-                <PaginationCustomized
-                  pageItemsSize={pageItemsSize}
-                  totalItems={filteredCustumers.length}
-                  pageNumber={pageNumber}
-                  setPageItemsSize={setPageItemsSize}
-                  setPageNumber={setPageNumber}
-                />
-              </div>
-            ) : (
-              <div>
-                {filteredCustumers.length === 0 && !isLoading ? (
-                  <NoResultFound message={t1("notFound")} />
-                ) : (
-                  <NoResultFound message={t1("loading")} />
-                )}
-              </div>
-            )}
-          </div>
+      <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+
+          {currentItems.length > 0 && !isLoading ? (
+            <div>
+              <Table
+                isLoading={isLoading}
+                items={currentItems}
+                deleteRow={deleteCustomer}
+                columns={CustomerColumns}
+              />
+              <PaginationCustomized
+                pageItemsSize={pageItemsSize}
+                totalItems={filteredCustumers.length}
+                pageNumber={pageNumber}
+                setPageItemsSize={setPageItemsSize}
+                setPageNumber={setPageNumber}
+              />
+            </div>
+          ) : (
+            <div>
+              {filteredCustumers.length === 0 && !isLoading ? (
+                <NoResultFound message={t1("notFound")} />
+              ) : (
+                <NoResultFound message={t1("loading")} />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </PageLayout>

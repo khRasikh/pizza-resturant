@@ -63,7 +63,7 @@
   },
   "Body": {
     "Form": {
-      "id": "ID Number",
+      "id": "Kr-Nr",
       "name": "Name",
       "lastName": "Last Name",
       "homeNumber": "Home Number",
@@ -77,6 +77,8 @@
       "shift": "Shift",
       "actions": "Actions",
       "select": "select",
+      "total": "Total",
+      "count": "Count",
       "successMessage": "A new record has been added",
       "inCompleteMessage": "Please fill in the ID field",
       "errorMessage": "Faild to add new record"

@@ -5,7 +5,6 @@ export interface ITable {
   items: any[];
   columns: any[];
   deleteRow: (id: string) => void;
-  // editRow: (id: string, method: string) => void;
 }
 
 export type IBody = {

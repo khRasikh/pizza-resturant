@@ -30,10 +30,20 @@ export const clearMenuForm = {
   name: "",
   category: "",
   description: "",
-  extra: {}, // Assuming extra is an empty object
-  price: "", // Assuming price is a string
+  extra: {},
+  price: "",
   currency: "",
   shift: "",
+};
+
+export const clearOrderFields = {
+  id: "",
+  name: "",
+  price: "",
+  count: "",
+  extra: "",
+  total: "",
+  created_at: "",
 };
 
 export const toastMessages = {
@@ -52,3 +62,7 @@ export const CustomerProperties = ["first_name", "last_name", "address", "phone_
 export const MenuColumns = ["ID#", "Name", "Category", "Description", "Extra", "Price", "Actions"];
 
 export const DefaultPageNumber = 10;
+
+export const OrderColumns = ["ID#", "Name", "Last Name", "Phone Number", "Address", "Description", "Actions"];
+
+export const OrderProperties = ["first_name", "last_name", "address", "phone_number", "id"];
