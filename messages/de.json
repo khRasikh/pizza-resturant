@@ -89,5 +89,12 @@
     },
     "notFound": "Kein Menü gefunden!",
     "loading": "Wird geladen..."
+  },
+  "Footer": {
+    "messageTitle": "Kurznachricht",
+    "message": "Willkommen auf der Restaurant-Webseite. Sie können Ihre Sprache ändern, sich anmelden und abmelden und genießen!",
+    "selectMenu": "Menü auswählen",
+    "requestForDelievery": "Lieferung anfordern",
+    "contacts": "Kontaktieren Sie uns"
   }
 }

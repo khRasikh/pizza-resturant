@@ -10,12 +10,12 @@ export default function PageLayout({ children, title }: Readonly<
   return (
     <SessionProvider>
       <ToastContainer />
-      <div className="bg-white h-screen">
+      <div className="bg-white h-screen ">
         <div className="relative flex grow flex-col ">
           <Body title={title}>{children} </Body>
         </div>
-        <Footer />
       </div>
+      <Footer />
     </SessionProvider>
   );
 }

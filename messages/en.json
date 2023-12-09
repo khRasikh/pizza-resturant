@@ -89,5 +89,12 @@
     },
     "notFound": "No Menu Found!",
     "loading": "Loading..."
+  },
+  "Footer": {
+    "messageTitle": "Short Message",
+    "message": "Welcome to Resturant web page. You can change your language, signin and sign out and enjoy!",
+    "selectMenu": "Select Menu",
+    "requestForDelievery": "Request For Delievery",
+    "contacts": "Contact Us"
   }
 }
