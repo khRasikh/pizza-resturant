@@ -24,9 +24,6 @@ export const authOptions: AuthOptions = {
         // Add logic here to look up the user from the credentials supplied
         const user = { id: "1", name: "sajad", email: "sajad@gmail.com", password: "sajad123" };
 
-        const getUser = await fetch("/api/db")
-        console.log("test", getUser)
-
         if (credentials?.username === user.name && credentials.password === user.password) {
           // Any object returned will be saved in `user` property of the JWT
           return user;

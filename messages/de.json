@@ -1,6 +1,6 @@
 {
   "IndexPage": {
-    "title": "Mein-Nextjs-13",
+    "title": "Pizza Resturant",
     "description": "Dies ist ein grundlegendes Beispiel, das die Verwendung von <code>next-intl</code> mit dem Next.js-App-Router demonstriert. Versuchen Sie, die Sprache rechts oben zu ändern, und sehen Sie, wie sich der Inhalt ändert."
   },
   "AboutPage": {
@@ -24,7 +24,7 @@
     "description": "Bitte überprüfen Sie die Browser-Adressleiste oder verwenden Sie die Navigation, um zu einer bekannten Seite zu gelangen."
   },
   "LocaleLayout": {
-    "title": "Mein-Nextjs-13"
+    "title": "Pizza Resturant"
   },
   "LocaleSwitcher": {
     "label": "Sprache ändern",

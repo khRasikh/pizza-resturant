@@ -21,7 +21,6 @@ const withAuth = (WrappedComponent: React.ComponentType, allowedRoles: string[])
     useEffect(() => {
       const loadUserRole = async () => {
         const role: any = await getUserRole();
-        console.log("test", role[0].role)
         setUserRole(role[0].role);
       };
       loadUserRole();

@@ -140,7 +140,7 @@ export default function Customers() {
   };
 
   //edit
-  const displayConsumer = async (id: any) => {
+  const addOrder = async (id: string) => {
     const getCustomer = await fetch("/api/psql/customers/" + id, {
       method: "GET",
       headers: {

@@ -20,7 +20,7 @@ export default function Body({ children, title }: Readonly<IBody>) {
   }
 
   const { user } = session
-  if (session && user.email === "kh.rasikh542@gmail.com") {
+  if (session && user.email === "kh.rasikh542@gmail.com" || user.email === "rahmaniachmad@yahoo.de") {
     return (
       <div className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
         <div className="absolute inset-0 overflow-hidden">

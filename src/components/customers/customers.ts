@@ -1,7 +1,6 @@
 "use server";
 
 import { createPool } from "@vercel/postgres";
-import { NextResponse } from "next/server";
 
 export async function getCustomers() {
   try {
