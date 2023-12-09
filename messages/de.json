@@ -84,6 +84,9 @@
     "Button": {
       "add": "Neuer"
     },
+    "Table": {
+      "confirmDelete": "Sind Sie sicher, dass Sie diesen Datensatz löschen möchten?"
+    },
     "notFound": "Kein Menü gefunden!",
     "loading": "Wird geladen..."
   }

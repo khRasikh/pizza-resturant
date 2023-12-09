@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { SessionProvider } from "next-auth/react";
-import Component from "../auth/signin";
+import Header from "../auth/signin";
 import NavigationLink from "../shared/navigationLink";
 
 export default function Navigation() {
@@ -10,7 +10,7 @@ export default function Navigation() {
 
   return (
     <SessionProvider>
-      <div className="bg-red-400">
+      <div className="bg-slate-200">
         <div className="w-full mx-auto max-w-screen-xl px-4 md:flex md:items-center md:justify-between">
           <nav className="container font-extrabold flex justify-between p-2 text-black">
             <div>
@@ -19,7 +19,7 @@ export default function Navigation() {
               <NavigationLink href="/customers">{t("customers")}</NavigationLink>
             </div>
             <div>
-              <Component />
+              <Header />
             </div>
           </nav>
         </div>

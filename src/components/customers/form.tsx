@@ -10,8 +10,8 @@ const Form = ({ formData, fields, handleChange, handleSubmit, handleClose }: IFo
                     <table className="min-w-full text-left text-sm font-light items-between justify-between">
                         <tbody>
                             <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-2 ">
-                                {fields.map((field, index) => (
-                                    <td key={index} className={`${"pl-1 py-4 border-gray-500"}`}>
+                                {fields.map((field) => (
+                                    <td key={field.name} className={`${"pl-1 py-4 border-gray-500"}`}>
                                         <input
                                             type="text"
                                             name={field.name}
@@ -52,7 +52,7 @@ export const FormMenu = ({ formData, fields, handleChange, handleSubmit }: MENUF
                                 {fields.map((field, index) => {
                                     if (field.name === "category") {
                                         return (
-                                            <td key={index} className={`${"pl-1 py-4 border-gray-500"}`}>
+                                            <td key={field.name} className={`${"pl-1 py-4 border-gray-500"}`}>
                                                 <select
                                                     role="text"
                                                     name={field.name}
@@ -71,7 +71,7 @@ export const FormMenu = ({ formData, fields, handleChange, handleSubmit }: MENUF
 
                                     if (field.name === "shift") {
                                         return (
-                                            <td key={index} className={`${"pl-1 py-4 border-gray-500"}`}>
+                                            <td key={field.name} className={`${"pl-1 py-4 border-gray-500"}`}>
                                                 <select
                                                     role="text"
                                                     name={field.name}
@@ -94,7 +94,7 @@ export const FormMenu = ({ formData, fields, handleChange, handleSubmit }: MENUF
 
                                     const inputType = field.name === "id";
                                     return (
-                                        <td key={index} className={`${field.name === "description" ? "lg:col-span-2 pl-1 py-4 border-gray-500" : "pl-1 py-4 border-gray-500"}`}>
+                                        <td key={field.name} className={`${field.name === "description" ? "lg:col-span-2 pl-1 py-4 border-gray-500" : "pl-1 py-4 border-gray-500"}`}>
                                             <input
                                                 type={`${inputType ? "number" : "text"}`}
                                                 name={field.name}

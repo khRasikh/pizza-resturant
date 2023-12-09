@@ -84,6 +84,9 @@
     "Button": {
       "add": "New Record"
     },
+    "Table": {
+     "confirmDelete": "Are you sure you want to delete this record?" 
+    },
     "notFound": "No Menu Found!",
     "loading": "Loading..."
   }

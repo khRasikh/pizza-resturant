@@ -5,8 +5,8 @@ const Footer = () => {
   const { data: session } = useSession()
   if (session) {
     return (
-      <footer className="text-center lg:text-left bg-red-400 text-gray-800">
-        <div className="text-center p-4 bg-red-400">
+      <footer className="text-center lg:text-left bg-slate-200 text-gray-800">
+        <div className="text-center p-4 bg-slate-200">
           <div className="flex justify-center">
             <span className="mx-2">Developed by</span> <a target="_blank" href="https://www.facebook.com/profile.php?id=100063511213618" className="mr-2 text-gray-800">
               <svg
@@ -31,7 +31,7 @@ const Footer = () => {
     );
   }
   return (
-    <footer className="text-center lg:text-left bg-red-400 text-gray-800">
+    <footer className="text-center lg:text-left bg-slate-200 text-gray-800">
       <div className="mx-6 py-10 text-center md:text-left">
         <div className="grid grid-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="">
