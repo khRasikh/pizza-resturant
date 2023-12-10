@@ -1,10 +1,117 @@
 "use client"
 import clsx from 'clsx';
-import { ITable, NoResultFoundProps } from '../interface/general';
+import { ITable, ITableOrder, NoResultFoundProps } from '../interface/general';
 import { useState, useEffect } from 'react';
-import { timeZone, dateTimeFormat } from './constants';
+import { timeZone, dateTimeFormat, OrderColumns } from './constants';
 import { useTranslations } from 'next-intl';
 import { OrderModal } from '../customers/modal';
+import { createPool } from '@vercel/postgres';
+
+
+
+export const TableOrderList: React.FC<{ id: string }> = (id) => {
+    const t = useTranslations("Body")
+    const [orderList, setOrderList] = useState<any[]>([])
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const pool = createPool({
+                    connectionString: process.env.POSTGRES_URL as string,
+                });
+
+                const query = {
+                    text: "SELECT * FROM orders",
+                };
+
+                const result = await pool.query(query);
+
+                const orders = result.rows;
+                setOrderList(orders)
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+        fetchOrders()
+    }, [])
+
+    return (
+        <table className="min-w-full text-left text-sm font-light">
+            <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
+                <tr>
+                    {OrderColumns.map((l) => {
+                        return (<th scope="col" key={l} className="px-6 py-4">{l}</th>)
+                    })}
+                </tr>
+            </thead>
+            <tbody>
+                {orderList.length > 0 && (
+                    orderList.map((i, index) => (
+                        <tr
+                            key={index}
+                            className={clsx(
+                                `${i.id % 2 !== 0 ? "bg-neutral-100" : "bg-white"} border-b dark:border-neutral-500 dark:bg-neutral-600`
+                            )}
+                        >
+                            <td className="whitespace-nowrap px-6 py-4">{i.id}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.name}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.count}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.price}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.extra} </td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.total}</td>
+                        </tr>
+                    ))
+                )}
+            </tbody>
+
+        </table>
+    );
+};
+
+export const TableOrder: React.FC<ITableOrder> = ({ items, columns }) => {
+    const t = useTranslations("Body")
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [customer, setCustomer] = useState<{ id: string, name: string, last_name: string } | null>(null);
+
+    const toggleModal = () => {
+        setIsModalOpen(!isModalOpen);
+    };
+
+
+    return (
+        <table className="min-w-full text-left text-sm font-light">
+            {isModalOpen && customer != null && <OrderModal toggleModal={toggleModal} customer={customer as { id: string, name: string, last_name: string }} />}
+            <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
+                <tr>
+                    {columns.map((l) => {
+                        return (<th scope="col" key={l} className="px-6 py-4">{l}</th>)
+                    })}
+                </tr>
+            </thead>
+            <tbody>
+                {items.length > 0 && (
+                    items.map((i, index) => (
+                        <tr
+                            key={index}
+                            className={clsx(
+                                `${i.id % 2 !== 0 ? "bg-neutral-100" : "bg-white"} border-b dark:border-neutral-500 dark:bg-neutral-600`
+                            )}
+                        >
+                            <td className="whitespace-nowrap px-6 py-4">{i.id}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.name}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.count}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.price}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.extra} </td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.total}</td>
+                        </tr>
+                    ))
+                )}
+            </tbody>
+
+        </table>
+    );
+};
 
 
 export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }) => {
@@ -33,15 +140,14 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
 
 
     //display orders
-    const fetchOrderAsync = (id: string, name: string, last_name: string) => {
+    const fetchOrderAsync = (id: string) => {
         toggleModal()
-        setCustomer({ name, last_name })
     };
 
 
     return (
         <table className="min-w-full text-left text-sm font-light">
-            {isModalOpen && customer != null && <OrderModal toggleModal={toggleModal} customer={customer as { name: string, last_name: string }} />}
+            {isModalOpen && customer != null && <OrderModal toggleModal={toggleModal} customer={customer as { id: string, name: string, last_name: string }} />}
             <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
                 <tr>
                     {columns.map((l) => {
@@ -60,7 +166,7 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
                             )}
                         >
                             <td className="whitespace-nowrap px-6 py-4">{i.id}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.first_name}</td>
+                            <td className="whitespace-nowrap px-6 py-4"><button onClick={() => fetchOrderAsync(i.id)}>{i.first_name}</button></td>
                             <td className="whitespace-nowrap px-6 py-4">{i.last_name}</td>
                             <td className="whitespace-nowrap px-6 py-4">{i.phone_number}</td>
                             <td className="whitespace-nowrap px-6 py-4">{i.postal_code}  {i.street_name} {i.home_number}</td>
@@ -73,21 +179,8 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
                                         </svg>
                                     </button>
                                     <button className='mx-3' onClick={() => createOrderAsync(i.id, i.first_name, i.last_name)}>
-                                        <svg width="19px" height="19px" viewBox="0 0 19 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                            <svg width="19px" height="19px" viewBox="0 0 19 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                                <g id="Icons" stroke="2" strokeWidth="1" fill="none" fillRule="evenodd">
-                                                    <g id="Rounded" transform="translate(-612.000000, -2106.000000)">
-                                                        <g id="Editor" transform="translate(100.000000, 1960.000000)">
-                                                            <g id="-Round-/-Editor-/-format_list_bulleted" transform="translate(510.000000, 142.000000)">
-                                                                <g>
-                                                                    <polygon id="Path" points="0 0 24 0 24 24 0 24"></polygon>
-                                                                    <path d="M4,10.5 C3.17,10.5 2.5,11.17 2.5,12 C2.5,12.83 3.17,13.5 4,13.5 C4.83,13.5 5.5,12.83 5.5,12 C5.5,11.17 4.83,10.5 4,10.5 Z M4,4.5 C3.17,4.5 2.5,5.17 2.5,6 C2.5,6.83 3.17,7.5 4,7.5 C4.83,7.5 5.5,6.83 5.5,6 C5.5,5.17 4.83,4.5 4,4.5 Z M4,16.5 C3.17,16.5 2.5,17.18 2.5,18 C2.5,18.82 3.18,19.5 4,19.5 C4.82,19.5 5.5,18.82 5.5,18 C5.5,17.18 4.83,16.5 4,16.5 Z M8,19 L20,19 C20.55,19 21,18.55 21,18 C21,17.45 20.55,17 20,17 L8,17 C7.45,17 7,17.45 7,18 C7,18.55 7.45,19 8,19 Z M8,13 L20,13 C20.55,13 21,12.55 21,12 C21,11.45 20.55,11 20,11 L8,11 C7.45,11 7,11.45 7,12 C7,12.55 7.45,13 8,13 Z M7,6 C7,6.55 7.45,7 8,7 L20,7 C20.55,7 21,6.55 21,6 C21,5.45 20.55,5 20,5 L8,5 C7.45,5 7,5.45 7,6 Z" id="🔹-Icon-Color" fill="#1ce659"></path>
-                                                                </g>
-                                                            </g>
-                                                        </g>
-                                                    </g>
-                                                </g>
-                                            </svg>
+                                        <svg className="w-6 h-6 text-green-800 hover:text-red-800 hover:font-bold dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 18">
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" stroke-width="2" d="M9.5 3h9.563M9.5 9h9.563M9.5 15h9.563M1.5 13a2 2 0 1 1 3.321 1.5L1.5 17h5m-5-15 2-1v6m-2 0h4" />
                                         </svg>
                                     </button>
                                 </div>

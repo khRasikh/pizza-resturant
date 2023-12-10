@@ -1,17 +1,8 @@
 "use client"
-import { ChangeEvent, FormEvent } from 'react';
-import { IField, IForm, MENUFORM, } from '../interface/general';
+import { IForm, IFormModal, MENUFORM, } from '../interface/general';
 import { useTranslations } from 'next-intl';
 
-export interface IFormModal {
-    formDataModal: any;
-    fields: IField[];
-    handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
-    handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
-    handleClose: () => void;
-}
-
-export const FormCreateOrder = ({ formDataModal, fields, handleChange, handleSubmit, handleClose }: IFormModal) => {
+export const FormCreateOrder = ({ formDataModal, fields, handleChange, handleSubmit, addToOrderList, handlePrint, isSubmitted }: IFormModal) => {
     return (
         <form onSubmit={handleSubmit}>
             <div className="overflow-hidden">
@@ -31,15 +22,29 @@ export const FormCreateOrder = ({ formDataModal, fields, handleChange, handleSub
                                         />
                                     </td>
                                 ))}
-                                <td></td>
-                                <td></td>
-                                <td className="whitespace-nowrap px-2 py-4 col-span-2 flex items-center justify-center md:justify-end lg:justify-center">
-                                    <button onClick={handleClose} type="button" className="bg-red-500 hover:bg-red-700 text-lg text-white font-extrabold py-1 px-3 rounded">
-                                        Cancel
-                                    </button>
-                                    <button type="submit" className="bg-green-500 hover:bg-green-700 text-lg text-white font-extrabold py-1 px-3 ml-2 rounded">
-                                        Add
-                                    </button>
+                                <td>
+                                    <div className='flex'>
+                                        <button className='mx-4 mt-4 py-2 flex' type='button' onClick={addToOrderList}>
+                                            <svg className="w-4 h-4 text-green-800 hover:bg-green-300 hover:text-black rounded-full dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 5.757v8.486M5.757 10h8.486M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                            <p className='text-black hover:text-green-700 font-bold px-1 text-md'>New</p>
+                                        </button>
+                                        {!isSubmitted ? <button type="submit" className='my-5 py-1 flex px-2' onClick={() => handleSubmit}>
+                                            <svg className="w-4 h-4 text-black hover:text-green-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="20" fill="none" viewBox="0 0 18 20">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-width="3" d="M12 2h4a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h4m6 0v3H6V2m6 0a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1M5 5h8m-5 5h5m-8 0h.01M5 14h.01M8 14h5" />
+                                            </svg>
+                                            <p className='text-black hover:text-green-700 font-bold px-1 text-md'>Save</p>
+
+                                        </button> :
+                                            <button type='button' className='my-5 py-1 flex px-2' onClick={handlePrint}>
+                                                <svg className="w-4 h-4 hover:text-green-800 text-black dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M5 20h10a1 1 0 0 0 1-1v-5H4v5a1 1 0 0 0 1 1Z" />
+                                                    <path d="M18 7H2a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2v-3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Zm-1-2V2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3h14Z" />
+                                                </svg>
+                                                <p className='text-black hover:text-green-700 font-bold px-1 text-md'>Print</p>
+                                            </button>}
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>

@@ -63,6 +63,5 @@ export const MenuColumns = ["ID#", "Name", "Category", "Description", "Extra", "
 
 export const DefaultPageNumber = 10;
 
-export const OrderColumns = ["ID#", "Name", "Last Name", "Phone Number", "Address", "Description", "Actions"];
+export const OrderColumns = ["Anz", "Nr.", "Bez.", "Pr", "Extra", "Total"];
 
-export const OrderProperties = ["first_name", "last_name", "address", "phone_number", "id"];

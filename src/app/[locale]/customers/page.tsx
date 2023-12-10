@@ -139,8 +139,6 @@ export default function Customers() {
     }
   };
 
-
-
   return (
     <PageLayout title={t("title")}>
       {showForm ? (

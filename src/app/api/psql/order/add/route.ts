@@ -1,4 +1,5 @@
 "use server";
+
 import { createPool } from "@vercel/postgres";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -11,27 +12,37 @@ export async function POST(request: NextRequest) {
       connectionString: process.env.POSTGRES_URL as string,
     });
 
-    // Assuming the incoming JSON data structure matches the columns in your customer table
-    const { id, count, price, extra, total } = data;
-    if (!count || !price || !extra || !total) {
-      return NextResponse.json({ message: "Data inserted successfully" }, { status: 404 });
+    const ordersList = data; // Assuming the incoming JSON data is an array of orders
+
+    if (!ordersList || !Array.isArray(ordersList) || ordersList.length === 0) {
+      return NextResponse.json({ message: "Invalid or empty orders list" }, { status: 400 });
     }
 
-    const insertionResult = await pool.query(
-      "INSERT INTO orders (user_id, id, count, price, extra, total, status) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-      [1, id, count, price, extra, total, false]
-    );
+    const client = await pool.connect();
 
-    if (insertionResult.rowCount === 1) {
-      // If the rowCount is 1 (indicating one row was affected), return a successful response with status code 200
-      return NextResponse.json({ message: "Data inserted successfully" }, { status: 200 });
-    } else {
-      // If the rowCount is not 1, it means the insertion didn't affect exactly one row; handle this as an error
-      // throw new Error("Failed to insert data");
-      return NextResponse.json({ message: "Data inserted successfully" }, { status: 204 });
+    try {
+      await client.query("BEGIN");
+
+      for (const order of ordersList) {
+        const { id, count, price, extra, total } = order;
+        // Add your logic here to validate or process each order before insertion
+        await client.query(
+          "INSERT INTO orders (user_id, id, count, price, extra, total, status) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+          [1, id, count, price, extra, total, false]
+        );
+      }
+
+      await client.query("COMMIT");
+      client.release();
+
+      return NextResponse.json({ message: "Orders inserted successfully" }, { status: 200 });
+    } catch (error) {
+      await client.query("ROLLBACK");
+      client.release();
+      throw error;
     }
   } catch (error) {
-    console.error("Error inserting data:", error);
-    return NextResponse.json({ message: "Data inserted successfully" }, { status: 206 });
+    console.error("Error inserting orders:", error);
+    return NextResponse.json({ message: "Failed to insert orders" }, { status: 500 });
   }
 }

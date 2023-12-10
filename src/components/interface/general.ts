@@ -7,6 +7,11 @@ export interface ITable {
   deleteRow: (id: string) => void;
 }
 
+export interface ITableOrder {
+  items: any[];
+  columns: any[];
+}
+
 export type IBody = {
   children?: ReactNode;
   title: ReactNode;
@@ -53,4 +58,24 @@ export interface MENUFORM {
   fields: IField[];
   handleChange: (e: any) => void;
   handleSubmit: (e: any) => void;
+}
+
+export interface IFormModal {
+  formDataModal: any;
+  fields: IField[];
+  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  addToOrderList: () => void;
+  handlePrint: () => void;
+  isSubmitted: boolean;
+}
+
+export interface IPrint {
+  orderList: any[];
+  toggleModal: () => void;
+}
+
+export interface IOrderModal {
+  toggleModal: () => void;
+  customer: { id: string; name: string; last_name: string };
 }
