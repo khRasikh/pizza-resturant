@@ -56,6 +56,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         } else if (!extra) {
             return toast.error(t("Form.inCompleteMessage").replace("record", extra), toastMessages.OPTION);
         }
+        
         // Here, implement your code to send formData to your backend API
         const addOrder = await fetch("/api/psql/order/add", {
             method: "POST",
@@ -125,7 +126,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
                         <TableOrder items={orderList} columns={OrderColumns} />
                     </div>
                     }
-                    {<TableOrderList id={"69"}/>}
+                    {/* {<TableOrderList id={"69"}/>} */}
                 </div>
             </div>
         </div>

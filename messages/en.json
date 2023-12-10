@@ -1,10 +1,6 @@
 {
   "IndexPage": {
     "title": "Pizza Resturant",
-    "description": "This is a basic example that demonstrates the usage of <code>next-intl</code> with the Next.js App Router. Try changing the locale in the top right corner and see how the content changes."
-  },
-  "AboutPage": {
-    "title": "About",
     "description": "<p>Welcome to Pizza Restaurant Information System</p>. <p>In this system, everything is consized in three pages. This is the first page.</p><p> In the second page (Menu), you can add all your own customized foods under different categories.</p><p> In the last Page (Customers), you will be able to reivew, search, add, update and delete your customers. </p><p>Please feel free to contact me using the following link if you are facing any problem or question!</p><p>Thank you. </p>"
   },
   "AuthorizationPage": {
@@ -62,6 +58,11 @@
     "back": "Return Back"
   },
   "Body": {
+    "session": {
+      "unAuthorizedToAccessList": " Welcome to the page, you are not authorized to view all list! Only super admin knows!",
+      "welcome": "Welcome to ",
+      "unAuthorizedToPage": "Not authorized, please signin to see the details!"
+    },
     "Form": {
       "id": "Kr-Nr",
       "name": "Name",
@@ -87,7 +88,7 @@
       "add": "New Record"
     },
     "Table": {
-     "confirmDelete": "Are you sure you want to delete this record?" 
+      "confirmDelete": "Are you sure you want to delete this record?"
     },
     "notFound": "No Menu Found!",
     "loading": "Loading..."

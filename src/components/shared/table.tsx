@@ -7,8 +7,6 @@ import { useTranslations } from 'next-intl';
 import { OrderModal } from '../customers/modal';
 import { createPool } from '@vercel/postgres';
 
-
-
 export const TableOrderList: React.FC<{ id: string }> = (id) => {
     const t = useTranslations("Body")
     const [orderList, setOrderList] = useState<any[]>([])
