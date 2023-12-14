@@ -9,7 +9,7 @@ import Form from "@/components/customers/form";
 import { NoResultFound, PaginationCustomized, Table } from "@/components/shared/table";
 import SearchBar from "@/components/shared/search";
 import { filterData } from "@/components/lib/filter";
-import { getCustomers } from "@/components/customers/customers";
+import { deleteOne, fetchData, insertOne } from "@/components/lib/CURD";
 
 export default function Customers() {
   const t = useTranslations("CustomerPage");
@@ -25,10 +25,10 @@ export default function Customers() {
   };
 
   const fetchCustomers = async () => {
-    const customerList = await getCustomers();
-
-    if (customerList) {
-      setCustomer(customerList);
+    // const customerList = await getCustomers(); //PSQL
+    const customerList = await fetchData("customers"); //MONGODB
+    if (customerList && customerList.status) {
+      setCustomer(customerList.data);
       setIsLoading(false);
     } else {
       setCustomer([]);
@@ -38,7 +38,7 @@ export default function Customers() {
 
   useEffect(() => {
     fetchCustomers();
-  }, [customers]);
+  }, []);
   //search & filter
   const filteredCustumers = filterData(customers, searchTerm);
 
@@ -63,16 +63,9 @@ export default function Customers() {
     }
 
     // Here, implement your code to send formData to your backend API
-    const addCustomer = await fetch("/api/psql/add", {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      cache: "no-cache",
-    });
+    const addCustomer = await insertOne(JSON.stringify(formData), "customers")
 
-    if (addCustomer.status == 200) {
+    if (addCustomer.status) {
       setFormData(clearCustomerForm);
       toast.success(t1("Form.successMessage").replace("record", "Customer"), toastMessages.OPTION);
       setShowForm(true);
@@ -120,15 +113,9 @@ export default function Customers() {
   //delete
   const deleteCustomer = async (customerId: string) => {
     try {
-      const response = await fetch("/api/psql/delete", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ Id: customerId }),
-      });
+      const response = await deleteOne(customerId, "customers")
 
-      if (response.ok) {
+      if (response.status) {
         toast.success(t1("Form.successMessage").replace("record", "Customer"), toastMessages.OPTION);
       } else {
         toast.error(t1("Form.errorMessage").replace("record", "Customer"), toastMessages.OPTION);

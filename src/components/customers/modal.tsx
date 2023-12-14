@@ -1,12 +1,13 @@
 "use client"
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FormCreateOrder } from './form';
 import { OrderColumns, clearOrderFields, toastMessages } from '../shared/constants';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
-import { TableOrder, TableOrderList } from '../shared/table';
+import { TableOrder } from '../shared/table';
 import { handlePrint } from '../lib/print';
 import { IOrderModal } from '../interface/general';
+import { insertMany } from '../lib/CURD';
 
 export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => {
     const [formData, setFormData] = useState(clearOrderFields);
@@ -56,18 +57,11 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         } else if (!extra) {
             return toast.error(t("Form.inCompleteMessage").replace("record", extra), toastMessages.OPTION);
         }
-        
-        // Here, implement your code to send formData to your backend API
-        const addOrder = await fetch("/api/psql/order/add", {
-            method: "POST",
-            body: JSON.stringify(orderList),
-            headers: {
-                "Content-Type": "application/json",
-            },
-            cache: "no-cache",
-        });
 
-        if (addOrder.status == 200) {
+        // Here, implement your code to send formData to your backend API
+        const addOrder = await insertMany(JSON.stringify(orderList), "orders")
+
+        if (addOrder.status) {
             setFormData(clearOrderFields);
             toast.success(t("Form.successMessage").replace("record", "Customer"), toastMessages.OPTION);
             // toggleModal()
@@ -85,7 +79,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         });
     };
 
-   
+
     return (
         <div className="overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-300 bg-opacity-70 z-50">
             <div className="bg-white overflow-x-hidden rounded-lg p-4 md:p-8 min-w-[95%] md:min-w-[80%] lg:max-w-[50%]">

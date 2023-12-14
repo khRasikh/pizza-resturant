@@ -1,0 +1,87 @@
+import { NextResponse } from "next/server";
+import clientPromise from "../../../components/lib/mongodb";
+import { ObjectId } from "mongodb";
+
+export async function POST() {
+  try {
+    const client: any = await clientPromise;
+    const db = client.db("resturant");
+    db.collection("menus").insertOne({
+      id: new ObjectId(),
+      name: "Menu Item Name",
+      category: "Category Name",
+      shift: "Shift Details",
+      description: "Menu Item Description",
+      extra: { key: "value" }, // Sample JSON structure for 'extra'
+      price: Number("10.00"), // For currency precision
+      currency: "EUR",
+      created_date: new Date(),
+      updated_date: new Date(),
+    });
+
+    db.createCollection("categories");
+
+    db.collection("categories").insertOne({
+      id: new ObjectId(),
+      name: "Category Name",
+      description: "Category Description",
+      created_date: new Date(),
+      updated_date: new Date(),
+    });
+
+    db.createCollection("extras");
+
+    db.collection("extras").insertOne({
+      extra_id: new ObjectId(),
+      id: new ObjectId(), // Reference to Menu's _id field
+      name: "Extra Name",
+      description: "Extra Description",
+      created_date: new Date(),
+      updated_date: new Date(),
+    });
+
+    db.createCollection("customers");
+
+    db.collection("customers").insertOne({
+      id: new ObjectId(),
+      first_name: "First Name",
+      last_name: "Last Name",
+      home_number: "Home Number",
+      street_name: "Street Name",
+      postal_code: "Postal Code",
+      phone_number: "Phone Number",
+      description: "Customer Description",
+      created_date: new Date(),
+      updated_date: new Date(),
+    });
+
+    db.collection("orders").insertOne({
+      order_id: new ObjectId(),
+      user_id: new ObjectId(), // Reference to Users' _id field
+      id: new ObjectId(), // Reference to Customer's _id field
+      count: "Count Details",
+      extra: "Extra Details",
+      price: "Price Details",
+      order_date: new Date(),
+      total: Number("100.00"), // For currency precision
+      status: "Order Status",
+    });
+
+    db.createCollection("users");
+
+    db.collection("users").insertOne({
+      user_id: new ObjectId(), // MongoDB generates unique IDs automatically
+      username: "username_here",
+      email: "email@example.com",
+      password_hash: "hashed_password_here",
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
+
+    const movies = await db.collection("users").find({}).sort({ metacritic: -1 }).limit(10).toArray();
+
+    return NextResponse.json(movies);
+  } catch (e) {
+    console.error(e);
+  }
+}

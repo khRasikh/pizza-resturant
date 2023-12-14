@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { DefaultPageNumber, MenuColumns, clearMenuForm, toastMessages } from "@/components/shared/constants";
 import { FormMenu } from "@/components/customers/form";
 import { NoResultFound, PaginationCustomized, TableMenu } from "@/components/shared/table";
-import { fetchMenu } from "@/components/shared/menu";
+import { deleteOne, fetchData, insertOne } from "@/components/lib/CURD";
 
 export const fetchCache = "force-no-store";
 
@@ -17,10 +17,10 @@ export default function Menu() {
   const [menus, setMenus] = useState<any[]>([]); // Updated state variable name from customers to menus
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const fetchData = async () => {
-    const getMenus = await fetchMenu();
-    if (getMenus) {
-      setMenus(getMenus);
+  const fetchMenu = async () => {
+    const getMenus = await fetchData("menus");
+    if (getMenus && getMenus.status) {
+      setMenus(getMenus.data);
       setIsLoading(false);
     } else {
       setMenus([]);
@@ -50,17 +50,9 @@ export default function Menu() {
       return toast.error(t1("Form.errorMessage").replace("shift", shift), toastMessages.OPTION);
     }
 
-    // Here, implement your code to send formData to your backend API
-    const addMenu = await fetch("/api/psql/menu/add", {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      cache: "no-cache",
-    });
+    const addMenu = await insertOne(JSON.stringify(formData), "menus")
 
-    if (addMenu.status == 200) {
+    if (addMenu.status) {
       setFormData(clearMenuForm);
       toast.success(t1("Form.inCompleteMessage").replace("record", "menu"), toastMessages.OPTION);
     } else {
@@ -89,15 +81,9 @@ export default function Menu() {
   //delete
   const deleteMenu = async (menuId: string) => {
     try {
-      const response = await fetch("/api/psql/menu/delete", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: menuId }),
-      });
+      const response = await deleteOne(menuId, "menus")
 
-      if (response.ok) {
+      if (response.data) {
         toast.success(toastMessages.SUCCESS_CONTENT, toastMessages.OPTION);
       } else {
         toast.error(toastMessages.ERROR_CONTENT, toastMessages.OPTION);
@@ -109,8 +95,8 @@ export default function Menu() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [menus]);
+    fetchMenu();
+  }, [FormMenu]);
 
   //pagination
   const [currentPage, setCurrentPage] = useState(1);
