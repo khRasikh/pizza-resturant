@@ -30,7 +30,7 @@ export async function readDataFromTextFile(): Promise<any> {
       });
       return obj;
     });
-    console.log("Record deleted successfully");
+
     return { status: true, headers, body, message: "Record deleted successfully" };
   } catch (err) {
     console.error("Error deleting data:", err);
