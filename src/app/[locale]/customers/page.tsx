@@ -22,8 +22,9 @@ export default function Customers() {
 
   const fetchCustomers = async () => {
     const customerList: { headers: any, body: any[] } = await readDataFromTextFile()
+
     if (customerList.body) {
-      setCustomers(customerList.body);
+      setCustomers(customerList.body.sort((a, b) => parseInt(b.KNr) - parseInt(a.KNr)));
       setIsLoading(false);
     } else {
       setCustomers([]);

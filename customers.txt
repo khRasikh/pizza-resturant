@@ -1,5 +1,6 @@
 KNr	Name	Tel	Str	Ort	Bemerkung	Seit	Mal	DM	lezte	Rabatt	Fix
 1	Severin	08122900430	Mauggen 52	85461 Bockhorn		0171-6583338	05.11.19	1	    0,00	24.11.19	0
+2	 Todorovic / Ranauda 	33035830	Truderingerstraáe 343	81825 Mnchen   			03.10.16	1	    0,00	29.06.20	0
 3	Etap Hotel	43577753	Bahnhofstr.4 /Et: 	85609 Mnchen-Dornach[]			22.01.09	1	    0,00	07.03.18	0
 4	Hartmann	526541	Georg-Kerschensteiner-Str.38/Et: E	81829 Messe				1	    0,00	29.05.19	0
 5	Ba	15909572	Himalajastr. 35/Et:e	81825 Mnchen Feldberg			04.11.09	1	    0,00	27.05.13	0

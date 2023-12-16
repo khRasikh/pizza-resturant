@@ -29,7 +29,6 @@ export async function readDataFromTextFile() {
     });
     return obj;
   });
-  body.sort((a, b) => parseInt(b.KNr) - parseInt(a.KNr));
   return { headers, body };
 }
 
@@ -50,7 +49,7 @@ export async function addDataToTextFile<T extends ICustomers>(newEntry: T, table
     const newKNr = parseInt(existingKNrs[existingKNrs.length - 1]) + 1 || 1;
     newEntry["KNr"] = newKNr;
 
-    console.log("test", newEntry);
+    console.log("test", newKNr);
     const values = headers.map((header) => newEntry[header as keyof T] || "").join("\t");
     const newData = `\n${values}`;
 
