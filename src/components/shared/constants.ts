@@ -15,25 +15,30 @@ export const timeZone = {
 };
 
 export const clearCustomerForm = {
-  id: "",
-  first_name: "",
-  last_name: "",
-  home_number: "",
-  street_name: "",
-  postal_code: "",
-  phone_number: "",
-  description: "",
+  Name: "",
+  Tel: "",
+  Str: "",
+  Ort: "",
+  Bemerkung: "",
+  Seit: "",
+  Mal: undefined,
+  DM: "",
+  letzte: "",
+  Rabatt: undefined,
+  Fix: undefined,
 };
 
 export const clearMenuForm = {
-  id: "",
-  name: "",
-  category: "",
-  description: "",
-  extra: {},
-  price: "",
-  currency: "",
-  shift: "",
+  Type: "N",
+  CompNum: 0,
+  IhreNum: "",
+  Name: "",
+  SinglPreis: 0,
+  JumboPreis: 0,
+  FamilyPreis: 0,
+  PartyPreis: 0,
+  MWSt: 0,
+  Rabatt: 0,
 };
 
 export const clearOrderFields = {
@@ -55,13 +60,17 @@ export const toastMessages = {
   },
 };
 
-export const CustomerColumns = ["ID#", "Name", "Last Name", "Phone Number", "Address", "Description", "Actions"];
+export const MenuColumns = ["Type", "CompNum", "Name", "SinglPreis", "JumboPreis", "FamilyPreis", "PartyPreis", "Actions"];
 
-export const CustomerProperties = ["first_name", "last_name", "address", "phone_number", "id"];
+export const CustomerProperties = ["KNr", "Name", "Tel", "Str", "Ort", "Bemerkung"];
 
-export const MenuColumns = ["ID#", "Name", "Category", "Description", "Extra", "Price", "Actions"];
+export const CustomerColumns = ["KNr", "Name", "Tel", "Str", "Ort", "Bemerkung"];
 
 export const DefaultPageNumber = 10;
 
 export const OrderColumns = ["Anz", "Nr.", "Bez.", "Pr", "Extra", "Total"];
 
+export const Tables = {
+  Article: "article",
+  Customers: "customers",
+};

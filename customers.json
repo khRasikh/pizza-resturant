@@ -1,0 +1,60 @@
+{
+  "header": [
+    "KNr",
+    "Name",
+    "Tel",
+    "Str",
+    "Ort",
+    "Bemerkung",
+    "Seit",
+    "Mal",
+    "DM",
+    "letzte",
+    "Rabatt",
+    "Fix"
+  ],
+  "body": [
+    [
+      4,
+      "Hartmann",
+      "526541",
+      "Georg-Kerschensteiner-Str.38/Et: E",
+      "81829 Messe",
+      "",
+      "",
+      1,
+      "0,00",
+      "29.05.19",
+      0,
+      0
+    ],
+    [
+      5,
+      "Ba",
+      "15909572",
+      "Himalajastr. 35/Et:e",
+      "81825 München Feldberg",
+      "",
+      "04.11.09",
+      1,
+      "0,00",
+      "27.05.13",
+      0,
+      0
+    ],
+    [
+      7,
+      "Perceptron",
+      "017044547652",
+      "Stahlgruberring 7    /Et: ",
+      "81829 München    []",
+      "",
+      "",
+      1,
+      "0,00",
+      "05.12.17",
+      0,
+      0
+    ]
+  ]
+}

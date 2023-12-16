@@ -4,34 +4,29 @@ import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { CustomerColumns, DefaultPageNumber, clearCustomerForm, toastMessages } from "@/components/shared/constants";
+import { CustomerColumns, DefaultPageNumber, Tables, clearCustomerForm, toastMessages } from "@/components/shared/constants";
 import Form from "@/components/customers/form";
 import { NoResultFound, PaginationCustomized, Table } from "@/components/shared/table";
 import SearchBar from "@/components/shared/search";
 import { filterData } from "@/components/lib/filter";
-import { getCustomers } from "@/components/customers/customers";
+import { addDataToTextFile, deleteDataFromTextFile, readDataFromTextFile } from "@/app/fileCrud";
+import { ICustomers } from "@/components/interface/general";
 
 export default function Customers() {
   const t = useTranslations("CustomerPage");
   const t1 = useTranslations("Body");
-  const [customers, setCustomer] = useState<any[]>([]);
+  const [customers, setCustomers] = useState<ICustomers[]>([clearCustomerForm]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showForm, setShowForm] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSearch = (value: string) => {
-    setSearchTerm(value);
-    setPageNumber(1);
-  };
-
   const fetchCustomers = async () => {
-    const customerList = await getCustomers();
-
-    if (customerList) {
-      setCustomer(customerList);
+    const customerList: { headers: any, body: any[] } = await readDataFromTextFile()
+    if (customerList.body) {
+      setCustomers(customerList.body);
       setIsLoading(false);
     } else {
-      setCustomer([]);
+      setCustomers([]);
       setIsLoading(false);
     }
   };
@@ -39,6 +34,12 @@ export default function Customers() {
   useEffect(() => {
     fetchCustomers();
   }, [customers]);
+
+  const handleSearch = (value: string) => {
+    console.log("test search", value, customers.length)
+    setSearchTerm(value);
+    setPageNumber(1);
+  };
   //search & filter
   const filteredCustumers = filterData(customers, searchTerm);
 
@@ -48,31 +49,15 @@ export default function Customers() {
   const submit = async (e: any) => {
     e.preventDefault();
 
-    const { first_name, home_number, street_name, postal_code, phone_number } = formData;
+    const { Name, Tel, Str }: ICustomers = formData;
 
-    if (!first_name) {
-      return toast.error(t1("Form.inCompleteMessage").replace("record", first_name), toastMessages.OPTION);
-    } else if (!home_number) {
-      return toast.error(t1("Form.inCompleteMessage").replace("record", home_number), toastMessages.OPTION);
-    } else if (!street_name) {
-      return toast.error(t1("Form.inCompleteMessage").replace("record", street_name), toastMessages.OPTION);
-    } else if (!postal_code) {
-      return toast.error(t1("Form.inCompleteMessage").replace("record", postal_code), toastMessages.OPTION);
-    } else if (!phone_number) {
-      return toast.error(t1("Form.inCompleteMessage").replace("record", phone_number), toastMessages.OPTION);
+    if (!Name || !Tel || !Str) {
+      return toast.error(t1("Form.inCompleteMessage"), toastMessages.OPTION);
     }
 
-    // Here, implement your code to send formData to your backend API
-    const addCustomer = await fetch("/api/psql/add", {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      cache: "no-cache",
-    });
+    const addCustomer = await addDataToTextFile<ICustomers>(formData, Tables.Customers)
 
-    if (addCustomer.status == 200) {
+    if (addCustomer.status) {
       setFormData(clearCustomerForm);
       toast.success(t1("Form.successMessage").replace("record", "Customer"), toastMessages.OPTION);
       setShowForm(true);
@@ -94,18 +79,22 @@ export default function Customers() {
   };
 
   const inputFields = [
-    { name: "first_name", value: formData.first_name, placeholder: t1("Form.name") },
-    { name: "last_name", value: formData.last_name, placeholder: t1("Form.lastName") },
-    { name: "home_number", value: formData.home_number, placeholder: t1("Form.homeNumber") },
-    { name: "street_name", value: formData.street_name, placeholder: t1("Form.street") },
-    { name: "postal_code", value: formData.postal_code, placeholder: t1("Form.postalCode") },
-    { name: "phone_number", value: formData.phone_number, placeholder: t1("Form.phone") },
-    { name: "description", value: formData.description, placeholder: t1("Form.description") },
+    { name: "Name", value: formData.Name, placeholder: t1("Form.name") },
+    { name: "Tel", value: formData.Tel, placeholder: t1("Form.Tel") },
+    { name: "Str", value: formData.Str, placeholder: t1("Form.Str") },
+    { name: "Ort", value: formData.Ort, placeholder: t1("Form.Ort") },
+    { name: "Bemerkung", value: formData.Bemerkung || '', placeholder: t1("Form.Bemerkung") },
+    { name: "Seit", value: formData.Seit, placeholder: t1("Form.Seit") },
+    { name: "Mal", value: formData.Mal ? formData.Mal : '', placeholder: t1("Form.Mal") },
+    { name: "DM", value: formData.DM || '', placeholder: t1("Form.DM") },
+    { name: "letzte", value: formData.letzte || '', placeholder: t1("Form.letzte") },
+    { name: "Rabatt", value: formData.Rabatt ? formData.Rabatt : '', placeholder: t1("Form.Rabatt") },
+    // { name: "Fix", value: formData.Fix ? formData.Fix : '', placeholder: t1("Form.fixed") },
   ];
 
   //pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [currentItems, setCurrentItems] = useState<any[]>([]);
+  const [currentItems, setCurrentItems] = useState<ICustomers[]>([]);
   const [pageItemsSize, setPageItemsSize] = useState<number>(DefaultPageNumber);
   const [pageNumber, setPageNumber] = useState<number>(1);
 
@@ -118,23 +107,17 @@ export default function Customers() {
   }, [customers, pageItemsSize]);
 
   //delete
-  const deleteCustomer = async (customerId: string) => {
+  const deleteCustomer = async (consumerId: string) => {
     try {
-      const response = await fetch("/api/psql/delete", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ Id: customerId }),
-      });
+      const response = await deleteDataFromTextFile(JSON.parse(consumerId), "customers")
 
-      if (response.ok) {
-        toast.success(t1("Form.successMessage").replace("record", "Customer"), toastMessages.OPTION);
+      if (response.status) {
+        toast.success(t1("Form.successMessage"), toastMessages.OPTION);
       } else {
-        toast.error(t1("Form.errorMessage").replace("record", "Customer"), toastMessages.OPTION);
+        toast.error(t1("Form.errorMessage"), toastMessages.OPTION);
       }
     } catch (error) {
-      toast.error(t1("Form.errorMessage").replace("record", "Customer"), toastMessages.OPTION);
+      toast.error(t1("Form.errorMessage"), toastMessages.OPTION);
       console.error("Error deleting customer:", error);
     }
   };
@@ -142,7 +125,7 @@ export default function Customers() {
   return (
     <PageLayout title={t("title")}>
       {showForm ? (
-        <div className="flex flex-col items-center ">
+        <div className="flex flex-col items-center">
           <div className="flex flex-row">
             <div>
               <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
@@ -170,7 +153,7 @@ export default function Customers() {
         </div>
       )}
 
-      <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div className="overflow-x-auto sm:-mx-6 lg:-mx-8  h-screen">
         <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
 
           {currentItems.length > 0 && !isLoading ? (

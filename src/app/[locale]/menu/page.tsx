@@ -4,10 +4,11 @@ import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { DefaultPageNumber, MenuColumns, clearMenuForm, toastMessages } from "@/components/shared/constants";
+import { DefaultPageNumber, MenuColumns, Tables, clearMenuForm, toastMessages } from "@/components/shared/constants";
 import { FormMenu } from "@/components/customers/form";
 import { NoResultFound, PaginationCustomized, TableMenu } from "@/components/shared/table";
-import { fetchMenu } from "@/components/shared/menu";
+import { addData, deleteData, getMenusFromFile } from "@/app/fileCrud";
+import { IArticles } from "@/components/interface/general";
 
 export const fetchCache = "force-no-store";
 
@@ -18,9 +19,9 @@ export default function Menu() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const fetchData = async () => {
-    const getMenus = await fetchMenu();
-    if (getMenus) {
-      setMenus(getMenus);
+    const getMenus: { data: IArticles[] } = await getMenusFromFile();
+    if (getMenus.data) {
+      setMenus(getMenus.data);
       setIsLoading(false);
     } else {
       setMenus([]);
@@ -34,33 +35,16 @@ export default function Menu() {
   const submit = async (e: any) => {
     e.preventDefault();
 
-    const { id, name, category, price, shift } = formData;
+    const { CompNum, Type, Name } = formData;
 
-    if (!id) {
-      return toast.error(t1("Form.errorMessage").replace("ID", id), toastMessages.OPTION);
-    } else if (!name) {
-      return toast.error(t1("Form.errorMessage").replace("Name", name), toastMessages.OPTION);
-    } else if (!category) {
-      return toast.error(t1("Form.errorMessage").replace("category", category), toastMessages.OPTION);
-    } else if (!price) {
-      return toast.error(t1("Form.errorMessage").replace("price", price), toastMessages.OPTION);
-    } else if (!shift) {
-      return toast.error(t1("Form.errorMessage").replace("shift", shift), toastMessages.OPTION);
-    } else if (!shift) {
-      return toast.error(t1("Form.errorMessage").replace("shift", shift), toastMessages.OPTION);
+    if (!CompNum || !Type || !Name) {
+      return toast.error(t1("Form.errorMessage" + !CompNum || !Type || !Name), toastMessages.OPTION);
     }
 
     // Here, implement your code to send formData to your backend API
-    const addMenu = await fetch("/api/psql/menu/add", {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      cache: "no-cache",
-    });
+    const addMenu = await addData<IArticles>(formData, Tables.Article)
 
-    if (addMenu.status == 200) {
+    if (addMenu.status && addMenu.statusCode === 200) {
       setFormData(clearMenuForm);
       toast.success(t1("Form.inCompleteMessage").replace("record", "menu"), toastMessages.OPTION);
     } else {
@@ -76,28 +60,26 @@ export default function Menu() {
     });
   };
 
-  const inputFields = [
-    { name: "id", value: formData.id, placeholder: `${t1("Form.id")}` },
-    { name: "name", value: formData.name, placeholder: `${t1("Form.name")}` },
-    { name: "category", value: formData.category, placeholder: `${t1("Form.category")}` },
-    { name: "description", value: formData.description, placeholder: `${t1("Form.description")}` },
-    { name: "extra", value: formData.extra, placeholder: `${t1("Form.extra")}` },
-    { name: "price", value: formData.price, placeholder: `${t1("Form.price")}` },
-    { name: "shift", value: formData.shift, placeholder: `${t1("Form.shift")}` },
+  const inputFields: any = [
+    { name: "Type", value: formData.Type, placeholder: `${t1("Form.Type")}` },
+    { name: "CompNum", value: formData.CompNum.toString(), placeholder: `${t1("Form.CompNum")}` },
+    { name: "Name", value: formData.Name.toString(), placeholder: `${t1("Form.Name")}` },
+    { name: "SinglPreis", value: formData.SinglPreis, placeholder: `${t1("Form.SinglPreis")}` },
+    { name: "JumboPreis", value: formData.JumboPreis.toString(), placeholder: `${t1("Form.JumboPreis")}` },
+    { name: "FamilyPreis", value: formData.FamilyPreis.toString(), placeholder: `${t1("Form.FamilyPreis")}` },
+    { name: "PartyPreis", value: formData.PartyPreis.toString(), placeholder: `${t1("Form.PartyPreis")}` },
+    { name: "MWSt", value: formData.MWSt.toString(), placeholder: `${t1("Form.MWSt")}` },
+    { name: "Rabatt", value: formData.Rabatt.toString(), placeholder: `${t1("Form.Rabatt")}` },
   ];
+
 
   //delete
   const deleteMenu = async (menuId: string) => {
-    try {
-      const response = await fetch("/api/psql/menu/delete", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: menuId }),
-      });
 
-      if (response.ok) {
+    try {
+      const response = await deleteData(JSON.parse(menuId), "article", "CompNum")
+
+      if (response.status && response.statusCode === 200) {
         toast.success(toastMessages.SUCCESS_CONTENT, toastMessages.OPTION);
       } else {
         toast.error(toastMessages.ERROR_CONTENT, toastMessages.OPTION);

@@ -13,9 +13,9 @@ export default function PageLayout({ children, title }: Readonly<
       <div className="bg-white h-screen ">
         <div className="relative flex grow flex-col ">
           <Body title={title}>{children} </Body>
+          <Footer />
         </div>
       </div>
-      <Footer />
     </SessionProvider>
   );
 }

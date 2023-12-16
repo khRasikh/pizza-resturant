@@ -22,6 +22,7 @@ export default function Header() {
       </div>
     );
   }
+  
   return (
     <div className="flex flex-row">
       <LocaleSwitcher />

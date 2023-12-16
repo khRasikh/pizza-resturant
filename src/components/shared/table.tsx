@@ -8,7 +8,6 @@ import { OrderModal } from '../customers/modal';
 import { createPool } from '@vercel/postgres';
 
 export const TableOrderList: React.FC<{ id: string }> = (id) => {
-    const t = useTranslations("Body")
     const [orderList, setOrderList] = useState<any[]>([])
 
     useEffect(() => {
@@ -34,7 +33,7 @@ export const TableOrderList: React.FC<{ id: string }> = (id) => {
     }, [])
 
     return (
-        <table className="min-w-full text-left text-sm font-light">
+        <table className=" min-w-full text-left text-sm font-light">
             <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
                 <tr>
                     {OrderColumns.map((l) => {
@@ -46,7 +45,7 @@ export const TableOrderList: React.FC<{ id: string }> = (id) => {
                 {orderList.length > 0 && (
                     orderList.map((i, index) => (
                         <tr
-                            key={index}
+                            key={i}
                             className={clsx(
                                 `${i.id % 2 !== 0 ? "bg-neutral-100" : "bg-white"} border-b dark:border-neutral-500 dark:bg-neutral-600`
                             )}
@@ -67,15 +66,12 @@ export const TableOrderList: React.FC<{ id: string }> = (id) => {
 };
 
 export const TableOrder: React.FC<ITableOrder> = ({ items, columns }) => {
-    const t = useTranslations("Body")
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [customer, setCustomer] = useState<{ id: string, name: string, last_name: string } | null>(null);
 
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
     };
-
 
     return (
         <table className="min-w-full text-left text-sm font-light">
@@ -142,7 +138,6 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
         toggleModal()
     };
 
-
     return (
         <table className="min-w-full text-left text-sm font-light">
             {isModalOpen && customer != null && <OrderModal toggleModal={toggleModal} customer={customer as { id: string, name: string, last_name: string }} />}
@@ -156,35 +151,34 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
             <tbody>
                 {isLoading && <tr><td colSpan={6}>Loading...</td></tr>}
                 {!isLoading && items.length > 0 ? (
-                    items.map((i) => (
-                        <tr
-                            key={i.id}
+                    items.map((i) => {
+                        return (<tr
+                            key={parseInt(i.KNr)}
                             className={clsx(
-                                `${i.id % 2 !== 0 ? "bg-neutral-100" : "bg-white"} border-b dark:border-neutral-500 dark:bg-neutral-600`
+                                `${i.KNr % 2 !== 0 ? "bg-neutral-100" : "bg-white"} border-b dark:border-neutral-500 dark:bg-neutral-600`
                             )}
                         >
-                            <td className="whitespace-nowrap px-6 py-4">{i.id}</td>
-                            <td className="whitespace-nowrap px-6 py-4"><button onClick={() => fetchOrderAsync(i.id)}>{i.first_name}</button></td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.last_name}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.phone_number}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.postal_code}  {i.street_name} {i.home_number}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.description}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.KNr}</td>
+                            <td className="whitespace-nowrap px-6 py-4"><button onClick={() => fetchOrderAsync(i.id)}>{i.Name}</button></td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.Tel}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.Str}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.Ort}</td>
                             <td className="whitespace-nowrap px-6 py-4">
                                 <div className='flex flex-row'>
-                                    <button onClick={() => confirmDelete(i.id, i.first_name + " " + i.last_name)}>
+                                    <button onClick={() => confirmDelete(i.KNr, i.Name)}>
                                         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
                                             <g fill="#f60303" fillRule="nonzero" stroke="none" strokeWidth="1" strokeLinecap="butt" strokeLinejoin="miter" strokeMiterlimit="10" strokeDasharray="" strokeDashoffset="0" fontFamily="none" fontWeight="none" fontSize="none" textAnchor="none"><g transform="scale(5.33333,5.33333)"><path d="M24,4c-3.50831,0 -6.4296,2.62143 -6.91992,6h-10.58008c-0.54095,-0.00765 -1.04412,0.27656 -1.31683,0.74381c-0.27271,0.46725 -0.27271,1.04514 0,1.51238c0.27271,0.46725 0.77588,0.75146 1.31683,0.74381h2.13672l2.51953,26.0293c0.274,2.833 2.62956,4.9707 5.47656,4.9707h14.73438c2.847,0 5.20156,-2.1377 5.47656,-4.9707l2.51953,-26.0293h2.13672c0.54095,0.00765 1.04412,-0.27656 1.31683,-0.74381c0.27271,-0.46725 0.27271,-1.04514 0,-1.51238c-0.27271,-0.46725 -0.77588,-0.75146 -1.31683,-0.74381h-10.58008c-0.49032,-3.37857 -3.41161,-6 -6.91992,-6zM24,7c1.87916,0 3.42077,1.26816 3.86133,3h-7.72266c0.44056,-1.73184 1.98217,-3 3.86133,-3zM19.5,18c0.828,0 1.5,0.671 1.5,1.5v15c0,0.829 -0.672,1.5 -1.5,1.5c-0.828,0 -1.5,-0.671 -1.5,-1.5v-15c0,-0.829 0.672,-1.5 1.5,-1.5zM28.5,18c0.828,0 1.5,0.671 1.5,1.5v15c0,0.829 -0.672,1.5 -1.5,1.5c-0.828,0 -1.5,-0.671 -1.5,-1.5v-15c0,-0.829 0.672,-1.5 1.5,-1.5z"></path></g></g>
                                         </svg>
                                     </button>
                                     <button className='mx-3' onClick={() => createOrderAsync(i.id, i.first_name, i.last_name)}>
                                         <svg className="w-6 h-6 text-green-800 hover:text-red-800 hover:font-bold dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 18">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" stroke-width="2" d="M9.5 3h9.563M9.5 9h9.563M9.5 15h9.563M1.5 13a2 2 0 1 1 3.321 1.5L1.5 17h5m-5-15 2-1v6m-2 0h4" />
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.5 3h9.563M9.5 9h9.563M9.5 15h9.563M1.5 13a2 2 0 1 1 3.321 1.5L1.5 17h5m-5-15 2-1v6m-2 0h4" />
                                         </svg>
                                     </button>
                                 </div>
                             </td>
-                        </tr>
-                    ))
+                        </tr>)
+                    })
                 ) : (
                     <tr><td colSpan={6}>No posts available.</td></tr>
                 )}
@@ -197,7 +191,6 @@ export const TableMenu: React.FC<ITable> = ({ isLoading, items, columns, deleteR
 
     const t = useTranslations("Body")
     const confirmDelete = (itemId: string, name: string) => {
-
         const isConfirmed = window.confirm(`${t("Table.confirmDelete") + " " + name}`);
         if (isConfirmed) {
             deleteRow(itemId);
@@ -225,23 +218,24 @@ export const TableMenu: React.FC<ITable> = ({ isLoading, items, columns, deleteR
                                 `${i.id % 2 !== 0 ? "bg-neutral-100" : "bg-white"} border-b dark:border-neutral-500 dark:bg-neutral-600`
                             )}
                         >
-                            <td className="whitespace-nowrap px-6 py-4">{i.id}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.name}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.category}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.description}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{0}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.currency} {i.price}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.Type}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.CompNum}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.Name}</td>
+                            <td className="whitespace-nowrap px-6 py-4">EUR {i.SinglPreis}</td>
+                            <td className="whitespace-nowrap px-6 py-4">EUR {i.JumboPreis}</td>
+                            <td className="whitespace-nowrap px-6 py-4">EUR {i.FamilyPreis}</td>
+                            <td className="whitespace-nowrap px-6 py-4">EUR {i.PartyPreis}</td>
                             <td className="whitespace-nowrap px-6 py-4">
                                 <div className='flex flex-row'>
-                                    <button onClick={() => confirmDelete(i.id, i.name)}>
+                                    <button onClick={() => confirmDelete(i.CompNum, i.Name)}>
                                         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
-                                            <g fill="#f60303" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(5.33333,5.33333)"><path d="M24,4c-3.50831,0 -6.4296,2.62143 -6.91992,6h-10.58008c-0.54095,-0.00765 -1.04412,0.27656 -1.31683,0.74381c-0.27271,0.46725 -0.27271,1.04514 0,1.51238c0.27271,0.46725 0.77588,0.75146 1.31683,0.74381h2.13672l2.51953,26.0293c0.274,2.833 2.62956,4.9707 5.47656,4.9707h14.73438c2.847,0 5.20156,-2.1377 5.47656,-4.9707l2.51953,-26.0293h2.13672c0.54095,0.00765 1.04412,-0.27656 1.31683,-0.74381c0.27271,-0.46725 0.27271,-1.04514 0,-1.51238c-0.27271,-0.46725 -0.77588,-0.75146 -1.31683,-0.74381h-10.58008c-0.49032,-3.37857 -3.41161,-6 -6.91992,-6zM24,7c1.87916,0 3.42077,1.26816 3.86133,3h-7.72266c0.44056,-1.73184 1.98217,-3 3.86133,-3zM19.5,18c0.828,0 1.5,0.671 1.5,1.5v15c0,0.829 -0.672,1.5 -1.5,1.5c-0.828,0 -1.5,-0.671 -1.5,-1.5v-15c0,-0.829 0.672,-1.5 1.5,-1.5zM28.5,18c0.828,0 1.5,0.671 1.5,1.5v15c0,0.829 -0.672,1.5 -1.5,1.5c-0.828,0 -1.5,-0.671 -1.5,-1.5v-15c0,-0.829 0.672,-1.5 1.5,-1.5z"></path></g></g>
+                                            <g fill="#f60303" fill-rule="nonzero" stroke="none" strokeWidth="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(5.33333,5.33333)"><path d="M24,4c-3.50831,0 -6.4296,2.62143 -6.91992,6h-10.58008c-0.54095,-0.00765 -1.04412,0.27656 -1.31683,0.74381c-0.27271,0.46725 -0.27271,1.04514 0,1.51238c0.27271,0.46725 0.77588,0.75146 1.31683,0.74381h2.13672l2.51953,26.0293c0.274,2.833 2.62956,4.9707 5.47656,4.9707h14.73438c2.847,0 5.20156,-2.1377 5.47656,-4.9707l2.51953,-26.0293h2.13672c0.54095,0.00765 1.04412,-0.27656 1.31683,-0.74381c0.27271,-0.46725 0.27271,-1.04514 0,-1.51238c-0.27271,-0.46725 -0.77588,-0.75146 -1.31683,-0.74381h-10.58008c-0.49032,-3.37857 -3.41161,-6 -6.91992,-6zM24,7c1.87916,0 3.42077,1.26816 3.86133,3h-7.72266c0.44056,-1.73184 1.98217,-3 3.86133,-3zM19.5,18c0.828,0 1.5,0.671 1.5,1.5v15c0,0.829 -0.672,1.5 -1.5,1.5c-0.828,0 -1.5,-0.671 -1.5,-1.5v-15c0,-0.829 0.672,-1.5 1.5,-1.5zM28.5,18c0.828,0 1.5,0.671 1.5,1.5v15c0,0.829 -0.672,1.5 -1.5,1.5c-0.828,0 -1.5,-0.671 -1.5,-1.5v-15c0,-0.829 0.672,-1.5 1.5,-1.5z"></path></g></g>
                                         </svg>
                                     </button>
                                     <button>
                                         <svg width="19px" height="19px" viewBox="0 0 19 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
                                             <svg width="19px" height="19px" viewBox="0 0 19 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                                <g id="Icons" stroke="2" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                <g id="Icons" stroke="2" strokeWidth="1" fill="none" fill-rule="evenodd">
                                                     <g id="Rounded" transform="translate(-612.000000, -2106.000000)">
                                                         <g id="Editor" transform="translate(100.000000, 1960.000000)">
                                                             <g id="-Round-/-Editor-/-format_list_bulleted" transform="translate(510.000000, 142.000000)">
@@ -322,7 +316,7 @@ export const PaginationCustomized = ({ totalItems, pageNumber, pageItemsSize, se
         };
     }, [1000]);
     return (
-        <div className='flex  flex-row justify-between'>
+        <div className='flex flex-row justify-between'>
             <div className="items-center flex flex-col-reverse sm:flex-row-reverse  py-3 pl-4 ">
                 <div className='p-2 text-green-500 font-bold'>{currentDateTime}</div>
             </div>

@@ -38,9 +38,15 @@ export interface IField {
   placeholder: string;
 }
 
+export interface IFieldCustomer {
+  name: string;
+  value: string | object | number;
+  placeholder: string;
+}
+
 export interface IForm {
   formData: any;
-  fields: IField[];
+  fields: IFieldCustomer[];
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
   handleClose: () => void;
@@ -54,6 +60,12 @@ export interface IPagination {
 }
 
 export interface MENUFORM {
+  formData: any;
+  fields: IField[];
+  handleChange: (e: any) => void;
+  handleSubmit: (e: any) => void;
+}
+export interface IArticlesForm {
   formData: any;
   fields: IField[];
   handleChange: (e: any) => void;
@@ -78,4 +90,34 @@ export interface IPrint {
 export interface IOrderModal {
   toggleModal: () => void;
   customer: { id: string; name: string; last_name: string };
+}
+
+
+//Files Interfaces
+export interface IArticles {
+  Type: string;
+  CompNum: number;
+  IhreNum: string;
+  Name: string;
+  SinglPreis: number;
+  JumboPreis: number;
+  FamilyPreis: number;
+  PartyPreis: number;
+  MWSt: number;
+  Rabatt: number;
+}
+
+export interface ICustomers {
+  KNr?: number;
+  Name: string;
+  Tel: string;
+  Str: string;
+  Ort: string;
+  Bemerkung?: string;
+  Seit: string;
+  Mal?: number;
+  DM?: string;
+  letzte?: string;
+  Rabatt?: number;
+  Fix?: number;
 }
