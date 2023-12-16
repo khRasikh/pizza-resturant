@@ -24,7 +24,8 @@ export default function Customers() {
     const customerList: { headers: any, body: any[] } = await readDataFromTextFile()
 
     if (customerList.body) {
-      setCustomers(customerList.body.sort((a, b) => parseInt(b.KNr) - parseInt(a.KNr)));
+      // setCustomers(customerList.body.sort((a, b) => parseInt(b.KNr) - parseInt(a.KNr)));
+      setCustomers(customerList.body);
       setIsLoading(false);
     } else {
       setCustomers([]);
@@ -37,7 +38,6 @@ export default function Customers() {
   }, [customers]);
 
   const handleSearch = (value: string) => {
-    console.log("test search", value, customers.length)
     setSearchTerm(value);
     setPageNumber(1);
   };
