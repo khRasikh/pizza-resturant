@@ -48,7 +48,6 @@ export const clearOrderFields = {
   count: "",
   extra: "",
   total: "",
-  created_at: "",
 };
 
 export const toastMessages = {
@@ -73,4 +72,17 @@ export const OrderColumns = ["Anz", "Nr.", "Bez.", "Pr", "Extra", "Total"];
 export const Tables = {
   Article: "article",
   Customers: "customers",
+};
+
+// export const formatNumber = (value: string): string => {
+//   const parsedValue = parseFloat(value);
+//   if (!isNaN(parsedValue)) {
+//       return parsedValue.toFixed(2);
+//   }
+//   // Return the original value if parsing fails
+//   return value;
+// };
+
+export const formatNumber = (value: number): string => {
+  return value.toFixed(2); // Format number to two decimal places
 };

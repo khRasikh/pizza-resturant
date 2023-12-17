@@ -73,7 +73,6 @@ export interface IArticlesForm {
 
 export interface IFormModal {
   formDataModal: any;
-  fields: IField[];
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
   addToOrderList: () => void;

@@ -4,7 +4,7 @@ import { FormCreateOrder } from './form';
 import { OrderColumns, clearOrderFields, toastMessages } from '../shared/constants';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
-import { TableOrder,  } from '../shared/table';
+import { TableOrder, } from '../shared/table';
 import { handlePrint } from '../lib/print';
 import { IOrderModal } from '../interface/general';
 
@@ -25,18 +25,15 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
 
     // Function to add values to the array in formData
     const addToOrderList = () => {
-
         const newOrder = { ...formData };
-        const { id, name, price, count, extra, total, created_at } = formData;
+        const { id, name, price, count, extra, total } = formData;
 
         if (!id) {
-            return toast.error(t("Form.inCompleteMessage").replace("record", id), toastMessages.OPTION);
+            return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
         } else if (!count) {
-            return toast.error(t("Form.inCompleteMessage").replace("record", count), toastMessages.OPTION);
+            return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
         } else if (!price) {
-            return toast.error(t("Form.inCompleteMessage").replace("record", price), toastMessages.OPTION);
-        } else if (!extra) {
-            return toast.error(t("Form.inCompleteMessage").replace("record", extra), toastMessages.OPTION);
+            return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
         }
 
         setOrderList([...orderList, newOrder]);
@@ -45,7 +42,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
     const submit = async (e: any) => {
         e.preventDefault();
 
-        const { id, name, price, count, extra, total, created_at, } = formData;
+        const { id, name, price, count, extra, total, } = formData;
 
         if (!id) {
             return toast.error(t("Form.inCompleteMessage").replace("record", id), toastMessages.OPTION);
@@ -53,10 +50,8 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
             return toast.error(t("Form.inCompleteMessage").replace("record", count), toastMessages.OPTION);
         } else if (!price) {
             return toast.error(t("Form.inCompleteMessage").replace("record", price), toastMessages.OPTION);
-        } else if (!extra) {
-            return toast.error(t("Form.inCompleteMessage").replace("record", extra), toastMessages.OPTION);
         }
-        
+
         // Here, implement your code to send formData to your backend API
         const addOrder = await fetch("/api/psql/order/add", {
             method: "POST",
@@ -85,7 +80,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         });
     };
 
-   
+
     return (
         <div className="overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-300 bg-opacity-70 z-50">
             <div className="bg-white overflow-x-hidden rounded-lg p-4 md:p-8 min-w-[95%] md:min-w-[80%] lg:max-w-[50%]">
@@ -119,7 +114,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
                         </button>
                     </div>
 
-                    <FormCreateOrder formDataModal={formData} fields={orderFields} handleChange={change} handleSubmit={submit} addToOrderList={addToOrderList}
+                    <FormCreateOrder formDataModal={formData} handleChange={change} handleSubmit={submit} addToOrderList={addToOrderList}
                         handlePrint={() => handlePrint({ orderList, toggleModal })} isSubmitted={isSubmitted} />
 
                     {orderList.length > 0 && <div className="overflow-scroll max-h-[40vh]">
