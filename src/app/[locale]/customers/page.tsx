@@ -131,14 +131,22 @@ export default function Customers() {
           <div className="flex flex-row">
             <div>
               <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
-            </div>{" "}
+            </div>
             <div>
               <button
-                className="bg-green-500 hover:bg-green-700 my-2 py-2 text-white font-bold text-md px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
                 onClick={toggleForm}
-              >
-                {t1("Button.add").replace("Record", "Customer")}
+                type="button"
+                className="flex rounded-md hover:text-black hover:font-bold
+                  bg-slate-50-200 hover:white pr-4 pl-2 pb-2 pt-2 text-sm font-medium 
+                  leading-normal text-primary hover:text-primary-600 focus:text-primary-600
+                  focus:outline-none focus:ring-0 active:text-primary-700 shadow-md mx-2 mt-2">
+                <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                  className="w-6 h-5 font-bold hover:text-green-700">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg></span>
+                {t1("Button.addCustomer")}
               </button>
+
             </div>
           </div>
         </div>

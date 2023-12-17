@@ -68,6 +68,7 @@ export interface IArticlesForm {
   formData: any;
   fields: IField[];
   handleChange: (e: any) => void;
+  toggleForm: (e: any) => void;
   handleSubmit: (e: any) => void;
 }
 
@@ -104,9 +105,9 @@ export interface IArticles {
   SinglPreis: number;
   JumboPreis: number;
   FamilyPreis: number;
-  PartyPreis: number;
-  MWSt: number;
-  Rabatt: number;
+  PartyPreis?: number;
+  MWSt?: number;
+  Rabatt?: number;
 }
 
 export interface ICustomers {
