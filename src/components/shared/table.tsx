@@ -1,6 +1,6 @@
 "use client"
 import clsx from 'clsx';
-import { ITable, ITableOrder, NoResultFoundProps } from '../interface/general';
+import { IConsumerInOrder, ITable, ITableOrder, NoResultFoundProps } from '../interface/general';
 import { useState, useEffect } from 'react';
 import { timeZone, dateTimeFormat, OrderColumns } from './constants';
 import { useTranslations } from 'next-intl';
@@ -75,7 +75,7 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns }) => {
 
     return (
         <table className="min-w-full text-left text-sm font-light">
-            {isModalOpen && customer != null && <OrderModal toggleModal={toggleModal} customer={customer as { id: string, name: string, last_name: string }} />}
+            {isModalOpen && customer != null && <OrderModal toggleModal={toggleModal} customer={customer as unknown as IConsumerInOrder} />}
             <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
                 <tr>
                     {columns.map((l) => {
@@ -121,15 +121,15 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
     };
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [customer, setCustomer] = useState<{ name: string, last_name: string } | null>(null);
+    const [customer, setCustomer] = useState<IConsumerInOrder | null>(null);
 
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
     };
 
-    const createOrderAsync = (id: string, name: string, last_name: string) => {
+    const createOrderAsync = (customerInOrder: IConsumerInOrder) => {
         toggleModal()
-        setCustomer({ name, last_name })
+        setCustomer(customerInOrder)
     };
 
 
@@ -140,7 +140,7 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
 
     return (
         <table className="min-w-full text-left text-sm font-light">
-            {isModalOpen && customer != null && <OrderModal toggleModal={toggleModal} customer={customer as { id: string, name: string, last_name: string }} />}
+            {isModalOpen && customer != null && <OrderModal toggleModal={toggleModal} customer={customer} />}
             <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
                 <tr>
                     {columns.map((l) => {
@@ -152,6 +152,7 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
                 {isLoading && <tr><td colSpan={6}>Loading...</td></tr>}
                 {!isLoading && items.length > 0 ? (
                     items.map((i) => {
+                        const customerInOrder = { KNr: i.KNr, Name: i.Name, Tel: i.Tel }
                         return (<tr
                             key={parseInt(i.KNr)}
                             className={clsx(
@@ -170,7 +171,7 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
                                             <g fill="#f60303" fillRule="nonzero" stroke="none" strokeWidth="1" strokeLinecap="butt" strokeLinejoin="miter" strokeMiterlimit="10" strokeDasharray="" strokeDashoffset="0" fontFamily="none" fontWeight="none" fontSize="none" textAnchor="none"><g transform="scale(5.33333,5.33333)"><path d="M24,4c-3.50831,0 -6.4296,2.62143 -6.91992,6h-10.58008c-0.54095,-0.00765 -1.04412,0.27656 -1.31683,0.74381c-0.27271,0.46725 -0.27271,1.04514 0,1.51238c0.27271,0.46725 0.77588,0.75146 1.31683,0.74381h2.13672l2.51953,26.0293c0.274,2.833 2.62956,4.9707 5.47656,4.9707h14.73438c2.847,0 5.20156,-2.1377 5.47656,-4.9707l2.51953,-26.0293h2.13672c0.54095,0.00765 1.04412,-0.27656 1.31683,-0.74381c0.27271,-0.46725 0.27271,-1.04514 0,-1.51238c-0.27271,-0.46725 -0.77588,-0.75146 -1.31683,-0.74381h-10.58008c-0.49032,-3.37857 -3.41161,-6 -6.91992,-6zM24,7c1.87916,0 3.42077,1.26816 3.86133,3h-7.72266c0.44056,-1.73184 1.98217,-3 3.86133,-3zM19.5,18c0.828,0 1.5,0.671 1.5,1.5v15c0,0.829 -0.672,1.5 -1.5,1.5c-0.828,0 -1.5,-0.671 -1.5,-1.5v-15c0,-0.829 0.672,-1.5 1.5,-1.5zM28.5,18c0.828,0 1.5,0.671 1.5,1.5v15c0,0.829 -0.672,1.5 -1.5,1.5c-0.828,0 -1.5,-0.671 -1.5,-1.5v-15c0,-0.829 0.672,-1.5 1.5,-1.5z"></path></g></g>
                                         </svg>
                                     </button>
-                                    <button className='mx-3' onClick={() => createOrderAsync(i.id, i.first_name, i.last_name)}>
+                                    <button className='mx-3' onClick={() => createOrderAsync(customerInOrder)}>
                                         <svg className="w-6 h-6 text-green-800 hover:text-red-800 hover:font-bold dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 18">
                                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.5 3h9.563M9.5 9h9.563M9.5 15h9.563M1.5 13a2 2 0 1 1 3.321 1.5L1.5 17h5m-5-15 2-1v6m-2 0h4" />
                                         </svg>

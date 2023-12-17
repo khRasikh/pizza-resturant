@@ -4,7 +4,7 @@ import { FormCreateOrder } from './form';
 import { OrderColumns, clearOrderFields, toastMessages } from '../shared/constants';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
-import { TableOrder, TableOrderList } from '../shared/table';
+import { TableOrder,  } from '../shared/table';
 import { handlePrint } from '../lib/print';
 import { IOrderModal } from '../interface/general';
 
@@ -92,7 +92,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
                 <div className="overflow-y-auto overflow-x-hidden relative h-[70vh] max-h-[70vh]">
                     <div className="overflow-y-auto overflow-x-hidden flex items-center justify-between border-b mb-5">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                            Create New Order for Customer {customer.name} {customer.last_name}
+                            Create New Order for Customer {customer.KNr} {customer.Name}
                         </h3>
                         <button
                             type="button"

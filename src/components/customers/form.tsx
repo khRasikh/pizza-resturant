@@ -1,8 +1,72 @@
 "use client"
-import { IArticlesForm, IForm, IFormModal } from '../interface/general';
+import { getMenusFromFile } from '@/app/fileCrud';
+import { useEffect, useState } from 'react';
+import { IArticles, IArticlesForm, IForm, IFormModal } from '../interface/general';
 import { useTranslations } from 'next-intl';
 
 export const FormCreateOrder = ({ formDataModal, fields, handleChange, handleSubmit, addToOrderList, handlePrint, isSubmitted }: IFormModal) => {
+    const sizes = ["SinglPreis", "JumboPreis", "FamilyPreis", "PartyPreis"]
+
+    const [menu, setMenu] = useState<IArticles[]>([])
+    useEffect(() => {
+        const fetchMenus = async () => {
+            const menus = await getMenusFromFile()
+            if (menus.data) {
+                setMenu(menus.data)
+            }
+        }
+        fetchMenus()
+
+    }, [])
+
+    const [selectedOption, setSelectedOption] = useState('');
+    const [selectedPrice, setSelectedPrice] = useState<string>();
+    const [selectPrice, setSelectPrice] = useState<IArticles>();
+
+    const handleChangeCompNum = (e: any) => {
+        const value = e.target.value;
+        setSelectedOption(value);
+
+        // Find the price associated with the selected CompNum
+        const selectedMenu = menu.length > 0 && menu.find((item) => item.CompNum.toString() === value.toString()
+        );
+
+        if (selectedMenu) {
+            formDataModal[selectedMenu.SinglPreis.toString()]
+            console.log("test  e.target.value", selectedMenu.SinglPreis, formDataModal[selectedMenu.SinglPreis], selectedMenu)
+            setSelectedPrice(selectedMenu.SinglPreis.toString());
+            setSelectPrice(selectedMenu);
+        } else {
+            setSelectedPrice('');
+        }
+    };
+
+    const handleChangePrice = (e: any) => {
+        const value = e.target.value;
+        console.log("test pricexxx", value, sizes[0])
+
+        if (selectPrice) {
+            console.log(formDataModal[selectPrice.SinglPreis.toString()])
+            if (value.toString().toLowerCase() === sizes[0].toLowerCase()) {
+                console.log("test price1", selectPrice)
+                setSelectedPrice(formDataModal[selectPrice.SinglPreis.toString()])
+            } else if (value.toString().toLowerCase() === sizes[1].toLowerCase()) {
+                console.log("test price2", selectPrice)
+                setSelectedPrice(formDataModal[selectPrice.JumboPreis.toString()])
+            } else if (value.toString().toLowerCase() === sizes[2].toLowerCase()) {
+                console.log("test price3", selectPrice)
+                setSelectedPrice(formDataModal[selectPrice.FamilyPreis.toString()])
+            } else if (value.toString().toLowerCase() === sizes[3].toLowerCase()) {
+                console.log("test price4", selectPrice)
+                setSelectedPrice(formDataModal[selectPrice.PartyPreis.toString()])
+            }
+            // formDataModal[selectedMenu.SinglPreis.toString()]
+            // setSelectedPrice(selectedMenu.SinglPreis.toString());
+            // setSelectPrice(selectedMenu);
+        } else {
+            setSelectedPrice('');
+        }
+    };
     return (
         <form onSubmit={handleSubmit}>
             <div className="overflow-hidden">
@@ -10,18 +74,60 @@ export const FormCreateOrder = ({ formDataModal, fields, handleChange, handleSub
                     <table className="min-w-full text-left text-sm font-light items-center justify-center">
                         <tbody>
                             <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-2">
-                                {fields.map((field, index) => (
-                                    <td key={index} className={`${"pl-1 py-4 border-gray-500"}`}>
-                                        <input
-                                            type="text"
-                                            name={field.name}
-                                            value={formDataModal[field.name]}
-                                            onChange={handleChange}
-                                            className="w-full p-2 border rounded-md"
-                                            placeholder={field.placeholder}
-                                        />
-                                    </td>
-                                ))}
+                                <td className={`${"pl-1 py-4 border-gray-500"}`}>
+                                    <select
+                                        className="w-full p-2 border rounded-md"
+                                        value={selectedOption}
+                                        onChange={handleChangeCompNum}
+                                    >
+                                        <option value="">Select an option</option>
+                                        {menu.length > 0 &&
+                                            menu.map((item) => (
+                                                <option key={item.CompNum} value={item.CompNum}>
+                                                    {item.CompNum}: {item.Name}
+                                                </option>
+                                            ))}
+                                    </select>
+                                </td>
+                                <td className={`${"pl-1 py-4 border-gray-500"}`}>
+                                    <select className="w-full p-2 border rounded-md" onChange={handleChangePrice}>
+                                        {sizes.length > 0 &&
+                                            sizes.map((s) => (
+                                                <option key={s} value={s}>
+                                                    {s}
+                                                </option>
+
+                                            ))}
+                                    </select>
+                                </td>
+                                <td className={`${"pl-1 py-4 border-gray-500"}`}>
+                                    <input
+                                        type="text"
+                                        name="price"
+                                        value={selectedPrice}
+                                        onChange={handleChange}
+                                        className="w-full p-2 border rounded-md"
+                                        placeholder="Price"
+                                    />
+                                </td>
+                                {fields.map((field, index) => {
+                                    if (field.placeholder === "Kr-Nr") return null
+                                    return (
+                                        <td key={index} className={`${"pl-1 py-4 border-gray-500"}`}>
+                                            <input
+                                                type="text"
+                                                name={field.name}
+                                                value={formDataModal[field.name]}
+                                                onChange={handleChange}
+                                                className="w-full p-2 border rounded-md"
+                                                placeholder={field.placeholder}
+                                            />
+                                        </td>
+                                    )
+                                }
+                                )}
+
+
                                 <td>
                                     <div className='flex'>
                                         <button className='mx-4 mt-4 py-2 flex' type='button' onClick={addToOrderList}>

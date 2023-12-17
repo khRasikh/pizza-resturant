@@ -7,7 +7,7 @@ export async function getMenusFromFile() {
   const file = await fs.readFile(process.cwd() + "/article.json", "utf8");
   const data = JSON.parse(file);
   const sortedData = data.sort((a: { CompNum: number }, b: { CompNum: number }) => b.CompNum - a.CompNum);
-  return { data, sortedData };
+  return { data: sortedData };
 }
 
 export async function readDataFromTextFile(): Promise<any> {
@@ -45,18 +45,18 @@ export async function addDataToTextFile<T extends ICustomers>(newEntry: T, table
     headers.join("\t");
 
     // Check if KNr already exists
-    const existingKTel = body.filter((record: { Tel: string; }) => record.Tel === newEntry["Tel"]);
+    const existingKTel = body.filter((record: { Tel: string }) => record.Tel === newEntry["Tel"]);
     if (existingKTel.length > 0) {
       return { status: false, statusCode: 422, message: "Record already existed" };
     }
 
     // add new KNr if not existed
-    const existingKNrs = body.map((record: { KNr: any; }) => record.KNr);
+    const existingKNrs = body.map((record: { KNr: any }) => record.KNr);
     const newKNr = parseInt(existingKNrs[existingKNrs.length - 1]) + 1 || 1;
     newEntry["KNr"] = newKNr;
 
     console.log("test", newKNr);
-    const values = headers.map((header: keyof T) => newEntry[header as keyof T] || "").join("\t");
+    const values = headers.map((header: keyof T) => newEntry[header] || "").join("\t");
     const newData = `\n${values}`;
 
     await fs.appendFile(process.cwd() + `/${table}.txt`, newData, "latin1");
@@ -72,7 +72,9 @@ export async function deleteDataFromTextFile(KNr: string, table: string): Promis
   try {
     const { body, headers } = await readDataFromTextFile();
 
-    const indexToDelete = body.findIndex((record: { KNr: { toString: () => string; }; }) => record.KNr.toString().toLowerCase() === KNr.toString().toLowerCase());
+    const indexToDelete = body.findIndex(
+      (record: { KNr: { toString: () => string } }) => record.KNr.toString().toLowerCase() === KNr.toString().toLowerCase()
+    );
 
     if (indexToDelete === -1) {
       return { status: false, message: "Record not found" };
@@ -83,7 +85,9 @@ export async function deleteDataFromTextFile(KNr: string, table: string): Promis
 
     const newData = [
       headers.join("\t"),
-      ...body.map((record: { [x: string]: any; }) => headers.map((header: string) => record[header as keyof ICustomers] || "").join("\t")),
+      ...body.map((record: { [x: string]: any }) =>
+        headers.map((header: string) => record[header as keyof ICustomers] || "").join("\t")
+      ),
     ].join("\n");
 
     await fs.writeFile(process.cwd() + `/${table}.txt`, newData, "utf8");

@@ -58,8 +58,7 @@ export interface IPagination {
   changePage: (pageNumber: number) => void;
   rowCount: number;
 }
-
-export interface MENUFORM {
+export interface IMenuForm {
   formData: any;
   fields: IField[];
   handleChange: (e: any) => void;
@@ -86,12 +85,16 @@ export interface IPrint {
   orderList: any[];
   toggleModal: () => void;
 }
+export interface IConsumerInOrder {
+  KNr: number;
+  Name: string;
+  Tel: string;
+}
 
 export interface IOrderModal {
   toggleModal: () => void;
-  customer: { id: string; name: string; last_name: string };
+  customer: IConsumerInOrder;
 }
-
 
 //Files Interfaces
 export interface IArticles {

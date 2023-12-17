@@ -4032,7 +4032,6 @@ KNr	Name	Tel	Str	Ort	Bemerkung	Seit	Mal	DM	lezte	Rabatt	Fix
 4031	Schuls	017663435855	Wasserburger Landstr. 68   /Et: 	81827 Mnchen    []			08.05.15	1	    0,00	08.05.15	0
 4032	Diinr	6379435	Joseph-Maria-Lutz-Anger 30   /Et:eg	81737 Mnchen    []			08.05.15	1	    0,00	08.05.15	0
 4033	Embulaev	015156628441	Kaltenbachstr. 2  /Et:eg	81825 Mnchen    []			08.05.15	1	    0,00	08.05.15	0
-4034	Test	154545455	Defreggerstr. 44  /Et: 	85540 Mnchen-Haar    []			09.05.15	0	    0,00		0
 4035	Milosavlyevic	61309108	Ferdinand-Kobell-Str. 52  /Et: 	85540 Mnchen-Haar    []			09.05.15	1	    0,00	17.05.20	10
 4036	Weil	017622765349	Mittbacher Str. 15   /Et: 	81829 Mnchen    []			09.05.15	1	    0,00	09.05.15	0
 4037	Schr”der	01749720753	Tangastr. 18   /Et: 	81827 Mnchen    []			09.05.15	1	    0,00	09.05.15	0
