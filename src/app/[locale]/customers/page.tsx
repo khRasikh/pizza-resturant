@@ -85,12 +85,12 @@ export default function Customers() {
     { name: "Tel", value: formData.Tel, placeholder: t1("Form.Tel") },
     { name: "Str", value: formData.Str, placeholder: t1("Form.Str") },
     { name: "Ort", value: formData.Ort, placeholder: t1("Form.Ort") },
-    { name: "Bemerkung", value: formData.Bemerkung || '', placeholder: t1("Form.Bemerkung") },
     { name: "Seit", value: formData.Seit, placeholder: t1("Form.Seit") },
     { name: "Mal", value: formData.Mal ? formData.Mal : '', placeholder: t1("Form.Mal") },
     { name: "DM", value: formData.DM || '', placeholder: t1("Form.DM") },
     { name: "letzte", value: formData.letzte || '', placeholder: t1("Form.letzte") },
     { name: "Rabatt", value: formData.Rabatt ? formData.Rabatt : '', placeholder: t1("Form.Rabatt") },
+    { name: "Bemerkung", value: formData.Bemerkung || '', placeholder: t1("Form.Bemerkung") },
     // { name: "Fix", value: formData.Fix ? formData.Fix : '', placeholder: t1("Form.fixed") },
   ];
 

@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { SessionProvider } from "next-auth/react";
 import Header from "../auth/signin";
 import NavigationLink from "../shared/navigationLink";
+import ToggleSwitch from "../shared/toggleButton";
 
 export default function Navigation() {
   const t = useTranslations("Navigation");
@@ -16,6 +17,7 @@ export default function Navigation() {
             <div>
               <NavigationLink href="/menu">{t("menu")}</NavigationLink>
               <NavigationLink href="/customers">{t("customers")}</NavigationLink>
+              <ToggleSwitch />
             </div>
             <div>
               <Header />

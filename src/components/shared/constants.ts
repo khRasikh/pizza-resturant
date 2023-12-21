@@ -19,13 +19,13 @@ export const clearCustomerForm = {
   Tel: "",
   Str: "",
   Ort: "",
-  Bemerkung: "",
   Seit: "",
   Mal: undefined,
   DM: "",
   letzte: "",
   Rabatt: undefined,
   Fix: undefined,
+  Bemerkung: "",
 };
 
 export const clearMenuForm = {

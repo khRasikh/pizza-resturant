@@ -117,11 +117,11 @@ export interface ICustomers {
   Tel: string;
   Str?: string;
   Ort?: string;
-  Bemerkung?: string;
   Seit?: string;
   Mal?: number;
   DM?: string;
   letzte?: string;
   Rabatt?: number;
   Fix?: number;
+  Bemerkung?: string;
 }
