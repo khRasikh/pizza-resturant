@@ -80,7 +80,6 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         });
     };
 
-
     return (
         <div className="overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-300 bg-opacity-70 z-50">
             <div className="bg-white overflow-x-hidden rounded-lg p-4 md:p-8 min-w-[95%] md:min-w-[80%] lg:max-w-[50%]">
@@ -115,7 +114,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
                     </div>
 
                     <FormCreateOrder formDataModal={formData} handleChange={change} handleSubmit={submit} addToOrderList={addToOrderList}
-                        handlePrint={() => handlePrint({ orderList, toggleModal })} isSubmitted={isSubmitted} />
+                        handlePrint={() => handlePrint({customer, orderList, toggleModal })} isSubmitted={isSubmitted} />
 
                     {orderList.length > 0 && <div className="overflow-scroll max-h-[40vh]">
                         <TableOrder items={orderList} columns={OrderColumns} />

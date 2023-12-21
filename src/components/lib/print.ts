@@ -1,7 +1,7 @@
 import { IPrint } from "../interface/general";
 import { formattedDate } from "./customDate";
 
-export const handlePrint = ({ orderList, toggleModal }: IPrint) => {
+export const handlePrint = ({customer, orderList, toggleModal }: IPrint) => {
   let totalPrices = 0;
 
   // Generating HTML for order items
@@ -42,13 +42,13 @@ export const handlePrint = ({ orderList, toggleModal }: IPrint) => {
 
                 <div class="flex flex-col">
                     <div class="flex justify-between mb-1">
-                        <div>KNr:xxxxx</div>
-                        <div>Tel: 0536789033</div>
+                        <div>KNr: ${customer.KNr}</div>
+                        <div>Tel: ${customer.Tel}</div>
                     </div>
                     <div class="flex justify-between mb-1">
-                        <div>FeringStrsse 4x</div>
-                        <div>Unterfohring</div>
-                        <div>85477 Munichen</div>
+                        <div>${customer.Str}</div>
+                        <div>${customer.Seit}</div>
+                        <div>${customer.Ort}</div>
                     </div>
                 </div>
 

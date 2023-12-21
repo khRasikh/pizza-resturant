@@ -84,6 +84,7 @@ export interface IFormModal {
 export interface IPrint {
   orderList: any[];
   toggleModal: () => void;
+  customer: ICustomers
 }
 export interface IConsumerInOrder {
   KNr: number;
@@ -93,7 +94,7 @@ export interface IConsumerInOrder {
 
 export interface IOrderModal {
   toggleModal: () => void;
-  customer: IConsumerInOrder;
+  customer: ICustomers;
 }
 
 //Files Interfaces
@@ -114,10 +115,10 @@ export interface ICustomers {
   KNr?: number;
   Name: string;
   Tel: string;
-  Str: string;
-  Ort: string;
+  Str?: string;
+  Ort?: string;
   Bemerkung?: string;
-  Seit: string;
+  Seit?: string;
   Mal?: number;
   DM?: string;
   letzte?: string;

@@ -182,6 +182,13 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                                 </svg>
                                                 <p className='text-black hover:text-green-700 font-bold px-1 text-md'>Print</p>
                                             </button>}
+                                            <button type='button' className='my-5 py-1 flex px-2' onClick={handlePrint}>
+                                                <svg className="w-4 h-4 hover:text-green-800 text-black dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M5 20h10a1 1 0 0 0 1-1v-5H4v5a1 1 0 0 0 1 1Z" />
+                                                    <path d="M18 7H2a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2v-3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Zm-1-2V2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3h14Z" />
+                                                </svg>
+                                                <p className='text-black hover:text-green-700 font-bold px-1 text-md'>Print</p>
+                                            </button>
                                     </div>
                                 </td>
                             </tr>
@@ -202,7 +209,7 @@ const Form = ({ formData, fields, handleChange, handleSubmit, handleClose }: IFo
                 <div className="w-full">
                     <table className="min-w-full text-left text-sm font-light items-between justify-between">
                         <tbody>
-                            <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-2 ">
+                            <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-2 ">
                                 {fields.map((field, index) => (
                                     <td key={index} className={`${"pl-1 py-4 border-gray-500"}`}>
                                         <input
