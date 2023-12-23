@@ -33,7 +33,8 @@
     "authorized": "Authorized",
     "menu": "Menu",
     "signOut": "Sign Out",
-    "login": "Login"
+    "login": "Login",
+    "orders": "Orders"
   },
   "PageLayout": {
     "links": {
@@ -59,7 +60,7 @@
   },
   "Body": {
     "session": {
-      "unAuthorizedToAccessList": " Welcome to the page, you are not authorized to view all list! Only super admin knows!",
+      "unAuthorizedToAccessList": "Welcome to the page, you are not authorized to view all list! Please login to the system.",
       "welcome": "Welcome to ",
       "unAuthorizedToPage": "Not authorized, please signin to see the details!"
     },

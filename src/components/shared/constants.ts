@@ -51,8 +51,8 @@ export const clearOrderFields = {
 };
 
 export const toastMessages = {
-  ERROR_CONTENT: "Failed to delete customer",
-  SUCCESS_CONTENT: "Customer deleted successfully",
+  ERROR_CONTENT: "Failed to delete Record",
+  SUCCESS_CONTENT: "Record deleted successfully",
   OPTION: {
     position: toast.POSITION.TOP_RIGHT,
     autoClose: 2000,

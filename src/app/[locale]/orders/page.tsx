@@ -94,9 +94,9 @@ export default function Orders() {
                   bg-slate-50-200 hover:white pr-4 pl-2 pb-2 pt-2 text-sm font-medium 
                   leading-normal text-primary hover:text-primary-600 focus:text-primary-600
                   focus:outline-none focus:ring-0 active:text-primary-700 shadow-md mx-2 mt-2">
-                <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
                   className="w-6 h-5 font-bold hover:text-green-700">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg></span>
                 {t1("Button.addCustomer")}
               </button>

@@ -166,13 +166,13 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                     <div className='flex'>
                                         {!isSubmitted && <button className='mx-4 mt-4 py-2 flex' type='button' onClick={addToOrderList}>
                                             <svg className="w-4 h-4 text-green-800 hover:bg-green-300 hover:text-black rounded-full dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="M10 5.757v8.486M5.757 10h8.486M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 5.757v8.486M5.757 10h8.486M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                             </svg>
                                             <p className='text-black hover:text-green-700 font-bold px-1 text-md'>New</p>
                                         </button>}
                                         {!isSubmitted ? <button type="submit" className='my-5 py-1 flex px-2' onClick={() => handleSubmit}>
                                             <svg className="w-4 h-4 text-black hover:text-green-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="20" fill="none" viewBox="0 0 18 20">
-                                                <path stroke="currentColor" stroke-linecap="round" strokeWidth="3" d="M12 2h4a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h4m6 0v3H6V2m6 0a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1M5 5h8m-5 5h5m-8 0h.01M5 14h.01M8 14h5" />
+                                                <path stroke="currentColor" strokeLinecap="round" strokeWidth="3" d="M12 2h4a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h4m6 0v3H6V2m6 0a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1M5 5h8m-5 5h5m-8 0h.01M5 14h.01M8 14h5" />
                                             </svg>
                                             <p className='text-black hover:text-green-700 font-bold px-1 text-md'>Save</p>
 
@@ -206,7 +206,7 @@ const Form = ({ formData, fields, handleChange, handleSubmit, handleClose }: IFo
                         <tbody>
                             <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 ">
                                 {fields.map((field, index) => (
-                                    <td key={index} className={`${"pl-1 py-4 border-gray-500"}`}>
+                                    <td key={field.name} className={`${"pl-1 py-4 border-gray-500"}`}>
                                         <input
                                             type="text"
                                             name={field.name}
@@ -227,9 +227,9 @@ const Form = ({ formData, fields, handleChange, handleSubmit, handleClose }: IFo
                                         bg-green-700 hover:white pr-4 pl-2 pb-2 pt-2 text-sm font-medium 
                                         leading-normal text-primary hover:text-primary-600 focus:text-primary-600
                                         focus:outline-none focus:ring-0 active:text-primary-700 shadow-md mx-2">
-                                        <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                        <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
                                             className="w-6 h-5 font-bold hover:text-green-700">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                         </svg></span>
                                         {t("Button.submit")}
                                     </button>
@@ -239,10 +239,10 @@ const Form = ({ formData, fields, handleChange, handleSubmit, handleClose }: IFo
                                         className="flex rounded-md  hover:font-bold
                                         bg-red-700 text-white hover:text-black pr-4 pl-2 pb-2 pt-2 text-sm font-medium 
                                         leading-normal text-primary hover:text-primary-600 focus:text-primary-600
-                                        focus:outline-none focus:ring-0 active:text-primary-700 shadow-md mx-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                        focus:outline-none focus:ring-0 active:text-primary-700 shadow-md mx-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
                                             className="w-6 h-5 font-bold hover:text-green-700">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
 
                                         {t("Button.close")}
@@ -267,13 +267,12 @@ export const FormMenu = ({ formData, fields, handleChange, toggleForm, handleSub
                         <tbody>
                             <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-2 ">
                                 {fields.map((field, index) => {
-                                    const inputType = field.name === "id";
                                     return (
                                         <td key={field.name} className={`lg:col-span-2 pl-1 py-4 border-gray-500" `}>
                                             <input
-                                                type={`${inputType ? "number" : "text"}`}
-                                                name={field.name as string}
-                                                value={formData[field.name]}
+                                                type={`${"text"}`}
+                                                name={field.name}
+                                                value={formData[field.name] === 0 ? "" : formData[field.name]}
                                                 onChange={handleChange}
                                                 className="w-full p-2 border rounded-md"
                                                 placeholder={field.placeholder}
@@ -281,8 +280,6 @@ export const FormMenu = ({ formData, fields, handleChange, toggleForm, handleSub
                                         </td>
                                     );
                                 })}
-
-
                             </tr>
                             <tr>
                                 <td className="col-span-4 px-1 py-4 flex items-center justify-center lg:justify-center">
@@ -292,9 +289,9 @@ export const FormMenu = ({ formData, fields, handleChange, toggleForm, handleSub
                                         bg-green-700 hover:white pr-4 pl-2 pb-2 pt-2 text-sm font-medium 
                                         leading-normal text-primary hover:text-primary-600 focus:text-primary-600
                                         focus:outline-none focus:ring-0 active:text-primary-700 shadow-md mx-2">
-                                        <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                        <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
                                             className="w-6 h-5 font-bold hover:text-green-700">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                         </svg></span>
                                         {t("Button.addMenu")}
                                     </button>
@@ -305,9 +302,9 @@ export const FormMenu = ({ formData, fields, handleChange, toggleForm, handleSub
                                         bg-red-700 text-white hover:text-black pr-4 pl-2 pb-2 pt-2 text-sm font-medium 
                                         leading-normal text-primary hover:text-primary-600 focus:text-primary-600
                                         focus:outline-none focus:ring-0 active:text-primary-700 shadow-md mx-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
                                             className="w-6 h-5 font-bold hover:text-green-700">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
 
                                         {t("Button.close")}

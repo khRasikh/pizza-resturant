@@ -53,9 +53,9 @@ export default function Menu() {
 
     if (addMenu.status && addMenu.statusCode === 200) {
       setFormData(clearMenuForm);
-      toast.success(t1("Form.inCompleteMessage").replace("record", "menu"), toastMessages.OPTION);
+      toast.success(t1("Form.inCompleteMessage"), toastMessages.OPTION);
     } else {
-      toast.error(t1("Form.errorMessage").replace("record", "menu"), toastMessages.OPTION);
+      toast.error(t1("Form.errorMessage"), toastMessages.OPTION);
     }
   };
 
@@ -118,7 +118,7 @@ export default function Menu() {
   return (
     <PageLayout title={t("title")}>
       <div className="justify-between items-between">
-        <div className={clsx(`${showForm?"rounded-md px-8 bg-slate-200": "rounded-md px-8"}`)}>
+        <div className={clsx(`${showForm ? "rounded-md px-8 bg-slate-200" : "rounded-md px-8"}`)}>
           {showForm ? <FormMenu formData={formData} fields={inputFields} handleChange={change} handleSubmit={submit} toggleForm={toggleForm} />
             : <div className="flex flex-row items-center justify-center">
               <button
@@ -128,9 +128,9 @@ export default function Menu() {
                  bg-slate-200 hover:white pr-4 pl-2 pb-2 pt-2 text-sm font-medium 
                  leading-normal text-primary hover:text-primary-600 focus:text-primary-600
                   focus:outline-none focus:ring-0 active:text-primary-700 shadow-md mx-2">
-                <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
                   className="w-6 h-5 font-bold hover:text-green-700">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg></span>
                 {t1("Button.addMenu")}
               </button>

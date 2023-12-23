@@ -310,17 +310,5 @@
     "PartyPreis": 27,
     "MWSt": 1,
     "RabattDrucker2": 1
-  },
-  {
-    "Type": "N",
-    "CompNum": 28,
-    "IhreNum": "",
-    "Name": "Wunsch Pizza",
-    "SinglPreis": 8.5,
-    "JumboPreis": 13,
-    "FamilyPreis": 22,
-    "PartyPreis": 29,
-    "MWSt": 1,
-    "RabattDrucker2": 1
   }
 ]
