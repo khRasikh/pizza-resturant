@@ -26,7 +26,6 @@ export default function Customers() {
     if (customerList.body) {
       const sortedCustomers = customerList.body.toSorted((a, b) => parseInt(b.KNr) - parseInt(a.KNr))
       setCustomers(sortedCustomers);
-      setCustomers(customerList.body);
       setIsLoading(false);
     } else {
       setCustomers([]);
@@ -61,19 +60,25 @@ export default function Customers() {
 
     if (addCustomer.status) {
       setFormData(clearCustomerForm);
-      toast.success(t1("Form.successMessage").replace("record", "Customer"), toastMessages.OPTION);
+      toast.success(t1("Form.successMessage"), toastMessages.OPTION);
       setShowForm(true);
     } else {
-      toast.error(t1("Form.errorMessage").replace("record", "Customer"), toastMessages.OPTION);
+      toast.error(t1("Form.errorMessage"), toastMessages.OPTION);
     }
   };
 
 
+  // filter str input textbox
+  const [filteredStr, setFilteredStr] = useState<any>([])
   const change = (e: any) => {
     const { name, value } = e.target;
 
-    if (name !== "Str") {
-      formData["Ort"] = "45345"
+    if (name === "Str") {
+      // Grouping by Postal Codes (Ort)
+      const matchingObjects = customers.length > 0 && customers.filter((obj: any) => obj.Str.includes(value));
+      if (Array.isArray(matchingObjects) && value.length > 0) {
+        setFilteredStr(matchingObjects)
+      }
     }
 
     setFormData({
@@ -82,18 +87,14 @@ export default function Customers() {
     });
   };
 
-  const toggleForm = () => {
-    setShowForm(!showForm);
-  };
-
   const inputFields = [
     { name: "Name", value: formData.Name, placeholder: t1("Form.name") },
     { name: "Tel", value: formData.Tel, placeholder: t1("Form.Tel") },
     { name: "Str", value: formData.Str, placeholder: t1("Form.Str") },
     { name: "Ort", value: formData.Ort, placeholder: t1("Form.Ort") },
     { name: "Seit", value: formData.Seit, placeholder: t1("Form.Seit") },
-    { name: "Mal", value: formData.Mal ? formData.Mal : '', placeholder: t1("Form.Mal") },
-    { name: "DM", value: formData.DM || '', placeholder: t1("Form.DM") },
+    // { name: "Mal", value: formData.Mal ? formData.Mal : '', placeholder: t1("Form.Mal") },
+    // { name: "DM", value: formData.DM || '', placeholder: t1("Form.DM") },
     { name: "letzte", value: formData.letzte || '', placeholder: t1("Form.letzte") },
     { name: "Rabatt", value: formData.Rabatt ? formData.Rabatt : '', placeholder: t1("Form.Rabatt") },
     { name: "Bemerkung", value: formData.Bemerkung || '', placeholder: t1("Form.Bemerkung") },
@@ -128,6 +129,12 @@ export default function Customers() {
       toast.error(t1("Form.errorMessage"), toastMessages.OPTION);
       console.error("Error deleting customer:", error);
     }
+  };
+
+  const toggleForm = () => {
+    setShowForm(!showForm);
+    setFormData(clearCustomerForm)
+    setFilteredStr([])
   };
 
   return (
@@ -165,6 +172,7 @@ export default function Customers() {
             handleChange={change}
             handleSubmit={submit}
             handleClose={toggleForm}
+            filteredStr={filteredStr}
           />
         </div>
       )}

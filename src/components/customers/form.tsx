@@ -1,7 +1,7 @@
 "use client"
 import { getMenusFromFile } from '@/app/fileCrud';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { IArticles, IArticlesForm, IForm, IFormModal } from '../interface/general';
+import { IArticles, IArticlesForm, ICustomers, IForm, IFormModal } from '../interface/general';
 import { useTranslations } from 'next-intl';
 import { formatNumber } from '../shared/constants';
 
@@ -196,27 +196,58 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
     );
 };
 
-const Form = ({ formData, fields, handleChange, handleSubmit, handleClose }: IForm) => {
+const Form = ({ formData, fields, handleChange, handleSubmit, handleClose, filteredStr }: IForm) => {
     const t = useTranslations("Body")
+    const [showOptions, setShowOptions] = useState(false);
+
+    const handleOptionClick = (value: ICustomers) => {
+        setShowOptions(false);
+        formData["Str"] = value.Str
+        formData["Ort"] = value.Ort
+    };
+
+    useEffect(() => {
+        setShowOptions(filteredStr.length > 0); // Show options only if there are items in the filtered list
+    }, [filteredStr]);
+
     return (
         <form onSubmit={handleSubmit}>
             <div className="overflow-hidden">
                 <div className="w-full">
                     <table className="min-w-full text-left text-sm font-light items-between justify-between">
                         <tbody>
-                            <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 ">
-                                {fields.map((field, index) => (
-                                    <td key={field.name} className={`${"pl-1 py-4 border-gray-500"}`}>
-                                        <input
-                                            type="text"
-                                            name={field.name}
-                                            value={formData[field.name]}
-                                            onChange={handleChange}
-                                            className="w-full p-2 border rounded-md"
-                                            placeholder={field.placeholder}
-                                        />
-                                    </td>
-                                ))}
+                            <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 font-bold ">
+                                {fields.map((field, index) => {
+
+                                    return (
+                                        <td key={field.name} className={`${"pl-1 py-4 border-gray-500"}`}>
+                                            <div className='flex flex-row w-full'>
+                                                <input
+                                                    type="text"
+                                                    name={field.name}
+                                                    value={formData[field.name]}
+                                                    onChange={handleChange}
+                                                    className="w-full p-2 border rounded-md"
+                                                    placeholder={field.placeholder}
+                                                />
+                                                {showOptions && field.placeholder === "Str" && (
+                                                    <span className="options-list absolute mt-10 h-44 w-fit px-6 overflow-x-hidden overflow-y-scroll bg-white  border rounded-md">
+                                                        {filteredStr.map((obj: any, index: any) => (
+                                                            <button
+                                                                type='button'
+                                                                key={index}
+                                                                className="option block w-full p-2 text-left hover:bg-slate-500 hover:text-white"
+                                                                onClick={() => handleOptionClick(obj)}
+                                                            >
+                                                                {obj.Str}
+                                                            </button>
+                                                        ))}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </td>)
+                                }
+                                )}
 
                             </tr>
                             <tr>
@@ -265,7 +296,7 @@ export const FormMenu = ({ formData, fields, handleChange, toggleForm, handleSub
                 <div className="w-full">
                     <table className="min-w-full text-left text-sm font-light items-between justify-between">
                         <tbody>
-                            <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-2 ">
+                            <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-2 font-bold ">
                                 {fields.map((field, index) => {
                                     return (
                                         <td key={field.name} className={`lg:col-span-2 pl-1 py-4 border-gray-500" `}>

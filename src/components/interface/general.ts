@@ -47,6 +47,7 @@ export interface IFieldCustomer {
 export interface IForm {
   formData: any;
   fields: IFieldCustomer[];
+  filteredStr: any
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
   handleClose: () => void;

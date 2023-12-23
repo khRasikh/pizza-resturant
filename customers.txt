@@ -7752,4 +7752,5 @@ KNr	Name	Tel	Str	Ort	Bemerkung	Seit	Mal	DM	lezte	Rabatt	Fix
 7752	Stckrk	43779702	Hochalmstr. 24  /Et: 	81825 Mnchen    []			10.06.13	1	    0,00	09.08.13	0
 7753	Schuster	21969893	Ina Seidel Bogen 26	81929 Mnchen			10.06.13	1	    0,00	02.03.16	0
 7754	Anh Tu Doan	01749804065	Peschlanger 12 /Et:6	81735 Mnchen    []			10.06.13	1	    0,00	10.06.13	0
-7755	test	0239482309	strabe	ort							
+7756	Test 2	01231231	Dingolfinger Str.3  Et:13	81673 M�nchen    []	NO	8				90	
+7757	Ahmad Reza	016398474890	Bernadottestr. 33   /Et: 	81827 M�nchen    []	no benchmark is here	934897				90	
