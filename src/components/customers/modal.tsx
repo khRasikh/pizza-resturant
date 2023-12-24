@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
 import { TableOrder, TableOrderList, } from '../shared/table';
 import { handlePrint } from '../lib/print';
-import { IOrderModal } from '../interface/general';
+import { IOrder, IOrderModal } from '../interface/general';
 import { getDataByID } from '../shared/psqlCrud';
 
 export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => {
@@ -14,14 +14,16 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
     const t = useTranslations("Body")
 
-    const [orderList, setOrderList] = useState<any[]>([]);
+    formData["customer_id"] = customer.KNr!
+    formData["discount"] = customer.Rabatt!
+
+    const [orderList, setOrderList] = useState<IOrder[]>([]);
 
     // Function to add values to the array in formData
     const addToOrderList = () => {
         const newOrder = { ...formData };
-        const { id, name, price, count, extra, total, customer_id } = formData;
 
-        formData["customer_id"] = customer.KNr!
+        const { id, name, price, count, total, customer_id } = formData;
 
         if (!id || !count || !price || !total || !customer_id) {
             return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
@@ -34,7 +36,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
 
         const { id, name, price, count, extra, total, customer_id } = formData;
 
-        if (!id || !count || !price || !customer_id) {
+        if (!id || !count || !price || !customer_id || !total) {
             return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
         }
 
@@ -59,9 +61,14 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
 
     const change = (e: any) => {
         const { name, value } = e.target;
+        let newValue = value;
+
+        if (name === 'total') {
+            newValue = parseFloat(value).toFixed(2);
+        }
         setFormData({
             ...formData,
-            [name]: value,
+            [name]: newValue
         });
     };
 

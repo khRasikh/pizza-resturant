@@ -20,11 +20,11 @@ export const clearCustomerForm = {
   Str: "",
   Ort: "",
   Seit: "",
-  Mal: undefined,
+  Mal: 0,
   DM: "",
   letzte: "",
-  Rabatt: undefined,
-  Fix: undefined,
+  Rabatt: 0,
+  Fix: 0,
   Bemerkung: "",
 };
 
@@ -46,8 +46,9 @@ export const clearOrderFields = {
   customer_id: 0,
   name: "",
   price: "",
-  count: "",
+  count: 0,
   extra: "",
+  discount: 0,
   total: "",
 };
 
@@ -64,26 +65,22 @@ export const MenuColumns = ["Type", "CompNum", "Name", "SinglPreis", "JumboPreis
 
 export const CustomerProperties = ["KNr", "Name", "Tel", "Str", "Ort", "Bemerkung"];
 
-export const CustomerColumns = ["KNr", "Name", "Tel", "Str", "Ort", "Bemerkung"];
+export const CustomerColumns = ["KNr", "Name", "Tel", "Str", "Ort", "Rabatt", "Bemerkung"];
 
 export const DefaultPageNumber = 10;
 
-export const OrderColumns = ["Anz", "Nr.", "Bez.", "Pr", "Extra", "Total"];
+export const OrderColumns = ["Anz", "Nr.", "Bez.", "Pr", "Extra", "Rabatt", "Total"];
 
 export const Tables = {
   Article: "article",
   Customers: "customers",
 };
 
-// export const formatNumber = (value: string): string => {
-//   const parsedValue = parseFloat(value);
-//   if (!isNaN(parsedValue)) {
-//       return parsedValue.toFixed(2);
-//   }
-//   // Return the original value if parsing fails
-//   return value;
-// };
-
 export const formatNumber = (value: number): string => {
-  return value.toFixed(2); // Format number to two decimal places
+  const parsedValue = parseFloat(value.toString());
+  if (!isNaN(parsedValue)) {
+    return parsedValue.toFixed(2);
+  }
+  // Return the original value if parsing fails
+  return value.toString();
 };

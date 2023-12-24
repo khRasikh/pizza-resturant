@@ -16,7 +16,7 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
                 <td>${order.count}X</td>
                 <td>${order.id}:</td>
                 <td>${order.name}</td>
-                <td>${order.total}</td>
+                <td>${formatNumber(Number(order.total))}</td>
                 <td>-</td>
             </tr>
         `;
@@ -82,7 +82,7 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
                 <!-- Seventh Row - Total -->
                 <div class="flex justify-between">
                     <div>Rechnungsbetrag Brutto:</div>
-                    <div>Euro ${totalPrices.toFixed(3)}</div>
+                    <div class="font-bold">€ ${totalPrices.toFixed(2)}</div>
                 </div>
 
                 <div class="flex justify-between mt-4 mb-2">

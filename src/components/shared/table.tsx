@@ -2,7 +2,7 @@
 import clsx from 'clsx';
 import { IConsumerInOrder, ICustomers, ITable, ITableOrder, NoResultFoundProps } from '../interface/general';
 import { useState, useEffect } from 'react';
-import { timeZone, dateTimeFormat, OrderColumns } from './constants';
+import { timeZone, dateTimeFormat, OrderColumns, formatNumber } from './constants';
 import { useTranslations } from 'next-intl';
 import { OrderModal } from '../customers/modal';
 import { formattedDate } from '../lib/customDate';
@@ -31,20 +31,13 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
         setCustomer(customerInOrder)
     };
 
-
-    //display orders
-    const fetchOrderAsync = (id: string) => {
-        toggleModal()
-    };
-
-
     return (
-        <table className="min-w-full text-left text-sm font-light">
+        <table className="min-w-full text-left text-sm font-light text-black">
             {isModalOpen && customer != null && <OrderModal toggleModal={toggleModal} customer={customer} />}
             <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
                 <tr>
                     {columns.map((l) => {
-                        return (<th scope="col" key={l} className="px-6 py-4">{l}</th>)
+                        return (<th scope="col" key={l} className="px-3 py-2">{l}</th>)
                     })}
                 </tr>
             </thead>
@@ -55,15 +48,17 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
                         return (<tr
                             key={parseInt(i.KNr)}
                             className={clsx(
-                                `${i.KNr % 2 !== 0 ? "bg-neutral-100" : "bg-white"} border-b dark:border-neutral-500 dark:bg-neutral-600`
+                                `${i.KNr % 2 !== 0 ? "bg-salte-100" : "bg-white"} border-b hover:bg-slate-300 hover:font-bold hover:rounded-md  text-black`
                             )}
                         >
-                            <td className="whitespace-nowrap px-6 py-4">{i.KNr}</td>
-                            <td className="whitespace-nowrap px-6 py-4"><button onClick={() => fetchOrderAsync(i.id)}>{i.Name}</button></td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.Tel}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.Str}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.Ort}</td>
-                            <td className="whitespace-nowrap px-6 py-4">
+                            <td className="whitespace-nowrap px-3 py-2">{i.KNr}</td>
+                            <td className="whitespace-nowrap px-3 py-2"><button onClick={() => createOrderAsync(i)}
+                                className='text-green-700 hover:text-black hover:font-bold'>{i.Name}</button></td>
+                            <td className="whitespace-nowrap px-3 py-2">{i.Tel}</td>
+                            <td className="whitespace-nowrap px-3 py-2">{i.Str}</td>
+                            <td className="whitespace-nowrap px-3 py-2">{i.Ort}</td>
+                            <td className="whitespace-nowrap px-3 py-2">{i.Rabatt}%</td>
+                            <td className="whitespace-nowrap px-3 py-2">
                                 <div className='flex flex-row'>
                                     <button onClick={() => confirmDelete(i.KNr, i.Name)}>
                                         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
@@ -104,7 +99,7 @@ export const TableMenu: React.FC<ITable> = ({ isLoading, items, columns, deleteR
             <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
                 <tr>
                     {columns.map((l) => {
-                        return (<th key={l} scope="col" className="px-6 py-4">{l}</th>)
+                        return (<th key={l} scope="col" className="px-6 py-1">{l}</th>)
                     })}
                 </tr>
             </thead>
@@ -115,17 +110,17 @@ export const TableMenu: React.FC<ITable> = ({ isLoading, items, columns, deleteR
                         <tr
                             key={index}
                             className={clsx(
-                                `${i.id % 2 !== 0 ? "bg-neutral-100" : "bg-white"} border-b dark:border-neutral-500 dark:bg-neutral-600`
+                                `${i.CompNum % 2 !== 0 ? "bg-neutral-100" : "bg-white"} hover:bg-slate-300 hover:font-bold hover:rounded-md border-b dark:border-neutral-500 dark:bg-neutral-600`
                             )}
                         >
-                            <td className="whitespace-nowrap px-6 py-4">{i.Type}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.CompNum}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.Name}</td>
-                            <td className="whitespace-nowrap px-6 py-4">€ {i.SinglPreis}</td>
-                            <td className="whitespace-nowrap px-6 py-4">€ {i.JumboPreis}</td>
-                            <td className="whitespace-nowrap px-6 py-4">€ {i.FamilyPreis}</td>
-                            <td className="whitespace-nowrap px-6 py-4">€ {i.PartyPreis}</td>
-                            <td className="whitespace-nowrap px-6 py-4">
+                            <td className="whitespace-nowrap px-3 py-1">{i.Type}</td>
+                            <td className="whitespace-nowrap px-3 py-1">{i.CompNum}</td>
+                            <td className="whitespace-nowrap px-3 py-1">{i.Name}</td>
+                            <td className="whitespace-nowrap px-3 py-1">€ {i.SinglPreis}</td>
+                            <td className="whitespace-nowrap px-3 py-1">€ {i.JumboPreis}</td>
+                            <td className="whitespace-nowrap px-3 py-1">€ {i.FamilyPreis}</td>
+                            <td className="whitespace-nowrap px-3 py-1">€ {i.PartyPreis}</td>
+                            <td className="whitespace-nowrap px-3 py-1">
                                 <div className='flex flex-row'>
                                     <button onClick={() => confirmDelete(i.CompNum, i.Name)} >
                                         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24" viewBox="0,0,256,256">
@@ -167,7 +162,7 @@ export const TableOrderList: React.FC<TableOrderListProps> = ({ ordered }) => {
             <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
                 <tr>
                     {OrderColumns.map((l) => {
-                        return (<th scope="col" key={l} className="px-6 py-4">{l}</th>)
+                        return (<th scope="col" key={l} className="px-2 py-1">{l}</th>)
                     })}
                 </tr>
             </thead>
@@ -176,15 +171,16 @@ export const TableOrderList: React.FC<TableOrderListProps> = ({ ordered }) => {
                     <tr
                         key={i.id + index}
                         className={clsx(
-                            `${i.id % 2 !== 0 ? "bg-neutral-200" : "bg-neutral-100"} hover:bg-slate-200 border-b dark:border-neutral-500 dark:bg-neutral-600`
+                            `${i.id % 2 !== 0 ? "bg-neutral-200" : "bg-neutral-100"} hover:bg-slate-300 hover:font-bold hover:rounded-md border-b dark:border-neutral-500 dark:bg-neutral-600`
                         )}
                     >
-                        <td className="whitespace-nowrap px-6 py-4">{i.id}</td>
-                        <td className="whitespace-nowrap px-6 py-4">{i.name}</td>
-                        <td className="whitespace-nowrap px-6 py-4">{i.count}</td>
-                        <td className="whitespace-nowrap px-6 py-4">€{i.price}</td>
-                        <td className="whitespace-nowrap px-6 py-4">{i.extra} </td>
-                        <td className="whitespace-nowrap px-6 py-4">€{i.total}</td>
+                        <td className="whitespace-nowrap px-2 py-1">{i.id}</td>
+                        <td className="whitespace-nowrap px-2 py-1">{i.customer_id}</td>
+                        <td className="whitespace-nowrap px-2 py-1">{i.count}</td>
+                        <td className="whitespace-nowrap px-2 py-1">€{i.price}</td>
+                        <td className="whitespace-nowrap px-2 py-1">{i.extra} </td>
+                        <td className="whitespace-nowrap px-2 py-1">% {i.discount ? i.discount : 0} </td>
+                        <td className="whitespace-nowrap px-2 py-1">€{formatNumber(Number(i.total))}</td>
                     </tr>
                 )
                 )}
@@ -208,27 +204,28 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns }) => {
             <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
                 <tr>
                     {columns.length > 0 && columns.map((l, index) => {
-                        return (<th scope="col" key={l + index} className="px-6 py-4">{l}</th>)
+                        return (<th scope="col" key={l + index} className="px-6 py-2">{l}</th>)
                     })}
                 </tr>
             </thead>
             <tbody>
                 {items.length > 0 ? (
-                    items.map((i, index) => (
+                    items.map((i, index = 0) => (
                         <tr
                             key={i.id + index}
                             className={clsx(
-                                `${parseInt(i.id) % 2 !== 0 ? "bg-neutral-100" : "bg-white"} border-b dark:border-neutral-500 dark:bg-neutral-600`
+                                `${(index + 1) % 2 !== 0 ? "bg-neutral-100" : "bg-white"} text-black border-b hover:bg-slate-300 hover:font-bold hover:rounded-md`
                             )}
                         >
-                            <td className="whitespace-nowrap px-6 py-4">{i.id}</td>
-                            {/* <td className="whitespace-nowrap px-6 py-4">{i.user_id}</td> */}
-                            <td className="whitespace-nowrap px-6 py-4">{i.customer_id}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.count}</td>
-                            <td className="whitespace-nowrap px-6 py-4">€ {i.price}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.extra} </td>
-                            <td className="whitespace-nowrap px-6 py-4">€ {i.total}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.order_date && formattedDate(i.order_date?.toString())}</td>
+                            <td className="whitespace-nowrap px-4 py-2">{i.id}</td>
+                            {/* <td className="whitespace-nowrap px-4 py-2">{i.user_id}</td> */}
+                            <td className="whitespace-nowrap px-4 py-2">{i.customer_id}</td>
+                            <td className="whitespace-nowrap px-4 py-2">{i.count}</td>
+                            <td className="whitespace-nowrap px-4 py-2">€ {i.price}</td>
+                            <td className="whitespace-nowrap px-4 py-2">{i.extra} </td>
+                            <td className="whitespace-nowrap px-4 py-2">% {i.discount} </td>
+                            <td className="whitespace-nowrap px-4 py-2">€ {formatNumber(Number(i.total))}</td>
+                            <td className="whitespace-nowrap px-4 py-2">{i.order_date && formattedDate(i.order_date?.toString())}</td>
                         </tr>
                     ))
                 ) :

@@ -7755,3 +7755,5 @@ KNr	Name	Tel	Str	Ort	Bemerkung	Seit	Mal	DM	lezte	Rabatt	Fix
 7756	Test 2	01231231	Dingolfinger Str.3  Et:13	81673 MÔøΩnchen    []	NO	8				90	
 7757	Ahmad Reza	016398474890	Bernadottestr. 33   /Et: 	81827 MÔøΩnchen    []	no benchmark is here	934897				90	
 7758	test three	0123123	Zornedinger Str. 7a   /Et: 	81671 MÔøΩnchen    []		te					
+7759	Ebrahim	0123123187	Erdinger Str. 42   /Et: 	81829 MÅnchen    []	Special Customer	0				12	
+7760	navid	02132198	Edinburghplatz  10  /Et:5  	81829 MÅnchen    []						10	

@@ -54,35 +54,54 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
     const handleChangePrice = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value;
         setSelectedPrice(value)
-        formDataModal["price"] = value;
+        formDataModal["price"] = formatNumber(parseFloat((value)));
     };
 
 
     const [count, setCount] = useState<number>(0);
     const [extra, setExtra] = useState<number>(0);
     const [total, setTotal] = useState<number>(0);
+    const [discount, setDiscount] = useState<number>(0);
 
+    // Function to calculate the total with discount
+    const calculateTotal = (newCount: number, newExtra: number, newDiscount: number) => {
+        if (selectedPrice) {
+            let discountedTotal = (newCount * parseFloat(selectedPrice) + newExtra);
+            // Calculate the discount amount
+            const discountAmount = (discountedTotal * newDiscount) / 100;
+            // Apply the discount to the total
+            discountedTotal -= discountAmount;
+
+            formDataModal["total"] = discountedTotal;
+            // Format the total to two decimal places using formatNumber function if needed
+            setTotal(Number(formatNumber(discountedTotal)));
+        }
+    };
+
+    // Handler for count change
     const handleCountChange = (e: ChangeEvent<HTMLInputElement>) => {
         const newCount = parseInt(e.target.value);
         setCount(newCount);
-        calculateTotal(newCount, extra);
+        calculateTotal(newCount, extra, discount); // Pass discount as an argument here
         formDataModal["count"] = newCount;
     };
 
+    // Handler for extra change
     const handleExtraChange = (e: ChangeEvent<HTMLInputElement>) => {
         const newExtra = parseInt(e.target.value);
         setExtra(newExtra);
+        calculateTotal(count, newExtra, discount); // Pass discount as an argument here
         formDataModal["extra"] = newExtra;
-        calculateTotal(count, newExtra);
     };
 
-    const calculateTotal = (newCount: number, newExtra: number) => {
-        if (selectedPrice) {
-            const newTotal = newCount * parseFloat(selectedPrice) + newExtra;
-            formDataModal["total"] = newTotal;
-            setTotal(newTotal); // Format to two decimal places using formatNumber function
-        }
+    // Handler for discount change
+    const handleDiscountChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const newDiscount = parseInt(e.target.value);
+        setDiscount(newDiscount);
+        calculateTotal(count, extra, newDiscount); // Pass the new discount as an argument here
+        formDataModal["discount"] = newDiscount;
     };
+
 
     return (
         <form onSubmit={handleSubmit}>
@@ -90,8 +109,8 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                 <div className="w-full">
                     <table className="min-w-full text-left text-sm font-light items-center justify-center">
                         <tbody>
-                            <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-2">
-                                <td className={`${"pl-1 py-4 border-gray-500 font-bold"}`}>
+                            <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-1">
+                                <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
                                     <select
                                         className="w-full p-2 border rounded-md"
                                         value={selectedOption}
@@ -108,7 +127,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                             ))}
                                     </select>
                                 </td>
-                                <td className={`${"pl-1 py-4 border-gray-500 font-bold"}`}>
+                                <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
                                     <select className="w-full p-2 border rounded-md" onChange={handleChangePrice}>
                                         <option value="">
                                         </option>
@@ -120,7 +139,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                             ))}
                                     </select>
                                 </td>
-                                <td className={`${"pl-1 py-4 border-gray-500 font-bold"}`}>
+                                <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
                                     <input
                                         type="text"
                                         name="price"
@@ -130,7 +149,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                         placeholder={t("Form.price")}
                                     />
                                 </td>
-                                <td className={`${"pl-1 py-4 border-gray-500 font-bold"}`}>
+                                <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
                                     <input
                                         type="number"
                                         value={formDataModal["extra"]}
@@ -141,7 +160,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                     />
                                 </td>
 
-                                <td className={`${"pl-1 py-4 border-gray-500 font-bold"}`}>
+                                <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
                                     <input
                                         type="number"
                                         value={formDataModal["count"]}
@@ -152,32 +171,43 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                     />
                                 </td>
 
-                                <td className={`${"pl-1 py-4 border-gray-500 text-green-700 font-extrabold"}`}>
+                                <td className={`${"pl-1 py-1 border-gray-500 text-green-700 font-extrabold"}`}>
+                                    <input
+                                        type="number"
+                                        name="rabatt"
+                                        onChange={handleDiscountChange}
+                                        value={formDataModal["discount"]}
+                                        className="w-full p-2 border rounded-md"
+                                        placeholder={`${t("Form.Rabatt")} (%)`}
+                                    />
+                                </td>
+
+                                <td className={`${"pl-1 py-1 border-gray-500 text-green-700 font-extrabold"}`}>
                                     <input
                                         type="text"
                                         name="total"
-                                        value={formatNumber(total)}
+                                        value={total > 0 ? formatNumber(formDataModal["total"]) : ""}
                                         className="w-full p-2 border rounded-md disabled"
-                                        placeholder={t("Form.total")}
+                                        placeholder={`${t("Form.total")}(€)`}
                                     />
                                 </td>
 
                                 <td>
                                     <div className='flex'>
-                                        {!isSubmitted && <button className='mx-4 mt-4 py-2 flex' type='button' onClick={addToOrderList}>
+                                        {!isSubmitted && <button className='mx-1 mt-2 py-2 flex' type='button' onClick={addToOrderList}>
                                             <svg className="w-4 h-4 text-green-800 hover:bg-green-300 hover:text-black rounded-full dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 5.757v8.486M5.757 10h8.486M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                             </svg>
                                             <p className='text-black hover:text-green-700 font-bold px-1 text-md'>{t("Button.add")}</p>
                                         </button>}
-                                        {!isSubmitted ? <button type="submit" className='my-5 py-1 flex px-2' onClick={() => handleSubmit}>
+                                        {!isSubmitted ? <button type="submit" className='my-4 pb-4 flex px-1' onClick={() => handleSubmit}>
                                             <svg className="w-4 h-4 text-black hover:text-green-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="20" fill="none" viewBox="0 0 18 20">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeWidth="3" d="M12 2h4a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h4m6 0v3H6V2m6 0a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1M5 5h8m-5 5h5m-8 0h.01M5 14h.01M8 14h5" />
                                             </svg>
                                             <p className='text-black hover:text-green-700 font-bold px-1 text-md'>{t("Button.save")}</p>
 
                                         </button> :
-                                            <button type='button' className='my-5 py-1 flex px-2' onClick={handlePrint}>
+                                            <button type='button' className='my-4 py-1 flex px-2' onClick={handlePrint}>
                                                 <svg className="w-4 h-4 hover:text-green-800 text-black dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                                     <path d="M5 20h10a1 1 0 0 0 1-1v-5H4v5a1 1 0 0 0 1 1Z" />
                                                     <path d="M18 7H2a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2v-3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Zm-1-2V2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3h14Z" />
@@ -301,7 +331,7 @@ export const FormMenu = ({ formData, fields, handleChange, toggleForm, handleSub
                                     return (
                                         <td key={field.name} className={`lg:col-span-2 pl-1 py-4 border-gray-500" `}>
                                             <input
-                                                type={`${"text"}`}
+                                                type={field.placeholder === "Discount" ? `${"number"}` : `${"text"}`}
                                                 name={field.name}
                                                 value={formData[field.name] === 0 ? "" : formData[field.name]}
                                                 onChange={handleChange}
@@ -316,8 +346,8 @@ export const FormMenu = ({ formData, fields, handleChange, toggleForm, handleSub
                                 <td className="col-span-4 px-1 py-4 flex items-center justify-center lg:justify-center">
                                     <button
                                         type="submit"
-                                        className="flex rounded-md hover:text-black hover:font-bold
-                                        bg-green-700 hover:white pr-4 pl-2 pb-2 pt-2 text-sm font-medium 
+                                        className="flex rounded-md hover:font-bold
+                                        bg-green-700 hover:text-white hover:white pr-4 pl-2 pb-2 pt-2 text-sm font-medium 
                                         leading-normal text-primary hover:text-primary-600 focus:text-primary-600
                                         focus:outline-none focus:ring-0 active:text-primary-700 shadow-md mx-2">
                                         <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"

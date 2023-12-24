@@ -45,9 +45,8 @@ export default function Menu() {
     formData["Type"] = "N"
 
     if (!CompNum || !Type || !Name) {
-      return toast.error(t1("Form.errorMessage" + !CompNum || !Type || !Name), toastMessages.OPTION);
+      return toast.error(t1("Form.errorMessage"), toastMessages.OPTION);
     }
-
     // Here, implement your code to send formData to your backend API
     const addMenu = await addData<IArticles>(formData, Tables.Article)
 

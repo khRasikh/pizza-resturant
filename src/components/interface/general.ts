@@ -87,8 +87,9 @@ export interface IOrder {
   customer_id: number;
   name: string;
   price: string;
-  count: string;
+  count: number;
   extra: string;
+  discount: number;
   total: string;
   order_date?: string
 }

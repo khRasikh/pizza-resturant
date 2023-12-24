@@ -166,5 +166,17 @@
     "PartyPreis": "5.0",
     "MWSt": "1",
     "Rabatt": "1"
+  },
+  {
+    "Type": "N",
+    "CompNum": "140",
+    "IhreNum": "",
+    "Name": "PIzza Tset",
+    "SinglPreis": "3.41",
+    "JumboPreis": "6.42",
+    "FamilyPreis": "8.91",
+    "PartyPreis": "5.62",
+    "MWSt": "1",
+    "Rabatt": "11"
   }
 ]
