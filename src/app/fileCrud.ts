@@ -10,9 +10,9 @@ export async function getMenusFromFile() {
   return { data: sortedData };
 }
 
-export async function readDataFromTextFile(): Promise<any> {
+export async function readDataFromTextFile(table: string): Promise<any> {
   try {
-    const data = await fs.readFile(process.cwd() + "/customers.txt", "utf8");
+    const data = await fs.readFile(process.cwd() + `/${table}.txt`, "utf8");
     //split into table
     const rawData = data.split("/n");
 
@@ -40,7 +40,7 @@ export async function readDataFromTextFile(): Promise<any> {
 
 export async function addDataToTextFile<T extends ICustomers>(newEntry: T, table: string) {
   try {
-    const { body, headers } = await readDataFromTextFile();
+    const { body, headers } = await readDataFromTextFile("customers");
 
     headers.join("\t");
 
@@ -70,7 +70,7 @@ export async function addDataToTextFile<T extends ICustomers>(newEntry: T, table
 
 export async function deleteDataFromTextFile(KNr: string, table: string): Promise<{ status: boolean; message: string }> {
   try {
-    const { body, headers } = await readDataFromTextFile();
+    const { body, headers } = await readDataFromTextFile("customers");
 
     const indexToDelete = body.findIndex(
       (record: { KNr: { toString: () => string } }) => record.KNr.toString().toLowerCase() === KNr.toString().toLowerCase()

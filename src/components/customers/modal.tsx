@@ -4,52 +4,38 @@ import { FormCreateOrder } from './form';
 import { OrderColumns, clearOrderFields, toastMessages } from '../shared/constants';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
-import { TableOrder, } from '../shared/table';
+import { TableOrder, TableOrderList, } from '../shared/table';
 import { handlePrint } from '../lib/print';
 import { IOrderModal } from '../interface/general';
+import { getDataByID } from '../shared/psqlCrud';
 
 export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => {
     const [formData, setFormData] = useState(clearOrderFields);
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
     const t = useTranslations("Body")
 
-    const orderFields = [
-        { name: "id", value: formData.id, placeholder: `${t("Form.id")}` },
-        // { name: "name", value: formData.name, placeholder: `${t("Form.name")}` },
-        { name: "count", value: formData.count, placeholder: `${t("Form.count")}` },
-        { name: "price", value: formData.price, placeholder: `${t("Form.price")}` },
-        { name: "extra", value: formData.extra, placeholder: `${t("Form.extra")}` },
-        { name: "total", value: formData.total, placeholder: `${t("Form.total")}` },
-    ]
-    const [orderList, setOrderList] = useState<any[]>([]); // Step 1: New state for array of values
+    const [orderList, setOrderList] = useState<any[]>([]);
 
     // Function to add values to the array in formData
     const addToOrderList = () => {
         const newOrder = { ...formData };
-        const { id, name, price, count, extra, total } = formData;
+        const { id, name, price, count, extra, total, customer_id } = formData;
 
-        if (!id) {
-            return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
-        } else if (!count) {
-            return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
-        } else if (!price) {
+        formData["customer_id"] = customer.KNr!
+
+        if (!id || !count || !price || !total || !customer_id) {
             return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
         }
-
         setOrderList([...orderList, newOrder]);
     };
 
     const submit = async (e: any) => {
         e.preventDefault();
 
-        const { id, name, price, count, extra, total, } = formData;
+        const { id, name, price, count, extra, total, customer_id } = formData;
 
-        if (!id) {
-            return toast.error(t("Form.inCompleteMessage").replace("record", id), toastMessages.OPTION);
-        } else if (!count) {
-            return toast.error(t("Form.inCompleteMessage").replace("record", count), toastMessages.OPTION);
-        } else if (!price) {
-            return toast.error(t("Form.inCompleteMessage").replace("record", price), toastMessages.OPTION);
+        if (!id || !count || !price || !customer_id) {
+            return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
         }
 
         // Here, implement your code to send formData to your backend API
@@ -64,11 +50,10 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
 
         if (addOrder.status == 200) {
             setFormData(clearOrderFields);
-            toast.success(t("Form.successMessage").replace("record", "Customer"), toastMessages.OPTION);
-            // toggleModal()
+            toast.success(t("Form.successMessage"), toastMessages.OPTION);
             setIsSubmitted(true)
         } else {
-            toast.error(t("Form.errorMessage").replace("record", "Customer"), toastMessages.OPTION);
+            toast.error(t("Form.errorMessage"), toastMessages.OPTION);
         }
     };
 
@@ -80,13 +65,32 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         });
     };
 
+    // lastOrders table 
+    const [lastOrders, setLastOrders] = useState<any[]>([])
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                if (customer.KNr !== 0) {
+                    const getLastOrders = await getDataByID("orders", customer.KNr!)
+
+                    if (getLastOrders.body.length > 0) {
+                        setLastOrders(getLastOrders.body)
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+        fetchOrders()
+    }, [lastOrders])
+
     return (
         <div className="overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-300 bg-opacity-70 z-50">
             <div className="bg-white overflow-x-hidden rounded-lg p-4 md:p-8 min-w-[95%] md:min-w-[80%] lg:max-w-[50%]">
                 <div className="overflow-y-auto overflow-x-hidden relative h-[70vh] max-h-[70vh]">
                     <div className="overflow-y-auto overflow-x-hidden flex items-center justify-between border-b mb-5">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                            Create New Order for Customer {customer.KNr} {customer.Name}
+                        <h3 className="text-lg text-black mb-4">
+                            {t("Label.createNewOrder")} {customer.Name}(<span className='text-green-700 font-bold'> {customer.KNr}</span>)
                         </h3>
                         <button
                             type="button"
@@ -109,18 +113,24 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
                                     d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
                                 />
                             </svg>
-                            <span className="sr-only ">Close modal</span>
                         </button>
                     </div>
 
                     <FormCreateOrder formDataModal={formData} handleChange={change} handleSubmit={submit} addToOrderList={addToOrderList}
-                        handlePrint={() => handlePrint({customer, orderList, toggleModal })} isSubmitted={isSubmitted} />
+                        handlePrint={() => handlePrint({ customer, orderList, toggleModal })} isSubmitted={isSubmitted} />
 
-                    {orderList.length > 0 && <div className="overflow-scroll max-h-[40vh]">
+                    <div className="overflow-scroll max-h-[30vh]">
                         <TableOrder items={orderList} columns={OrderColumns} />
                     </div>
+
+                    {lastOrders.length > 0 && <div className="overflow-scroll max-h-[20vh] justify-center items-center text-center
+                    mt-6 bg-slate-200">
+                        <h3 className="text-lg text-black py-2">
+                            {t("Label.lastOrders")} {customer.Name}(<span className='text-green-700 font-bold'> {customer.KNr}</span>)
+                        </h3>
+                        <TableOrderList ordered={lastOrders} />
+                    </div>
                     }
-                    {/* {<TableOrderList id={"69"}/>} */}
                 </div>
             </div>
         </div>

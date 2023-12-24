@@ -7,7 +7,7 @@ import { formatNumber } from '../shared/constants';
 
 export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, addToOrderList, handlePrint, isSubmitted }: IFormModal) => {
     const sizes = ["SinglPreis", "JumboPreis", "FamilyPreis", "PartyPreis"] as const
-
+    const t = useTranslations("Body")
     const [menu, setMenu] = useState<IArticles[]>([])
     useEffect(() => {
         const fetchMenus = async () => {
@@ -91,13 +91,13 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                     <table className="min-w-full text-left text-sm font-light items-center justify-center">
                         <tbody>
                             <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-2">
-                                <td className={`${"pl-1 py-4 border-gray-500 "}`}>
+                                <td className={`${"pl-1 py-4 border-gray-500 font-bold"}`}>
                                     <select
                                         className="w-full p-2 border rounded-md"
                                         value={selectedOption}
                                         onChange={handleChangeCompNum}
                                     >
-                                        <option value="">Select</option>
+                                        <option value="">{t("Form.select")}</option>
                                         {menu.length > 0 &&
                                             menu.map((item) => (
                                                 <option key={item.CompNum}
@@ -108,7 +108,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                             ))}
                                     </select>
                                 </td>
-                                <td className={`${"pl-1 py-4 border-gray-500"}`}>
+                                <td className={`${"pl-1 py-4 border-gray-500 font-bold"}`}>
                                     <select className="w-full p-2 border rounded-md" onChange={handleChangePrice}>
                                         <option value="">
                                         </option>
@@ -120,45 +120,45 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                             ))}
                                     </select>
                                 </td>
-                                <td className={`${"pl-1 py-4 border-gray-500"}`}>
+                                <td className={`${"pl-1 py-4 border-gray-500 font-bold"}`}>
                                     <input
                                         type="text"
                                         name="price"
                                         value={formDataModal["price"]}
                                         onChange={handleChange}
                                         className="w-full p-2 border rounded-md disabled"
-                                        placeholder="Price"
+                                        placeholder={t("Form.price")}
                                     />
                                 </td>
-                                <td className={`${"pl-1 py-4 border-gray-500"}`}>
+                                <td className={`${"pl-1 py-4 border-gray-500 font-bold"}`}>
                                     <input
                                         type="number"
                                         value={formDataModal["extra"]}
                                         name="extra"
                                         onChange={handleExtraChange}
                                         className="w-full p-2 border rounded-md disabled"
-                                        placeholder="extra"
+                                        placeholder={t("Form.extra")}
                                     />
                                 </td>
 
-                                <td className={`${"pl-1 py-4 border-gray-500"}`}>
+                                <td className={`${"pl-1 py-4 border-gray-500 font-bold"}`}>
                                     <input
                                         type="number"
                                         value={formDataModal["count"]}
                                         name="count"
                                         onChange={handleCountChange}
                                         className="w-full p-2 border rounded-md disabled"
-                                        placeholder="count"
+                                        placeholder={t("Form.count")}
                                     />
                                 </td>
 
-                                <td className={`${"pl-1 py-4 border-gray-500"}`}>
+                                <td className={`${"pl-1 py-4 border-gray-500 text-green-700 font-extrabold"}`}>
                                     <input
                                         type="text"
                                         name="total"
                                         value={formatNumber(total)}
                                         className="w-full p-2 border rounded-md disabled"
-                                        placeholder="Price"
+                                        placeholder={t("Form.total")}
                                     />
                                 </td>
 
@@ -168,13 +168,13 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                             <svg className="w-4 h-4 text-green-800 hover:bg-green-300 hover:text-black rounded-full dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 5.757v8.486M5.757 10h8.486M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                             </svg>
-                                            <p className='text-black hover:text-green-700 font-bold px-1 text-md'>New</p>
+                                            <p className='text-black hover:text-green-700 font-bold px-1 text-md'>{t("Button.add")}</p>
                                         </button>}
                                         {!isSubmitted ? <button type="submit" className='my-5 py-1 flex px-2' onClick={() => handleSubmit}>
                                             <svg className="w-4 h-4 text-black hover:text-green-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="20" fill="none" viewBox="0 0 18 20">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeWidth="3" d="M12 2h4a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h4m6 0v3H6V2m6 0a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1M5 5h8m-5 5h5m-8 0h.01M5 14h.01M8 14h5" />
                                             </svg>
-                                            <p className='text-black hover:text-green-700 font-bold px-1 text-md'>Save</p>
+                                            <p className='text-black hover:text-green-700 font-bold px-1 text-md'>{t("Button.save")}</p>
 
                                         </button> :
                                             <button type='button' className='my-5 py-1 flex px-2' onClick={handlePrint}>
@@ -182,7 +182,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                                     <path d="M5 20h10a1 1 0 0 0 1-1v-5H4v5a1 1 0 0 0 1 1Z" />
                                                     <path d="M18 7H2a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2v-3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Zm-1-2V2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3h14Z" />
                                                 </svg>
-                                                <p className='text-black hover:text-green-700 font-bold px-1 text-md'>Print</p>
+                                                <p className='text-black hover:text-green-700 font-bold px-1 text-md'>{t("Button.print")}</p>
                                             </button>}
                                     </div>
                                 </td>

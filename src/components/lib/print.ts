@@ -1,13 +1,15 @@
 import { IPrint } from "../interface/general";
+import { formatNumber } from "../shared/constants";
 import { formattedDate } from "./customDate";
 
-export const handlePrint = ({customer, orderList, toggleModal }: IPrint) => {
+export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
   let totalPrices = 0;
 
   // Generating HTML for order items
   const orderItemsHTML = orderList
     .map((order) => {
-      totalPrices += order.total; // Calculate totalPrices
+      totalPrices += Number(order.total); // Calculate totalPrices
+      //   totalPrices += formatNumber(parseInt(order.total)); // Calculate totalPrices
 
       return `
             <tr>
@@ -80,7 +82,7 @@ export const handlePrint = ({customer, orderList, toggleModal }: IPrint) => {
                 <!-- Seventh Row - Total -->
                 <div class="flex justify-between">
                     <div>Rechnungsbetrag Brutto:</div>
-                    <div>Euro ${totalPrices.toFixed(2)}</div>
+                    <div>Euro ${totalPrices.toFixed(3)}</div>
                 </div>
 
                 <div class="flex justify-between mt-4 mb-2">

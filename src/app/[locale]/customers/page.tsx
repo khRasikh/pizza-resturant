@@ -21,7 +21,7 @@ export default function Customers() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const fetchCustomers = async () => {
-    const customerList: { headers: any, body: any[] } = await readDataFromTextFile()
+    const customerList: { headers: any, body: any[] } = await readDataFromTextFile("customers")
 
     if (customerList.body) {
       const sortedCustomers = customerList.body.toSorted((a, b) => parseInt(b.KNr) - parseInt(a.KNr))

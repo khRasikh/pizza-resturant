@@ -5,107 +5,7 @@ import { useState, useEffect } from 'react';
 import { timeZone, dateTimeFormat, OrderColumns } from './constants';
 import { useTranslations } from 'next-intl';
 import { OrderModal } from '../customers/modal';
-import { createPool } from '@vercel/postgres';
-
-export const TableOrderList: React.FC<{ id: string }> = (id) => {
-    const [orderList, setOrderList] = useState<any[]>([])
-
-    useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                const pool = createPool({
-                    connectionString: process.env.POSTGRES_URL as string,
-                });
-
-                const query = {
-                    text: "SELECT * FROM orders",
-                };
-
-                const result = await pool.query(query);
-
-                const orders = result.rows;
-                setOrderList(orders)
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        }
-        fetchOrders()
-    }, [])
-
-    return (
-        <table className=" min-w-full text-left text-sm font-light">
-            <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
-                <tr>
-                    {OrderColumns.map((l) => {
-                        return (<th scope="col" key={l} className="px-6 py-4">{l}</th>)
-                    })}
-                </tr>
-            </thead>
-            <tbody>
-                {orderList.length > 0 && (
-                    orderList.map((i, index) => (
-                        <tr
-                            key={i}
-                            className={clsx(
-                                `${i.id % 2 !== 0 ? "bg-neutral-100" : "bg-white"} border-b dark:border-neutral-500 dark:bg-neutral-600`
-                            )}
-                        >
-                            <td className="whitespace-nowrap px-6 py-4">{i.id}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.name}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.count}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.price}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.extra} </td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.total}</td>
-                        </tr>
-                    ))
-                )}
-            </tbody>
-
-        </table>
-    );
-};
-
-export const TableOrder: React.FC<ITableOrder> = ({ items, columns }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const toggleModal = () => {
-        setIsModalOpen(!isModalOpen);
-    };
-
-    return (
-        <table className="min-w-full text-left text-sm font-light">
-            {isModalOpen && items != null && <OrderModal toggleModal={toggleModal} customer={items as unknown as IConsumerInOrder} />}
-            <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
-                <tr>
-                    {columns.map((l) => {
-                        return (<th scope="col" key={l} className="px-6 py-4">{l}</th>)
-                    })}
-                </tr>
-            </thead>
-            <tbody>
-                {items.length > 0 && (
-                    items.map((i) => (
-                        <tr
-                            key={i.id}
-                            className={clsx(
-                                `${i.id % 2 !== 0 ? "bg-neutral-100" : "bg-white"} border-b dark:border-neutral-500 dark:bg-neutral-600`
-                            )}
-                        >
-                            <td className="whitespace-nowrap px-6 py-4">{i.id}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.name}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.count}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.price}</td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.extra} </td>
-                            <td className="whitespace-nowrap px-6 py-4">{i.total}</td>
-                        </tr>
-                    ))
-                )}
-            </tbody>
-
-        </table>
-    );
-};
-
+import { formattedDate } from '../lib/customDate';
 
 export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }) => {
     const t = useTranslations("Body")
@@ -221,10 +121,10 @@ export const TableMenu: React.FC<ITable> = ({ isLoading, items, columns, deleteR
                             <td className="whitespace-nowrap px-6 py-4">{i.Type}</td>
                             <td className="whitespace-nowrap px-6 py-4">{i.CompNum}</td>
                             <td className="whitespace-nowrap px-6 py-4">{i.Name}</td>
-                            <td className="whitespace-nowrap px-6 py-4">EUR {i.SinglPreis}</td>
-                            <td className="whitespace-nowrap px-6 py-4">EUR {i.JumboPreis}</td>
-                            <td className="whitespace-nowrap px-6 py-4">EUR {i.FamilyPreis}</td>
-                            <td className="whitespace-nowrap px-6 py-4">EUR {i.PartyPreis}</td>
+                            <td className="whitespace-nowrap px-6 py-4">€ {i.SinglPreis}</td>
+                            <td className="whitespace-nowrap px-6 py-4">€ {i.JumboPreis}</td>
+                            <td className="whitespace-nowrap px-6 py-4">€ {i.FamilyPreis}</td>
+                            <td className="whitespace-nowrap px-6 py-4">€ {i.PartyPreis}</td>
                             <td className="whitespace-nowrap px-6 py-4">
                                 <div className='flex flex-row'>
                                     <button onClick={() => confirmDelete(i.CompNum, i.Name)} >
@@ -252,6 +152,93 @@ export const TableMenu: React.FC<ITable> = ({ isLoading, items, columns, deleteR
                     <tr><td colSpan={6}>No posts available.</td></tr>
                 )}
             </tbody>
+        </table>
+    );
+};
+
+interface TableOrderListProps {
+    ordered: any[];
+}
+
+export const TableOrderList: React.FC<TableOrderListProps> = ({ ordered }) => {
+
+    return (
+        <table className=" min-w-full text-left text-sm font-light">
+            <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
+                <tr>
+                    {OrderColumns.map((l) => {
+                        return (<th scope="col" key={l} className="px-6 py-4">{l}</th>)
+                    })}
+                </tr>
+            </thead>
+            <tbody>
+                {ordered.length > 0 && ordered.map((i: any, index: any) => (
+                    <tr
+                        key={i.id + index}
+                        className={clsx(
+                            `${i.id % 2 !== 0 ? "bg-neutral-200" : "bg-neutral-100"} hover:bg-slate-200 border-b dark:border-neutral-500 dark:bg-neutral-600`
+                        )}
+                    >
+                        <td className="whitespace-nowrap px-6 py-4">{i.id}</td>
+                        <td className="whitespace-nowrap px-6 py-4">{i.name}</td>
+                        <td className="whitespace-nowrap px-6 py-4">{i.count}</td>
+                        <td className="whitespace-nowrap px-6 py-4">€{i.price}</td>
+                        <td className="whitespace-nowrap px-6 py-4">{i.extra} </td>
+                        <td className="whitespace-nowrap px-6 py-4">€{i.total}</td>
+                    </tr>
+                )
+                )}
+            </tbody>
+
+        </table>
+    );
+};
+
+export const TableOrder: React.FC<ITableOrder> = ({ items, columns }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const t = useTranslations("Body")
+
+    const toggleModal = () => {
+        setIsModalOpen(!isModalOpen);
+    };
+
+    return (
+        <table className="min-w-full text-left text-sm font-light">
+            {isModalOpen && items != null && <OrderModal toggleModal={toggleModal} customer={items as unknown as IConsumerInOrder} />}
+            <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
+                <tr>
+                    {columns.length > 0 && columns.map((l, index) => {
+                        return (<th scope="col" key={l + index} className="px-6 py-4">{l}</th>)
+                    })}
+                </tr>
+            </thead>
+            <tbody>
+                {items.length > 0 ? (
+                    items.map((i, index) => (
+                        <tr
+                            key={i.id + index}
+                            className={clsx(
+                                `${parseInt(i.id) % 2 !== 0 ? "bg-neutral-100" : "bg-white"} border-b dark:border-neutral-500 dark:bg-neutral-600`
+                            )}
+                        >
+                            <td className="whitespace-nowrap px-6 py-4">{i.id}</td>
+                            {/* <td className="whitespace-nowrap px-6 py-4">{i.user_id}</td> */}
+                            <td className="whitespace-nowrap px-6 py-4">{i.customer_id}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.count}</td>
+                            <td className="whitespace-nowrap px-6 py-4">€ {i.price}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.extra} </td>
+                            <td className="whitespace-nowrap px-6 py-4">€ {i.total}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{i.order_date && formattedDate(i.order_date?.toString())}</td>
+                        </tr>
+                    ))
+                ) :
+                    <tr className='justify-center items-center text-center my-12 py-14'>
+                        <td className='my-12 py-12'></td>
+                        <td className='my-12 py-12'></td>
+                        <td className='my-12 py-12'>{t("Label.noNewOrdersYet")}</td>
+                    </tr>}
+            </tbody>
+
         </table>
     );
 };

@@ -8,7 +8,7 @@ export interface ITable {
 }
 
 export interface ITableOrder {
-  items: any[];
+  items: IOrder[];
   columns: any[];
 }
 
@@ -82,8 +82,18 @@ export interface IFormModal {
   isSubmitted: boolean;
 }
 
+export interface IOrder {
+  id: string;
+  customer_id: number;
+  name: string;
+  price: string;
+  count: string;
+  extra: string;
+  total: string;
+  order_date?: string
+}
 export interface IPrint {
-  orderList: any[];
+  orderList: IOrder[];
   toggleModal: () => void;
   customer: ICustomers
 }

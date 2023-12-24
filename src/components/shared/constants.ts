@@ -43,6 +43,7 @@ export const clearMenuForm = {
 
 export const clearOrderFields = {
   id: "",
+  customer_id: 0,
   name: "",
   price: "",
   count: "",

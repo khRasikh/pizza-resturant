@@ -157,14 +157,14 @@
   },
   {
     "Type": "N",
-    "CompNum": 25,
+    "CompNum": "139",
     "IhreNum": "",
-    "Name": "Kn-Brot",
-    "SinglPreis": 3.3,
-    "JumboPreis": 5.3,
-    "FamilyPreis": 0,
-    "PartyPreis": 0,
-    "MWSt": 1,
-    "RabattDrucker2": 1
+    "Name": "Pizza ",
+    "SinglPreis": "2",
+    "JumboPreis": "3.5",
+    "FamilyPreis": "5.7",
+    "PartyPreis": "5.0",
+    "MWSt": "1",
+    "Rabatt": "1"
   }
 ]

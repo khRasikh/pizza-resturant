@@ -103,16 +103,23 @@
       "Str": "Str",
       "Tel": "Tel",
       "KNr": "KNr"
-
     },
     "Button": {
+      "add": "Add",
       "addMenu": "New Menu",
       "addCustomer": "New Customer",
-      "submit": "submit",
-      "close": "close"
+      "submit": "Submit",
+      "save": "Save",
+      "close": "Close",
+      "print": "Print"
     },
     "Table": {
       "confirmDelete": "Are you sure you want to delete this record?"
+    },
+    "Label":{
+      "createNewOrder": "Create New Order for",
+      "lastOrders": "Last Orders by",
+      "noNewOrdersYet": "No New Orders Yet"
     },
     "notFound": "No Menu Found!",
     "loading": "Loading..."
