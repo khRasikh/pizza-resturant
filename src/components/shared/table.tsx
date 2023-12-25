@@ -32,7 +32,7 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
     };
 
     return (
-        <table className="min-w-full text-left text-sm font-light text-black">
+        <table className="min-w-full text-left text-sm font-light text-black  justify-center items-center content-center">
             {isModalOpen && customer != null && <OrderModal toggleModal={toggleModal} customer={customer} />}
             <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
                 <tr>
@@ -181,6 +181,7 @@ export const TableLastOrders: React.FC<ITableLastOrders> = ({ ordered }) => {
                         <td className="whitespace-nowrap px-2 py-1">{i.extra} </td>
                         <td className="whitespace-nowrap px-2 py-1">% {i.discount ? i.discount : 0} </td>
                         <td className="whitespace-nowrap px-2 py-1">€{formatNumber(Number(i.total))}</td>
+                        <td className="whitespace-nowrap px-1 py-2">{i.order_date && formattedDate(i.order_date?.toString())}</td>
                     </tr>
                 )
                 )}
@@ -199,7 +200,7 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns }) => {
     };
 
     return (
-        <table className="min-w-full text-left text-sm font-light">
+        <table className="min-w-full text-left text-sm font-light  justify-center items-center content-center">
             {isModalOpen && items != null && <OrderModal toggleModal={toggleModal} customer={items as unknown as IConsumerInOrder} />}
             <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
                 <tr>
@@ -214,7 +215,7 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns }) => {
                         <tr
                             key={i.id + index}
                             className={clsx(
-                                `${(index + 1) % 2 !== 0 ? "bg-neutral-100" : "bg-white"} text-black border-b hover:bg-slate-300 hover:font-bold hover:rounded-md`
+                                `${(index + 1) % 2 !== 0 ? "bg-neutral-100" : "bg-white"}  justify-center items-center content-center text-black border-b hover:bg-slate-300 hover:font-bold hover:rounded-md`
                             )}
                         >
                             <td className="whitespace-nowrap px-4 py-2">{i.id}</td>

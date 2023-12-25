@@ -120,7 +120,8 @@
     "Label":{
       "createNewOrder": "Neue Bestellung für",
       "lastOrders": "Letzte Bestellungen von",
-      "noNewOrdersYet": "Noch keine neuen Bestellungen"
+      "noNewOrdersYet": "Noch keine neuen Bestellungen",
+      "notAvailable": "Nicht verfügbar"
     },
     "notFound": "Kein Menü gefunden!",
     "loading": "Laden..."
