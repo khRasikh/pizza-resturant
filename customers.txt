@@ -7757,3 +7757,4 @@ KNr	Name	Tel	Str	Ort	Bemerkung	Seit	Mal	DM	lezte	Rabatt	Fix
 7758	test three	0123123	Zornedinger Str. 7a   /Et: 	81671 MÔøΩnchen    []		te					
 7759	Ebrahim	0123123187	Erdinger Str. 42   /Et: 	81829 MÅnchen    []	Special Customer	0				12	
 7760	navid	02132198	Edinburghplatz  10  /Et:5  	81829 MÅnchen    []						10	
+7761	sajad	01231312	Erdinger Str. 35   /Et: 	81829 MÅnchen    []		1				20	

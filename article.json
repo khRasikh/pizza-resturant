@@ -157,18 +157,6 @@
   },
   {
     "Type": "N",
-    "CompNum": "139",
-    "IhreNum": "",
-    "Name": "Pizza ",
-    "SinglPreis": "2",
-    "JumboPreis": "3.5",
-    "FamilyPreis": "5.7",
-    "PartyPreis": "5.0",
-    "MWSt": "1",
-    "Rabatt": "1"
-  },
-  {
-    "Type": "N",
     "CompNum": "140",
     "IhreNum": "",
     "Name": "PIzza Tset",
@@ -178,5 +166,17 @@
     "PartyPreis": "5.62",
     "MWSt": "1",
     "Rabatt": "11"
+  },
+  {
+    "Type": "N",
+    "CompNum": "141",
+    "IhreNum": "",
+    "Name": "PIzza Tset",
+    "SinglPreis": "6.89",
+    "JumboPreis": "89.01",
+    "FamilyPreis": "67.98",
+    "PartyPreis": "76.4501",
+    "MWSt": "1",
+    "Rabatt": 0
   }
 ]

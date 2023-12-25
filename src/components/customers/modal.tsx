@@ -4,7 +4,7 @@ import { FormCreateOrder } from './form';
 import { OrderColumns, clearOrderFields, toastMessages } from '../shared/constants';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
-import { TableOrder, TableOrderList, } from '../shared/table';
+import { TableOrder, TableLastOrders, } from '../shared/table';
 import { handlePrint } from '../lib/print';
 import { IOrder, IOrderModal } from '../interface/general';
 import { getDataByID } from '../shared/psqlCrud';
@@ -14,8 +14,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
     const t = useTranslations("Body")
 
-    formData["customer_id"] = customer.KNr!
-    formData["discount"] = customer.Rabatt!
+
 
     const [orderList, setOrderList] = useState<IOrder[]>([]);
 
@@ -66,6 +65,8 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         if (name === 'total') {
             newValue = parseFloat(value).toFixed(2);
         }
+        formData["customer_id"] = customer.KNr!
+        formData["discount"] = customer.Rabatt!
         setFormData({
             ...formData,
             [name]: newValue
@@ -135,7 +136,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
                         <h3 className="text-lg text-black py-2">
                             {t("Label.lastOrders")} {customer.Name}(<span className='text-green-700 font-bold'> {customer.KNr}</span>)
                         </h3>
-                        <TableOrderList ordered={lastOrders} />
+                        <TableLastOrders ordered={lastOrders} />
                     </div>
                     }
                 </div>

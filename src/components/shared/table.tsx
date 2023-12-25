@@ -151,11 +151,11 @@ export const TableMenu: React.FC<ITable> = ({ isLoading, items, columns, deleteR
     );
 };
 
-interface TableOrderListProps {
+interface ITableLastOrders {
     ordered: any[];
 }
 
-export const TableOrderList: React.FC<TableOrderListProps> = ({ ordered }) => {
+export const TableLastOrders: React.FC<ITableLastOrders> = ({ ordered }) => {
 
     return (
         <table className=" min-w-full text-left text-sm font-light">
@@ -252,6 +252,7 @@ export const NoResultFound = ({ message }: NoResultFoundProps) => {
 
 
 export const PaginationCustomized = ({ totalItems, pageNumber, pageItemsSize, setPageItemsSize, setPageNumber }: any) => {
+    const t = useTranslations("Body.Table")
     const totalPages = Math.ceil(totalItems / pageItemsSize);
     const [isPageSizeDropdownOpen, setIsPageSizeDropdownOpen] = useState(false);
     const handlePrevClick = () => {
@@ -357,7 +358,7 @@ export const PaginationCustomized = ({ totalItems, pageNumber, pageItemsSize, se
                 </div>
 
                 <div className="flex items-center justify-end">
-                    <p className="text-title-xsm font-arboriabook font-semibold py-1 px-3"> Per Page :</p>
+                    <p className="text-title-sm font-arboriabook font-semibold py-1 px-3">{t("pagination")}</p>
                     <div className="relative mt-2">
                         <button
                             type="button"

@@ -114,7 +114,8 @@
       "print": "Drucken"
     },
     "Table": {
-      "confirmDelete": "Sind Sie sicher, dass Sie diesen Datensatz löschen möchten?"
+      "confirmDelete": "Sind Sie sicher, dass Sie diesen Datensatz löschen möchten?",
+      "pagination": "Pro Seite"
     },
     "Label":{
       "createNewOrder": "Neue Bestellung für",

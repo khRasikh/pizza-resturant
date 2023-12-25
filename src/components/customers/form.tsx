@@ -190,6 +190,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                         className="w-full p-2 border rounded-md disabled"
                                         placeholder={`${t("Form.total")}(€)`}
                                     />
+
                                 </td>
 
                                 <td>

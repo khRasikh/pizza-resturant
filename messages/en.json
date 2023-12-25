@@ -114,7 +114,8 @@
       "print": "Print"
     },
     "Table": {
-      "confirmDelete": "Are you sure you want to delete this record?"
+      "confirmDelete": "Are you sure you want to delete this record?",
+      "pagination": "Per Page"
     },
     "Label":{
       "createNewOrder": "Create New Order for",
