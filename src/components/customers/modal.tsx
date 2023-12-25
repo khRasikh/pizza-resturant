@@ -18,6 +18,8 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
 
     const [orderList, setOrderList] = useState<IOrder[]>([]);
 
+    formData["customer_id"] = customer.KNr!
+    // formData["discount"] = customer.Rabatt!
     // Function to add values to the array in formData
     const addToOrderList = () => {
         const newOrder = { ...formData };
@@ -28,6 +30,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
             return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
         }
         setOrderList([...orderList, newOrder]);
+        setFormData(clearOrderFields)
     };
 
     const submit = async (e: any) => {
@@ -65,8 +68,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         if (name === 'total') {
             newValue = parseFloat(value).toFixed(2);
         }
-        formData["customer_id"] = customer.KNr!
-        formData["discount"] = customer.Rabatt!
+
         setFormData({
             ...formData,
             [name]: newValue

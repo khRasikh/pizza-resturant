@@ -87,8 +87,14 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
     };
 
     // Handler for extra change
-    const handleExtraChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const newExtra = parseInt(e.target.value);
+    const extraList = [
+        { name: "S1", price: "1.00" }, { name: "S2", price: "1.90" }, { name: "S3", price: "2.50" },
+        { name: "J1", price: "1.50" }, { name: "J2", price: "2.50" }, { name: "J3", price: "3.50" },
+        { name: "F1", price: "2.00" }, { name: "F2", price: "3.30" }, { name: "F3", price: "4.90" },
+        { name: "P1", price: "3.00" }, { name: "P2", price: "5.20" }, { name: "P3", price: "6.90" },
+    ]
+    const handleExtraChange = (e: any) => {
+        const newExtra = Number(e.target.value);
         setExtra(newExtra);
         calculateTotal(count, newExtra, discount); // Pass discount as an argument here
         formDataModal["extra"] = newExtra;
@@ -96,10 +102,11 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
 
     // Handler for discount change
     const handleDiscountChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const newDiscount = parseInt(e.target.value);
+        console.log("test", e.target.value, formDataModal["discount"], formDataModal["Rabatt"])
+        const newDiscount = parseInt(e.target.value)
         setDiscount(newDiscount);
         calculateTotal(count, extra, newDiscount); // Pass the new discount as an argument here
-        formDataModal["discount"] = newDiscount;
+        formDataModal["discount"] = newDiscount
     };
 
 
@@ -150,14 +157,16 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                     />
                                 </td>
                                 <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
-                                    <input
-                                        type="number"
-                                        value={formDataModal["extra"]}
-                                        name="extra"
-                                        onChange={handleExtraChange}
-                                        className="w-full p-2 border rounded-md disabled"
-                                        placeholder={t("Form.extra")}
-                                    />
+                                    <select className="w-full p-2 border rounded-md" onChange={handleExtraChange}>
+                                        <option value="">
+                                        </option>
+                                        {extraList && extraList.length > 0 &&
+                                            extraList.map((p) => (
+                                                <option key={p.name} value={p.price}>
+                                                    {p.name} (${p.price})
+                                                </option>
+                                            ))}
+                                    </select>
                                 </td>
 
                                 <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
@@ -176,7 +185,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                         type="number"
                                         name="rabatt"
                                         onChange={handleDiscountChange}
-                                        value={formDataModal["discount"]}
+                                        // value={formDataModal["discount"]}
                                         className="w-full p-2 border rounded-md"
                                         placeholder={`${t("Form.Rabatt")} (%)`}
                                     />

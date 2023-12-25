@@ -23,7 +23,7 @@ export default function Orders() {
   const fetchOrders = async () => {
     const orderList: { status: boolean, body: IOrder[] } = await getData("orders")
     if (orderList.status) {
-      const sortedOrders = orderList.body.sort((a, b) => parseInt(b.id) - parseInt(a.id))
+      const sortedOrders = orderList.body.sort((a, b) => parseInt(b.order_date!) - parseInt(a.order_date!))
       setOrders(sortedOrders);
       setIsLoading(false);
     } else {

@@ -69,7 +69,7 @@ export const CustomerColumns = ["KNr", "Name", "Tel", "Str", "Ort", "Rabatt", "B
 
 export const DefaultPageNumber = 10;
 
-export const OrderColumns = ["Anz", "Nr.", "Bez.", "Pr", "Extra", "Rabatt", "Total"];
+export const OrderColumns = ["Anz", "Nr.", "Bez.", "Pr", "Extra", "Rabatt", "Total", "Datum"];
 
 export const Tables = {
   Article: "article",

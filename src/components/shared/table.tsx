@@ -117,9 +117,9 @@ export const TableMenu: React.FC<ITable> = ({ isLoading, items, columns, deleteR
                             <td className="whitespace-nowrap px-3 py-1">{i.CompNum}</td>
                             <td className="whitespace-nowrap px-3 py-1">{i.Name}</td>
                             <td className="whitespace-nowrap px-3 py-1">€ {i.SinglPreis}</td>
-                            <td className="whitespace-nowrap px-3 py-1">€ {i.JumboPreis}</td>
-                            <td className="whitespace-nowrap px-3 py-1">€ {i.FamilyPreis}</td>
-                            <td className="whitespace-nowrap px-3 py-1">€ {i.PartyPreis}</td>
+                            <td className="whitespace-nowrap px-3 py-1"> {i.JumboPreis === parseInt("0") ? `${t("Label.notAvailable")}` : `€ ${i.JumboPreis}`}</td>
+                            <td className="whitespace-nowrap px-3 py-1"> {i.FamilyPreis === "0" ? `${t("Label.notAvailable")}` : `€ ${i.FamilyPreis}`}</td>
+                            <td className="whitespace-nowrap px-3 py-1"> {i.PartyPreis === "0" ? `${t("Label.notAvailable")}` : `€ ${i.PartyPreis}`}</td>
                             <td className="whitespace-nowrap px-3 py-1">
                                 <div className='flex flex-row'>
                                     <button onClick={() => confirmDelete(i.CompNum, i.Name)} >
