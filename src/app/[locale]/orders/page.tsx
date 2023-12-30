@@ -11,6 +11,7 @@ import { filterData } from "@/components/lib/filter";
 import { deleteDataFromTextFile } from "@/app/fileCrud";
 import { IOrder } from "@/components/interface/general";
 import { getData } from "@/components/shared/psqlCrud";
+import { getOrdersFromMongoDB } from "@/components/shared/mongodbCrud";
 
 export default function Orders() {
   const t = useTranslations("CustomerPage");
@@ -21,9 +22,10 @@ export default function Orders() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const fetchOrders = async () => {
-    const orderList: { status: boolean, body: IOrder[] } = await getData("orders")
+    // const orderList1: { status: boolean, body: IOrder[] } = await getData("orders")
+    const orderList: { status: boolean, data: IOrder[] } = await getOrdersFromMongoDB("orders")
     if (orderList.status) {
-      const sortedOrders = orderList.body.sort((a, b) => parseInt(b.order_date!) - parseInt(a.order_date!))
+      const sortedOrders = orderList.data.sort((a, b) => parseInt(b.order_date!) - parseInt(a.order_date!))
       setOrders(sortedOrders);
       setIsLoading(false);
     } else {

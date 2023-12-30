@@ -7,9 +7,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { DefaultPageNumber, MenuColumns, Tables, clearMenuForm, toastMessages } from "@/components/shared/constants";
 import { FormMenu } from "@/components/customers/form";
 import { NoResultFound, PaginationCustomized, TableMenu } from "@/components/shared/table";
-import { addData, deleteData, getMenusFromFile } from "@/app/fileCrud";
+import { addData, deleteData } from "@/app/fileCrud";
 import { IArticles } from "@/components/interface/general";
 import clsx from "clsx";
+import { getMenusFromMongoDB } from "@/components/shared/mongodbCrud";
 
 export const fetchCache = "force-no-store";
 
@@ -24,7 +25,9 @@ export default function Menu() {
     setShowForm(!showForm);
   };
   const fetchData = async () => {
-    const getMenus: { data: IArticles[] } = await getMenusFromFile();
+    // const getMenus: { data: IArticles[] } = await getMenusFromFile();
+    const getMenus: { data: IArticles[] } = await getMenusFromMongoDB("menus")
+    // console.log("test", getMenus1)
     if (getMenus.data) {
       setMenus(getMenus.data);
       setIsLoading(false);

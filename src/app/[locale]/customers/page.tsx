@@ -12,6 +12,7 @@ import { filterData } from "@/components/lib/filter";
 import { addDataToTextFile, deleteDataFromTextFile, readDataFromTextFile } from "@/app/fileCrud";
 import { ICustomers } from "@/components/interface/general";
 import { OrderModal } from "@/components/customers/modal";
+import { getCustomersFromMongoDB } from "@/components/shared/mongodbCrud";
 
 export default function Customers() {
   const t = useTranslations("CustomerPage");
@@ -22,10 +23,11 @@ export default function Customers() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const fetchCustomers = async () => {
-    const customerList: { headers: any, body: any[] } = await readDataFromTextFile("customers")
+    // const customerLis1t: { headers: any, body: any[] } = await readDataFromTextFile("customers")
+    const customerList: { data: any[] } = await getCustomersFromMongoDB("customers")
 
-    if (customerList.body) {
-      const sortedCustomers = customerList.body.toSorted((a, b) => parseInt(b.KNr) - parseInt(a.KNr))
+    if (customerList.data) {
+      const sortedCustomers = customerList.data.toSorted((a, b) => parseInt(b.KNr) - parseInt(a.KNr))
       setCustomers(sortedCustomers);
       setIsLoading(false);
     } else {
@@ -183,7 +185,7 @@ export default function Customers() {
       )}
 
       <div className="overflow-x-auto sm:-mx-6 lg:-mx-8  h-screen">
-        {pickup ? <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+        <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
 
           {currentItems.length > 0 && !isLoading ? (
             <div>
@@ -192,7 +194,6 @@ export default function Customers() {
                 items={currentItems}
                 deleteRow={deleteCustomer}
                 columns={CustomerColumns}
-                pickup={pickup}
               />
               <PaginationCustomized
                 pageItemsSize={pageItemsSize}
@@ -211,9 +212,7 @@ export default function Customers() {
               )}
             </div>
           )}
-        </div> : <div>
-          {<OrderModal toggleModal={toggleForm} customer={clearCustomerForm} />}
-        </div>}
+        </div>
       </div>
     </PageLayout>
   );

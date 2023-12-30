@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 import { OrderModal } from '../customers/modal';
 import { formattedDate } from '../lib/customDate';
 
-export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow, pickup }) => {
+export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }) => {
     const t = useTranslations("Body")
 
     const confirmDelete = (itemId: string, name: string) => {
