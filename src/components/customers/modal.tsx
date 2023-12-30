@@ -8,16 +8,13 @@ import { TableOrder, TableLastOrders, } from '../shared/table';
 import { handlePrint } from '../lib/print';
 import { IOrder, IOrderModal } from '../interface/general';
 import { getDataByID } from '../shared/psqlCrud';
+import { addDataToMongoDB } from '../shared/mongodbCrud';
 
 export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => {
     const [formData, setFormData] = useState(clearOrderFields);
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
     const t = useTranslations("Body")
-
-
-
     const [orderList, setOrderList] = useState<IOrder[]>([]);
-
     formData["customer_id"] = customer.KNr!
     // formData["discount"] = customer.Rabatt!
     // Function to add values to the array in formData
@@ -41,18 +38,19 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         if (!id || !count || !price || !customer_id || !total) {
             return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
         }
-
+        formData.order_date = `${new Date()}`
         // Here, implement your code to send formData to your backend API
-        const addOrder = await fetch("/api/psql/order/add", {
-            method: "POST",
-            body: JSON.stringify(orderList),
-            headers: {
-                "Content-Type": "application/json",
-            },
-            cache: "no-cache",
-        });
-
-        if (addOrder.status == 200) {
+        // const addOrder = await fetch("/api/psql/order/add", {
+        //     method: "POST",
+        //     body: JSON.stringify(orderList),
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //     },
+        //     cache: "no-cache",
+        // });
+        const addOrder = await addDataToMongoDB(formData, "orders")
+        // if (addOrder.status==200) {
+        if (addOrder.status) {
             setFormData(clearOrderFields);
             toast.success(t("Form.successMessage"), toastMessages.OPTION);
             setIsSubmitted(true)

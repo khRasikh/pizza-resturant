@@ -1,5 +1,6 @@
 "use server";
 
+import { Collection } from "mongodb";
 import { IArticles, ICustomers, IOrder } from "../interface/general";
 import clientPromise from "../lib/mongodb";
 
@@ -75,6 +76,7 @@ export async function getCustomersFromMongoDB(tableName: string) {
       Bemerkung: i.Bemerkung,
     }));
     const headers = ["KNr", "Name", "Tel", "Str", "Ort", "Bemerkung", "Seit", "Mal", "DM", "lezte", "Rabatt", "Fix\r"];
+
     return {
       status: true,
       headers,
@@ -125,5 +127,77 @@ export async function getOrdersFromMongoDB(tableName: string) {
   } catch (err) {
     console.error("Error deleting data:", err);
     return { status: false, data: [], message: "Internal Server Error" };
+  }
+}
+
+export async function addDataToMongoDB(newData: any, tableName: string) {
+  try {
+    const client = await clientPromise;
+    const db = client.db("resturant");
+    const collection = db.collection(tableName);
+
+    if (tableName === "customers") {
+      const totalDocuments = await collection.countDocuments({});
+      newData.KNr = (totalDocuments + 1).toString()
+    }
+    // const result = await collection.insertOne(newData);
+    const result = await collection.insertMany([newData]);
+
+    if (result.insertedCount === 1) {
+      console.log("Success: Record added successfully");
+      return { status: true, statusCode: 200, message: "Record added successfully" };
+    } else {
+      console.log("Failed to add record");
+      return { status: false, message: "Failed to add data" };
+    }
+  } catch (error) {
+    console.error("Failure:", error);
+    return { status: false, message: "Failed to add record", error };
+  }
+}
+
+export async function deleteMenuFromMongoDB(id: string, tableName: string) {
+  try {
+    const client = await clientPromise;
+    const db = client.db("resturant");
+    const collection: Collection<Document> = db.collection(tableName);
+
+    const result = await collection.deleteOne({
+      Name: `${id}`,
+    });
+    console.log(result);
+    if (result.deletedCount === 1) {
+      console.log("Success: Record deleted successfully");
+      return { status: true, statusCode: 200, message: "Record deleted successfully" };
+    } else {
+      console.log("Failed to delete record");
+      return { status: false, message: "Failed to delete record" };
+    }
+  } catch (error) {
+    console.error("Failure:", error);
+    return { status: false, message: "Failed to delete record", error };
+  }
+}
+
+export async function deleteCustomerFromMongoDB(id: string, tableName: string) {
+  try {
+    const client = await clientPromise;
+    const db = client.db("resturant");
+    const collection: Collection<Document> = db.collection(tableName);
+
+    const result = await collection.deleteOne({
+      KNr: `${id}`,
+    });
+    console.log(result);
+    if (result.deletedCount === 1) {
+      console.log("Success: Record deleted successfully");
+      return { status: true, statusCode: 200, message: "Record deleted successfully" };
+    } else {
+      console.log("Failed to delete record");
+      return { status: false, message: "Failed to delete record" };
+    }
+  } catch (error) {
+    console.error("Failure:", error);
+    return { status: false, message: "Failed to delete record", error };
   }
 }

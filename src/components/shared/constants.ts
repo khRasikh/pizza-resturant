@@ -50,6 +50,7 @@ export const clearOrderFields = {
   extra: "",
   discount: 0,
   total: "",
+  order_date: ""
 };
 
 export const toastMessages = {

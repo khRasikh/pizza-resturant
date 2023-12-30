@@ -4,13 +4,12 @@ import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { DefaultPageNumber, MenuColumns, Tables, clearMenuForm, toastMessages } from "@/components/shared/constants";
+import { DefaultPageNumber, MenuColumns, clearMenuForm, toastMessages } from "@/components/shared/constants";
 import { FormMenu } from "@/components/customers/form";
 import { NoResultFound, PaginationCustomized, TableMenu } from "@/components/shared/table";
-import { addData, deleteData } from "@/app/fileCrud";
 import { IArticles } from "@/components/interface/general";
 import clsx from "clsx";
-import { getMenusFromMongoDB } from "@/components/shared/mongodbCrud";
+import { addDataToMongoDB, deleteMenuFromMongoDB, getMenusFromMongoDB } from "@/components/shared/mongodbCrud";
 
 export const fetchCache = "force-no-store";
 
@@ -51,7 +50,8 @@ export default function Menu() {
       return toast.error(t1("Form.errorMessage"), toastMessages.OPTION);
     }
     // Here, implement your code to send formData to your backend API
-    const addMenu = await addData<IArticles>(formData, Tables.Article)
+    // const addMenu = await addData<IArticles>(formData, Tables.Article)
+    const addMenu = await addDataToMongoDB(formData, "menus")
 
     if (addMenu.status && addMenu.statusCode === 200) {
       setFormData(clearMenuForm);
@@ -86,7 +86,8 @@ export default function Menu() {
   const deleteMenu = async (menuId: string) => {
 
     try {
-      const response = await deleteData(JSON.parse(menuId), "article", "CompNum")
+      // const response = await deleteData(JSON.parse(menuId), "article", "CompNum")
+      const response = await deleteMenuFromMongoDB(JSON.parse(menuId), "menus")
 
       if (response.status && response.statusCode === 200) {
         toast.success(toastMessages.SUCCESS_CONTENT, toastMessages.OPTION);

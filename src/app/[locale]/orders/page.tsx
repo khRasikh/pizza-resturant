@@ -80,7 +80,7 @@ export default function Orders() {
       <div className="flex flex-col items-center">
         <div className="flex flex-row">
           <div>
-            <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
+            {/* <SearchBar searchTerm={searchTerm} onSearch={handleSearch} /> */}
           </div>
           <div>
           </div>

@@ -12,7 +12,7 @@ import { filterData } from "@/components/lib/filter";
 import { addDataToTextFile, deleteDataFromTextFile, readDataFromTextFile } from "@/app/fileCrud";
 import { ICustomers } from "@/components/interface/general";
 import { OrderModal } from "@/components/customers/modal";
-import { getCustomersFromMongoDB } from "@/components/shared/mongodbCrud";
+import { addDataToMongoDB, deleteCustomerFromMongoDB, getCustomersFromMongoDB } from "@/components/shared/mongodbCrud";
 
 export default function Customers() {
   const t = useTranslations("CustomerPage");
@@ -63,7 +63,8 @@ export default function Customers() {
       return toast.error(t1("Form.inCompleteMessage"), toastMessages.OPTION);
     }
 
-    const addCustomer = await addDataToTextFile<ICustomers>(formData, Tables.Customers)
+    // const addCustomer = await addDataToTextFile<ICustomers>(formData, Tables.Customers)
+    const addCustomer = await addDataToMongoDB(formData, Tables.Customers)
 
     if (addCustomer.status) {
       setFormData(clearCustomerForm);
@@ -125,7 +126,8 @@ export default function Customers() {
   //delete
   const deleteCustomer = async (consumerId: string) => {
     try {
-      const response = await deleteDataFromTextFile(JSON.parse(consumerId), "customers")
+      // const response = await deleteDataFromTextFile(JSON.parse(consumerId), "customers")
+      const response = await deleteCustomerFromMongoDB(JSON.parse(consumerId), "customers")
 
       if (response.status) {
         toast.success(t1("Form.successMessage"), toastMessages.OPTION);
