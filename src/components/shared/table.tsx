@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 import { OrderModal } from '../customers/modal';
 import { formattedDate } from '../lib/customDate';
 
-export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }) => {
+export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow, pickup }) => {
     const t = useTranslations("Body")
 
     const confirmDelete = (itemId: string, name: string) => {
@@ -57,7 +57,7 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
                             <td className="whitespace-nowrap px-3 py-2">{i.Tel}</td>
                             <td className="whitespace-nowrap px-3 py-2">{i.Str}</td>
                             <td className="whitespace-nowrap px-3 py-2">{i.Ort}</td>
-                            <td className="whitespace-nowrap px-3 py-2">{i.Rabatt}%</td>
+                            {/* <td className="whitespace-nowrap px-3 py-2">{i.Rabatt}%</td> */}
                             <td className="whitespace-nowrap px-3 py-2">
                                 <div className='flex flex-row'>
                                     <button onClick={() => confirmDelete(i.KNr, i.Name)}>

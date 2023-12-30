@@ -1,7 +1,7 @@
 {
   "IndexPage": {
-    "title": "Pizza Restaurant",
-    "description": "<p>Willkommen im Pizza-Restaurant-Informationssystem</p>. <p>In diesem System ist alles auf drei Seiten zusammengefasst. Dies ist die erste Seite.</p><p>Auf der zweiten Seite (Menü) können Sie alle Ihre eigenen individualisierten Speisen unter verschiedenen Kategorien hinzufügen.</p><p>Auf der letzten Seite (Kunden) können Sie Ihre Kunden überprüfen, suchen, hinzufügen, aktualisieren und löschen.</p><p>Zögern Sie nicht, mich über den folgenden Link zu kontaktieren, wenn Sie auf Probleme oder Fragen stoßen!</p><p>Vielen Dank.</p>"
+    "title": "Hebamedia",
+    "description": "<p>Willkommen im Hebamedia-Informationssystem</p>. <p>In diesem System ist alles auf drei Seiten zusammengefasst. Dies ist die erste Seite.</p><p>Auf der zweiten Seite (Menü) können Sie alle Ihre eigenen individualisierten Speisen unter verschiedenen Kategorien hinzufügen.</p><p>Auf der letzten Seite (Kunden) können Sie Ihre Kunden überprüfen, suchen, hinzufügen, aktualisieren und löschen.</p><p>Zögern Sie nicht, mich über den folgenden Link zu kontaktieren, wenn Sie auf Probleme oder Fragen stoßen!</p><p>Vielen Dank.</p>"
   },
   "AuthorizationPage": {
     "title": "Autorisierung",
@@ -20,7 +20,7 @@
     "description": "Bitte überprüfen Sie die Browser-Adressleiste erneut oder verwenden Sie die Navigation, um zu einer bekannten Seite zu gelangen."
   },
   "LocaleLayout": {
-    "title": "Pizza Restaurant"
+    "title": "Hebamedia"
   },
   "LocaleSwitcher": {
     "label": "Sprache ändern",

@@ -11,6 +11,7 @@ import SearchBar from "@/components/shared/search";
 import { filterData } from "@/components/lib/filter";
 import { addDataToTextFile, deleteDataFromTextFile, readDataFromTextFile } from "@/app/fileCrud";
 import { ICustomers } from "@/components/interface/general";
+import { OrderModal } from "@/components/customers/modal";
 
 export default function Customers() {
   const t = useTranslations("CustomerPage");
@@ -37,7 +38,11 @@ export default function Customers() {
     fetchCustomers();
   }, [customers]);
 
+  const [pickup, setPickup] = useState<boolean>(false)
   const handleSearch = (value: string) => {
+    if (value === "SUMBMITTED0") {
+      setPickup(true)
+    }
     setSearchTerm(value);
     setPageNumber(1);
   };
@@ -178,7 +183,7 @@ export default function Customers() {
       )}
 
       <div className="overflow-x-auto sm:-mx-6 lg:-mx-8  h-screen">
-        <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+        {pickup ? <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
 
           {currentItems.length > 0 && !isLoading ? (
             <div>
@@ -187,6 +192,7 @@ export default function Customers() {
                 items={currentItems}
                 deleteRow={deleteCustomer}
                 columns={CustomerColumns}
+                pickup={pickup}
               />
               <PaginationCustomized
                 pageItemsSize={pageItemsSize}
@@ -205,7 +211,9 @@ export default function Customers() {
               )}
             </div>
           )}
-        </div>
+        </div> : <div>
+          {<OrderModal toggleModal={toggleForm} customer={clearCustomerForm} />}
+        </div>}
       </div>
     </PageLayout>
   );

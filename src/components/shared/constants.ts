@@ -65,7 +65,7 @@ export const MenuColumns = ["Type", "CompNum", "Name", "SinglPreis", "JumboPreis
 
 export const CustomerProperties = ["KNr", "Name", "Tel", "Str", "Ort", "Bemerkung"];
 
-export const CustomerColumns = ["KNr", "Name", "Tel", "Str", "Ort", "Rabatt", "Bemerkung"];
+export const CustomerColumns = ["KNr", "Name", "Tel", "Str", "Ort", "Bemerkung"]; //"Rabatt",
 
 export const DefaultPageNumber = 10;
 

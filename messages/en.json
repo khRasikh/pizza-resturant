@@ -1,7 +1,7 @@
 {
   "IndexPage": {
-    "title": "Pizza Resturant",
-    "description": "<p>Welcome to Pizza Restaurant Information System</p>. <p>In this system, everything is consized in three pages. This is the first page.</p><p> In the second page (Menu), you can add all your own customized foods under different categories.</p><p> In the last Page (Customers), you will be able to reivew, search, add, update and delete your customers. </p><p>Please feel free to contact me using the following link if you are facing any problem or question!</p><p>Thank you. </p>"
+    "title": "Hebamedia",
+    "description": "<p>Welcome to Hebamedia Information System</p>. <p>In this system, everything is consized in three pages. This is the first page.</p><p> In the second page (Menu), you can add all your own customized foods under different categories.</p><p> In the last Page (Customers), you will be able to reivew, search, add, update and delete your customers. </p><p>Please feel free to contact me using the following link if you are facing any problem or question!</p><p>Thank you. </p>"
   },
   "AuthorizationPage": {
     "title": "Authorization",
@@ -20,7 +20,7 @@
     "description": "Please double-check the browser address bar or use the navigation to go to a known page."
   },
   "LocaleLayout": {
-    "title": "Pizza Resturant"
+    "title": "Hebamedia"
   },
   "LocaleSwitcher": {
     "label": "Change language",
