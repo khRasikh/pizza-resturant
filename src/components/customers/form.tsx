@@ -1,5 +1,4 @@
 "use client"
-import { getMenusFromFile } from '@/app/fileCrud';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { IArticles, IArticlesForm, ICustomers, IForm, IFormModal } from '../interface/general';
 import { useTranslations } from 'next-intl';
@@ -7,8 +6,8 @@ import { formatNumber } from '../shared/constants';
 import { getMenusFromMongoDB } from '../shared/mongodbCrud';
 
 export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, addToOrderList, handlePrint, isSubmitted }: IFormModal) => {
-    const sizes = ["SinglPreis", "JumboPreis", "FamilyPreis", "PartyPreis"] as const
     const t = useTranslations("Body")
+    const sizes = ["SinglPreis", "JumboPreis", "FamilyPreis", "PartyPreis"] as const
     const [selectedOption, setSelectedOption] = useState('');
     const [selectedPrice, setSelectedPrice] = useState<string>();
     const [priceOptions, setPriceOptions] = useState<any[]>()
@@ -17,7 +16,6 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
     const [total, setTotal] = useState<number>(0);
     const [discount, setDiscount] = useState<number>(0);
     const [menu, setMenu] = useState<IArticles[]>([])
-
 
     useEffect(() => {
         const fetchMenus = async () => {
@@ -31,6 +29,16 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
 
     }, [])
 
+    const kasset = sessionStorage.getItem("kasset") ? sessionStorage.getItem("kasset") : "1" //TODO: Kassets
+    /**
+     * 
+     * if kasset 2 following prices should be changed or decreased 20% off:
+     * all single pizza price €10
+     * all jumbo pizza price €10
+     * all family pizza price €10
+     * all party pizza price €10
+     */
+
     const handleChangeCompNum = (e: any) => {
         const value = e.target.value;
         setSelectedOption(value);
@@ -40,7 +48,6 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
         );
 
         if (selectedMenu) {
-
             setSelectedPrice(selectedMenu.SinglPreis.toString()); // selected by default
             const priceDetails = sizes.map(priceKey => ({
                 name: priceKey,
@@ -55,8 +62,6 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
             setSelectedPrice('');
         }
     };
-
-
 
     const handleChangePrice = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value;

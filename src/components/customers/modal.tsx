@@ -11,17 +11,19 @@ import { getDataByID } from '../shared/psqlCrud';
 import { addDataToMongoDB } from '../shared/mongodbCrud';
 
 export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => {
+    const t = useTranslations("Body")
     const [formData, setFormData] = useState(clearOrderFields);
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-    const t = useTranslations("Body")
     const [orderList, setOrderList] = useState<IOrder[]>([]);
+    const [lastOrders, setLastOrders] = useState<any[]>([])
     formData["customer_id"] = customer.KNr!
+
     // formData["discount"] = customer.Rabatt!
     // Function to add values to the array in formData
     const addToOrderList = () => {
         const newOrder = { ...formData };
 
-        const { id, name, price, count, total, customer_id } = formData;
+        const { id, price, count, total, customer_id } = formData;
 
         if (!id || !count || !price || !total || !customer_id) {
             return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
@@ -33,7 +35,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
     const submit = async (e: any) => {
         e.preventDefault();
 
-        const { id, name, price, count, extra, total, customer_id } = formData;
+        const { id, price, count, total, customer_id } = formData;
 
         if (!id || !count || !price || !customer_id || !total) {
             return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
@@ -49,7 +51,6 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         //     cache: "no-cache",
         // });
         const addOrder = await addDataToMongoDB(formData, "orders")
-        // if (addOrder.status==200) {
         if (addOrder.status) {
             setFormData(clearOrderFields);
             toast.success(t("Form.successMessage"), toastMessages.OPTION);
@@ -73,8 +74,6 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         });
     };
 
-    // lastOrders table 
-    const [lastOrders, setLastOrders] = useState<any[]>([])
     useEffect(() => {
         const fetchOrders = async () => {
             try {
@@ -91,6 +90,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         }
         fetchOrders()
     }, [lastOrders])
+
 
     return (
         <div className="overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-300 bg-opacity-70 z-50">
@@ -128,7 +128,9 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
                         handlePrint={() => handlePrint({ customer, orderList, toggleModal })} isSubmitted={isSubmitted} />
 
                     <div className="overflow-scroll max-h-[30vh]">
-                        <TableOrder items={orderList} columns={OrderColumns} />
+                        <TableOrder items={orderList} columns={OrderColumns} deleteRow={function (id: string): void {
+                            throw new Error('Function not implemented.');
+                        }} />
                     </div>
 
                     {lastOrders.length > 0 && <div className="overflow-scroll max-h-[20vh] justify-center items-center text-center
