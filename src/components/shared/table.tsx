@@ -169,7 +169,7 @@ export const TableLastOrders: React.FC<ITableLastOrders> = ({ ordered }) => {
             <tbody>
                 {ordered.length > 0 && ordered.map((i: any, index: any) => (
                     <tr
-                        key={i.id + index}
+                        key={i.order_date + index}
                         className={clsx(
                             `${i.id % 2 !== 0 ? "bg-neutral-200" : "bg-neutral-100"} hover:bg-slate-300 hover:font-bold hover:rounded-md border-b dark:border-neutral-500 dark:bg-neutral-600`
                         )}
@@ -213,7 +213,7 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns }) => {
                 {items.length > 0 ? (
                     items.map((i, index = 0) => (
                         <tr
-                            key={i.id + index}
+                            key={i.order_date! + index}
                             className={clsx(
                                 `${(index + 1) % 2 !== 0 ? "bg-neutral-100" : "bg-white"}  justify-center items-center content-center text-black border-b hover:bg-slate-300 hover:font-bold hover:rounded-md`
                             )}

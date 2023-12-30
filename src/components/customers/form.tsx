@@ -4,14 +4,25 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { IArticles, IArticlesForm, ICustomers, IForm, IFormModal } from '../interface/general';
 import { useTranslations } from 'next-intl';
 import { formatNumber } from '../shared/constants';
+import { getMenusFromMongoDB } from '../shared/mongodbCrud';
 
 export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, addToOrderList, handlePrint, isSubmitted }: IFormModal) => {
     const sizes = ["SinglPreis", "JumboPreis", "FamilyPreis", "PartyPreis"] as const
     const t = useTranslations("Body")
+    const [selectedOption, setSelectedOption] = useState('');
+    const [selectedPrice, setSelectedPrice] = useState<string>();
+    const [priceOptions, setPriceOptions] = useState<any[]>()
+    const [count, setCount] = useState<number>(0);
+    const [extra, setExtra] = useState<number>(0);
+    const [total, setTotal] = useState<number>(0);
+    const [discount, setDiscount] = useState<number>(0);
     const [menu, setMenu] = useState<IArticles[]>([])
+
+
     useEffect(() => {
         const fetchMenus = async () => {
-            const menus = await getMenusFromFile()
+            // const menus = await getMenusFromFile()
+            const menus = await getMenusFromMongoDB("menus")
             if (menus.data) {
                 setMenu(menus.data)
             }
@@ -20,11 +31,6 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
 
     }, [])
 
-
-    const [selectedOption, setSelectedOption] = useState('');
-    const [selectedPrice, setSelectedPrice] = useState<string>();
-
-    const [priceOptions, setPriceOptions] = useState<any[]>()
     const handleChangeCompNum = (e: any) => {
         const value = e.target.value;
         setSelectedOption(value);
@@ -51,17 +57,14 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
     };
 
 
+
     const handleChangePrice = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value;
         setSelectedPrice(value)
         formDataModal["price"] = formatNumber(parseFloat((value)));
+        // Calculate total based on the new selected price, count, extra, and discount
+        calculateTotal(count, extra, discount);
     };
-
-
-    const [count, setCount] = useState<number>(0);
-    const [extra, setExtra] = useState<number>(0);
-    const [total, setTotal] = useState<number>(0);
-    const [discount, setDiscount] = useState<number>(0);
 
     // Function to calculate the total with discount
     const calculateTotal = (newCount: number, newExtra: number, newDiscount: number) => {
@@ -102,7 +105,6 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
 
     // Handler for discount change
     const handleDiscountChange = (e: ChangeEvent<HTMLInputElement>) => {
-        console.log("test", e.target.value, formDataModal["discount"], formDataModal["Rabatt"])
         const newDiscount = parseInt(e.target.value)
         setDiscount(newDiscount);
         calculateTotal(count, extra, newDiscount); // Pass the new discount as an argument here
@@ -117,6 +119,16 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                     <table className="min-w-full text-left text-sm font-light items-center justify-center">
                         <tbody>
                             <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-1">
+                                <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
+                                    <input
+                                        type="number"
+                                        value={formDataModal["count"] === 0 ? "" : formDataModal["count"]}
+                                        name="count"
+                                        onChange={handleCountChange}
+                                        className="w-full p-2 border rounded-md disabled"
+                                        placeholder={t("Form.count")}
+                                    />
+                                </td>
                                 <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
                                     <select
                                         className="w-full p-2 border rounded-md"
@@ -156,29 +168,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                         placeholder={t("Form.price")}
                                     />
                                 </td>
-                                <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
-                                    <select className="w-full p-2 border rounded-md" onChange={handleExtraChange}>
-                                        <option value="">
-                                        </option>
-                                        {extraList && extraList.length > 0 &&
-                                            extraList.map((p) => (
-                                                <option key={p.name} value={p.price}>
-                                                    {p.name} (${p.price})
-                                                </option>
-                                            ))}
-                                    </select>
-                                </td>
 
-                                <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
-                                    <input
-                                        type="number"
-                                        value={formDataModal["count"]}
-                                        name="count"
-                                        onChange={handleCountChange}
-                                        className="w-full p-2 border rounded-md disabled"
-                                        placeholder={t("Form.count")}
-                                    />
-                                </td>
 
                                 <td className={`${"pl-1 py-1 border-gray-500 text-green-700 font-extrabold"}`}>
                                     <input
@@ -200,6 +190,19 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                         placeholder={`${t("Form.total")}(€)`}
                                     />
 
+                                </td>
+
+                                <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
+                                    <select className="w-full p-2 border rounded-md" onChange={handleExtraChange}>
+                                        <option value="">
+                                        </option>
+                                        {extraList && extraList.length > 0 &&
+                                            extraList.map((p) => (
+                                                <option key={p.name} value={p.price}>
+                                                    {p.name} (${p.price})
+                                                </option>
+                                            ))}
+                                    </select>
                                 </td>
 
                                 <td>

@@ -85,7 +85,7 @@
       "inCompleteMessage": "Please fill in the ID field",
       "errorMessage": "Failed to add new record",
       "Type": "Type",
-      "CompNum": "Component Number",
+      "CompNum": "Article Number",
       "IhreNum": "Ihre Number",
       "Name": "Pizza Name",
       "SinglPreis": "Single Price",
