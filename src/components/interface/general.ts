@@ -10,6 +10,7 @@ export interface ITable {
 export interface ITableOrder {
   items: IOrder[];
   columns: any[];
+  deleteRow: (id: string) => void;
 }
 
 export type IBody = {

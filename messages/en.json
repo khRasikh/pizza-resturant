@@ -9,7 +9,11 @@
   },
   "CustomerPage": {
     "title": "Customers",
-    "description": "<p>The routing is internationalized too.</p><p>If you're using the default language English, you'll see <code>/about</code> in the browser address bar on this page.</p><p>If you change the locale to German, the URL is prefixed with the locale (<code>/de/about</code>).</p>"
+    "description": "<p>Welcome to Hebamedia Customers page</p>. <p>In this system, everything is consized in three pages. This is the first page.</p><p> In the second page (Menu), you can add all your own customized foods under different categories.</p><p> In the last Page (Customers), you will be able to reivew, search, add, update and delete your customers. </p><p>Please feel free to contact me using the following link if you are facing any problem or question!</p><p>Thank you. </p>"
+  },
+  "OrderPage": {
+    "title": "Orders",
+    "description": "<p>Welcome to Hebamedia orders page</p>. <p>In this system, everything is consized in three pages. This is the first page.</p><p> In the second page (Menu), you can add all your own customized foods under different categories.</p><p> In the last Page (Customers), you will be able to reivew, search, add, update and delete your customers. </p><p>Please feel free to contact me using the following link if you are facing any problem or question!</p><p>Thank you. </p>"
   },
   "MenuPage": {
     "title": "Menu",
@@ -117,7 +121,7 @@
       "confirmDelete": "Are you sure you want to delete this record?",
       "pagination": "Per Page"
     },
-    "Label":{
+    "Label": {
       "createNewOrder": "Create New Order for",
       "lastOrders": "Last Orders by",
       "noNewOrdersYet": "No New Orders Yet",

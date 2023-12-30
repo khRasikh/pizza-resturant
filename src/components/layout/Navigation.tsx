@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { SessionProvider, useSession } from "next-auth/react";
 import Header from "../auth/signin";
 import NavigationLink from "../shared/navigationLink";
-import ToggleSwitch from "../shared/toggleButton";
+import Kasset from "../shared/kasset";
 import type { FC } from 'react';
 
 export default function Navigation() {
@@ -45,7 +45,7 @@ const AuthenticatedNavigation: FC<AuthenticatedNavigationProps> = () => {
         <NavigationLink href="/menu">{t1("menu")}</NavigationLink>
         <NavigationLink href="/customers">{t1("customers")}</NavigationLink>
         <NavigationLink href="/orders">{t1("orders")}</NavigationLink>
-        <ToggleSwitch />
+        <Kasset />
       </div>
       <div>
         <Header />

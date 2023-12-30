@@ -9,7 +9,6 @@ export async function getMenusFromMongoDB(tableName: string) {
     const client = await clientPromise;
     const db = client.db("resturant");
 
-    // const data = await db.collection("orders").find({}).sort({ metacritic: -1 }).toArray();
     const data = await db
       .collection(tableName)
       .find({}, { projection: { _id: 0 } })
@@ -17,11 +16,11 @@ export async function getMenusFromMongoDB(tableName: string) {
       .toArray();
 
     const sortedData: any[] = data.sort((a, b) => {
-      const compNumA = parseInt(a.CompNum, 10); // Convert CompNum to number
+      const compNumA = parseInt(a.CompNum, 10);
       const compNumB = parseInt(b.CompNum, 10);
-
-      return compNumB - compNumA; // Sort in descending numeric order
+      return compNumB - compNumA;
     });
+
     const organizedData: IArticles[] = sortedData.map((i) => ({
       Type: i.Type,
       CompNum: i.CompNum,
@@ -35,7 +34,6 @@ export async function getMenusFromMongoDB(tableName: string) {
       Rabatt: i.Rabatt,
     }));
 
-    // return { status: true, headers, body, message: "OK" };
     return { status: true, data: organizedData, message: "OK" };
   } catch (err) {
     console.error("Error deleting data:", err);
@@ -48,7 +46,6 @@ export async function getCustomersFromMongoDB(tableName: string) {
     const client = await clientPromise;
     const db = client.db("resturant");
 
-    // const data = await db.collection("orders").find({}).sort({ metacritic: -1 }).toArray();
     const data = await db
       .collection(tableName)
       .find({}, { projection: { _id: 0 } })
@@ -138,9 +135,9 @@ export async function addDataToMongoDB(newData: any, tableName: string) {
 
     if (tableName === "customers") {
       const totalDocuments = await collection.countDocuments({});
-      newData.KNr = (totalDocuments + 1).toString()
+      newData.KNr = (totalDocuments + 1).toString();
     }
-    // const result = await collection.insertOne(newData);
+
     const result = await collection.insertMany([newData]);
 
     if (result.insertedCount === 1) {
@@ -166,6 +163,28 @@ export async function deleteMenuFromMongoDB(id: string, tableName: string) {
       Name: `${id}`,
     });
     console.log(result);
+    if (result.deletedCount === 1) {
+      console.log("Success: Record deleted successfully");
+      return { status: true, statusCode: 200, message: "Record deleted successfully" };
+    } else {
+      console.log("Failed to delete record");
+      return { status: false, message: "Failed to delete record" };
+    }
+  } catch (error) {
+    console.error("Failure:", error);
+    return { status: false, message: "Failed to delete record", error };
+  }
+}
+export async function deleteOrderFromMongoDB(id: string, tableName: string) {
+  try {
+    const client = await clientPromise;
+    const db = client.db("resturant");
+    const collection: Collection<Document> = db.collection(tableName);
+
+    const result = await collection.deleteOne({
+      id: JSON.parse(`${id}`),
+    });
+
     if (result.deletedCount === 1) {
       console.log("Success: Record deleted successfully");
       return { status: true, statusCode: 200, message: "Record deleted successfully" };

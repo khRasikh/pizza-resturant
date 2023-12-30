@@ -6,6 +6,7 @@ import { timeZone, dateTimeFormat, OrderColumns, formatNumber } from './constant
 import { useTranslations } from 'next-intl';
 import { OrderModal } from '../customers/modal';
 import { formattedDate } from '../lib/customDate';
+import { DeleteIcon } from './icons';
 
 export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }) => {
     const t = useTranslations("Body")
@@ -123,21 +124,7 @@ export const TableMenu: React.FC<ITable> = ({ isLoading, items, columns, deleteR
                             <td className="whitespace-nowrap px-3 py-1">
                                 <div className='flex flex-row'>
                                     <button onClick={() => confirmDelete(i.CompNum, i.Name)} >
-                                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24" viewBox="0,0,256,256">
-                                            <g fill="#EE4B2B" fillRule="nonzero" stroke="none" strokeWidth="1" strokeLinecap="butt" strokeLinejoin="miter" strokeMiterlimit="10" strokeDasharray=""
-                                                strokeDashoffset="0" fontFamily="none" fontWeight="none" fontSize="none" textAnchor="none">
-                                                <g transform="scale(5.33333,5.33333)"><path d="M24,4c-3.50831,0 -6.4296,2.62143 -6.91992,6h-10.58008c-0.54095,-0.00765 
-                                                -1.04412,0.27656 -1.31683,0.74381c-0.27271,0.46725 -0.27271,1.04514 0,1.51238c0.27271,0.46725 0.77588,0.75146 1.31683,
-                                                0.74381h2.13672l2.51953,26.0293c0.274,2.833 2.62956,4.9707 5.47656,4.9707h14.73438c2.847,0 5.20156,-2.1377 5.47656,
-                                                -4.9707l2.51953,-26.0293h2.13672c0.54095,0.00765 1.04412,-0.27656 1.31683,-0.74381c0.27271,-0.46725 0.27271,-1.04514 0,-1.51238c-0.27271,
-                                                -0.46725 -0.77588,-0.75146 -1.31683,-0.74381h-10.58008c-0.49032,-3.37857 -3.41161,-6 -6.91992,-6zM24,7c1.87916,0 3.42077,1.26816 3.86133,
-                                                3h-7.72266c0.44056,-1.73184 1.98217,-3 3.86133,-3zM19.5,18c0.828,0 1.5,0.671 1.5,1.5v15c0,0.829 -0.672,1.5 -1.5,1.5c-0.828,0 -1.5,-0.671 -1.5,
-                                                -1.5v-15c0,-0.829 0.672,-1.5 1.5,-1.5zM28.5,18c0.828,0 1.5,0.671 1.5,1.5v15c0,0.829 -0.672,1.5 -1.5,1.5c-0.828,0 -1.5,-0.671 -1.5,-1.5v-15c0,
-                                                -0.829 0.672,-1.5 1.5,-1.5z">
-                                                </path>
-                                                </g>
-                                            </g>
-                                        </svg>
+                                        <DeleteIcon />
                                     </button>
                                 </div>
                             </td>
@@ -167,9 +154,9 @@ export const TableLastOrders: React.FC<ITableLastOrders> = ({ ordered }) => {
                 </tr>
             </thead>
             <tbody>
-                {ordered.length > 0 && ordered.map((i: any, index: any) => (
+                {ordered.length > 0 && ordered.map((i) => (
                     <tr
-                        key={i.order_date + index}
+                        key={i.order_date}
                         className={clsx(
                             `${i.id % 2 !== 0 ? "bg-neutral-200" : "bg-neutral-100"} hover:bg-slate-300 hover:font-bold hover:rounded-md border-b dark:border-neutral-500 dark:bg-neutral-600`
                         )}
@@ -191,7 +178,7 @@ export const TableLastOrders: React.FC<ITableLastOrders> = ({ ordered }) => {
     );
 };
 
-export const TableOrder: React.FC<ITableOrder> = ({ items, columns }) => {
+export const TableOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const t = useTranslations("Body")
 
@@ -199,13 +186,22 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns }) => {
         setIsModalOpen(!isModalOpen);
     };
 
+    const confirmDelete = (id: string) => {
+        const isConfirmed = window.confirm(`${t("Table.confirmDelete")}`);
+        if (isConfirmed) {
+            deleteRow(id);
+        } else {
+            console.info("Delete cancelled")
+        }
+    };
+
     return (
         <table className="min-w-full text-left text-sm font-light  justify-center items-center content-center">
             {isModalOpen && items != null && <OrderModal toggleModal={toggleModal} customer={items as unknown as IConsumerInOrder} />}
             <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
                 <tr>
-                    {columns.length > 0 && columns.map((l, index) => {
-                        return (<th scope="col" key={l + index} className="px-6 py-2">{l}</th>)
+                    {columns.length > 0 && columns.map((l) => {
+                        return (<th scope="col" key={l} className="px-6 py-2">{l}</th>)
                     })}
                 </tr>
             </thead>
@@ -227,6 +223,13 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns }) => {
                             <td className="whitespace-nowrap px-4 py-2">% {i.discount} </td>
                             <td className="whitespace-nowrap px-4 py-2">€ {formatNumber(Number(i.total))}</td>
                             <td className="whitespace-nowrap px-4 py-2">{i.order_date && formattedDate(i.order_date?.toString())}</td>
+                            <td className="whitespace-nowrap px-3 py-1">
+                                <div className='flex flex-row'>
+                                    <button onClick={() => confirmDelete(i.id)} >
+                                        <DeleteIcon />
+                                    </button>
+                                </div>
+                            </td>
                         </tr>
                     ))
                 ) :
