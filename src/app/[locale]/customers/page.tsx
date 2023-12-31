@@ -11,7 +11,7 @@ import SearchBar from "@/components/shared/search";
 import { filterData } from "@/components/lib/filter";
 import { ICustomers } from "@/components/interface/general";
 import { addDataToMongoDB, deleteCustomerFromMongoDB, getCustomersFromMongoDB } from "@/components/shared/mongodbCrud";
-import { readDataFromTextFile } from "@/app/fileCrud";
+import { getCustomersFromFile, readDataFromTextFile } from "@/app/fileCrud";
 
 export default function Customers() {
   const t = useTranslations("CustomerPage");
@@ -23,6 +23,10 @@ export default function Customers() {
 
   const fetchCustomers = async () => {
     // const customerList: { headers: any, body: any[] } = await readDataFromTextFile("customers")
+    // const customerList1: any = await getCustomersFromFile("customers")
+    // if (customerList1.status) {
+    //   console.log(customerList1.data)
+    // }
     const customerList: { data: any[], status: boolean } = await getCustomersFromMongoDB("customers")
     // console.log(customerList.body)
     if (customerList.status) {

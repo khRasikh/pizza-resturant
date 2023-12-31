@@ -98,11 +98,17 @@ export async function deleteDataFromTextFile(KNr: string, table: string): Promis
   }
 }
 
-export async function getCustomersFromFile() {
-  const file = await fs.readFile(process.cwd() + "/customers.json", "utf8");
-  const data = JSON.parse(file);
-  const sortedData = data.sort((a: { KNr: number }, b: { KNr: number }) => b.KNr - a.KNr);
-  return { data: sortedData };
+export async function getCustomersFromFile(table: string) {
+  try {
+    const file = await fs.readFile(process.cwd() + `/${table}.json`, "utf8");
+    const data: ICustomers[] = JSON.parse(file);
+    if (data) {
+      return { status: true, data, message: "OK" };
+    }
+  } catch (err) {
+    console.error("Error deleting data:", err);
+    return { status: false, message: "Failed to delete record" };
+  }
 }
 
 export async function addData<T>(newRecord: T, table: string) {
