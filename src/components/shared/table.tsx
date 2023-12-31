@@ -86,6 +86,7 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
 export const TableMenu: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }) => {
 
     const t = useTranslations("Body")
+
     const confirmDelete = (itemId: string, name: string) => {
         const isConfirmed = window.confirm(`${t("Table.confirmDelete") + " " + name}`);
         if (isConfirmed) {
@@ -96,7 +97,7 @@ export const TableMenu: React.FC<ITable> = ({ isLoading, items, columns, deleteR
     };
 
     return (
-        <table className="min-w-full text-left text-sm font-light">
+        <table className="min-w-full text-sm font-light text-center">
             <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
                 <tr>
                     {columns.map((l) => {
@@ -107,20 +108,20 @@ export const TableMenu: React.FC<ITable> = ({ isLoading, items, columns, deleteR
             <tbody>
                 {isLoading && <tr><td colSpan={6}>Loading...</td></tr>}
                 {!isLoading && items.length > 0 ? (
-                    items.map((i, index) => (
+                    items.map((i) => (
                         <tr
-                            key={index}
+                            key={i.CompNum}
                             className={clsx(
-                                `${i.CompNum % 2 !== 0 ? "bg-neutral-100" : "bg-white"} hover:bg-slate-300 hover:font-bold hover:rounded-md border-b dark:border-neutral-500 dark:bg-neutral-600`
+                                `${i.CompNum % 2 !== 0 ? "bg-neutral-100" : "bg-white"} text-black hover:bg-slate-300 hover:font-bold hover:rounded-md border-b dark:border-neutral-500 dark:bg-neutral-600`
                             )}
                         >
                             <td className="whitespace-nowrap px-3 py-1">{i.Type}</td>
                             <td className="whitespace-nowrap px-3 py-1">{i.CompNum}</td>
                             <td className="whitespace-nowrap px-3 py-1">{i.Name}</td>
                             <td className="whitespace-nowrap px-3 py-1">€ {i.SinglPreis}</td>
-                            <td className="whitespace-nowrap px-3 py-1"> {i.JumboPreis === parseInt("0") ? `${t("Label.notAvailable")}` : `€ ${i.JumboPreis}`}</td>
-                            <td className="whitespace-nowrap px-3 py-1"> {i.FamilyPreis === "0" ? `${t("Label.notAvailable")}` : `€ ${i.FamilyPreis}`}</td>
-                            <td className="whitespace-nowrap px-3 py-1"> {i.PartyPreis === "0" ? `${t("Label.notAvailable")}` : `€ ${i.PartyPreis}`}</td>
+                            <td className="whitespace-nowrap px-3 py-1"> {i.JumboPreis === parseInt("0") ? <span className="text-sm text-gray-400">{t("Label.notAvailable")}</span> : `€ ${i.JumboPreis}`}</td>
+                            <td className="whitespace-nowrap px-3 py-1"> {i.FamilyPreis === parseInt("0") ? <span className="text-sm text-gray-400">{t("Label.notAvailable")}</span> : `€ ${i.FamilyPreis}`}</td>
+                            <td className="whitespace-nowrap px-3 py-1"> {i.PartyPreis === parseInt("0") ? <span className="text-sm text-gray-400">{t("Label.notAvailable")}</span> : `€ ${i.PartyPreis}`}</td>
                             <td className="whitespace-nowrap px-3 py-1">
                                 <div className='flex flex-row'>
                                     <button onClick={() => confirmDelete(i.CompNum, i.Name)} >

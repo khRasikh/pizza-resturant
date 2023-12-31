@@ -37,7 +37,7 @@ export const clearMenuForm = {
   JumboPreis: 0,
   FamilyPreis: 0,
   PartyPreis: 0,
-  MWSt: 0,
+  MWSt: 0.7,
   Rabatt: 0,
 };
 

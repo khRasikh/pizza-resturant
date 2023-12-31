@@ -160,9 +160,9 @@ export async function deleteMenuFromMongoDB(id: string, tableName: string) {
     const collection: Collection<Document> = db.collection(tableName);
 
     const result = await collection.deleteOne({
-      Name: `${id}`,
+      CompNum: `${id}` || id,
     });
-    console.log(result);
+
     if (result.deletedCount === 1) {
       console.log("Success: Record deleted successfully");
       return { status: true, statusCode: 200, message: "Record deleted successfully" };
@@ -182,7 +182,7 @@ export async function deleteOrderFromMongoDB(id: string, tableName: string) {
     const collection: Collection<Document> = db.collection(tableName);
 
     const result = await collection.deleteOne({
-      id: JSON.parse(`${id}`),
+      id: JSON.parse(`${id}`) || id,
     });
 
     if (result.deletedCount === 1) {
@@ -205,7 +205,7 @@ export async function deleteCustomerFromMongoDB(id: string, tableName: string) {
     const collection: Collection<Document> = db.collection(tableName);
 
     const result = await collection.deleteOne({
-      KNr: `${id}`,
+      KNr: `${id}` || id,
     });
     console.log(result);
     if (result.deletedCount === 1) {

@@ -9,10 +9,9 @@ import Form from "@/components/customers/form";
 import { NoResultFound, PaginationCustomized, Table } from "@/components/shared/table";
 import SearchBar from "@/components/shared/search";
 import { filterData } from "@/components/lib/filter";
-import { addDataToTextFile, deleteDataFromTextFile, readDataFromTextFile } from "@/app/fileCrud";
 import { ICustomers } from "@/components/interface/general";
-import { OrderModal } from "@/components/customers/modal";
 import { addDataToMongoDB, deleteCustomerFromMongoDB, getCustomersFromMongoDB } from "@/components/shared/mongodbCrud";
+import { readDataFromTextFile } from "@/app/fileCrud";
 
 export default function Customers() {
   const t = useTranslations("CustomerPage");
@@ -23,11 +22,11 @@ export default function Customers() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const fetchCustomers = async () => {
-    // const customerLis1t: { headers: any, body: any[] } = await readDataFromTextFile("customers")
+    // const customerList: { headers: any, body: any[] } = await readDataFromTextFile("customers")
     const customerList: { data: any[] } = await getCustomersFromMongoDB("customers")
-
+    // console.log(customerList.body)
     if (customerList.data) {
-      const sortedCustomers = customerList.data.toSorted((a, b) => parseInt(b.KNr) - parseInt(a.KNr))
+      const sortedCustomers = customerList.data.sort((a, b) => parseInt(b.KNr) - parseInt(a.KNr))
       setCustomers(sortedCustomers);
       setIsLoading(false);
     } else {
