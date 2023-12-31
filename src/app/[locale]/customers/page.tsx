@@ -37,8 +37,7 @@ export default function Customers() {
 
   useEffect(() => {
     fetchCustomers();
-  // }, [customers]);
-  }, []);
+  }, [customers]);
 
   const [pickup, setPickup] = useState<boolean>(false)
   const handleSearch = (value: string) => {
