@@ -25,7 +25,7 @@ export default function Customers() {
     // const customerList: { headers: any, body: any[] } = await readDataFromTextFile("customers")
     const customerList: { data: any[], status: boolean } = await getCustomersFromMongoDB("customers")
     // console.log(customerList.body)
-    if (customerList.status && customerList.data.length > 0) {
+    if (customerList.status) {
       const sortedCustomers = customerList.data.sort((a, b) => parseInt(b.KNr) - parseInt(a.KNr))
       setCustomers(sortedCustomers);
       setIsLoading(false);
@@ -37,7 +37,8 @@ export default function Customers() {
 
   useEffect(() => {
     fetchCustomers();
-  }, [customers]);
+  // }, [customers]);
+  }, []);
 
   const [pickup, setPickup] = useState<boolean>(false)
   const handleSearch = (value: string) => {
