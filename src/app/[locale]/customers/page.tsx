@@ -23,9 +23,9 @@ export default function Customers() {
 
   const fetchCustomers = async () => {
     // const customerList: { headers: any, body: any[] } = await readDataFromTextFile("customers")
-    const customerList: { data: any[] } = await getCustomersFromMongoDB("customers")
+    const customerList: { data: any[], status: boolean } = await getCustomersFromMongoDB("customers")
     // console.log(customerList.body)
-    if (customerList.data) {
+    if (customerList.status && customerList.data.length > 0) {
       const sortedCustomers = customerList.data.sort((a, b) => parseInt(b.KNr) - parseInt(a.KNr))
       setCustomers(sortedCustomers);
       setIsLoading(false);
