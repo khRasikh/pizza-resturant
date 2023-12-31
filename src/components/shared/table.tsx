@@ -197,7 +197,7 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow })
     };
 
     return (
-        <table className="min-w-full text-left text-sm font-light  justify-center items-center content-center">
+        <table className="min-w-full text-center text-sm font-light  justify-center items-center content-center">
             {isModalOpen && items != null && <OrderModal toggleModal={toggleModal} customer={items as unknown as IConsumerInOrder} />}
             <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
                 <tr>
@@ -220,10 +220,10 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow })
                             <td className="whitespace-nowrap px-4 py-2">{i.customer_id}</td>
                             <td className="whitespace-nowrap px-4 py-2">{i.count}</td>
                             <td className="whitespace-nowrap px-4 py-2">€ {i.price}</td>
-                            <td className="whitespace-nowrap px-4 py-2">{i.extra} </td>
+                            <td className="whitespace-nowrap px-4 py-2">€{formatNumber(Number(i.extra))} </td>
                             <td className="whitespace-nowrap px-4 py-2">% {i.discount} </td>
                             <td className="whitespace-nowrap px-4 py-2">€ {formatNumber(Number(i.total))}</td>
-                            <td className="whitespace-nowrap px-4 py-2">{i.order_date && formattedDate(i.order_date?.toString())}</td>
+                            <td className="whitespace-nowrap px-4 py-2">{i.order_date ? formattedDate(i.order_date?.toString()) : formattedDate(new Date().toString()).substring(10)}</td>
                             <td className="whitespace-nowrap px-3 py-1">
                                 <div className='flex flex-row'>
                                     <button onClick={() => confirmDelete(i.id)} >

@@ -22,7 +22,7 @@ export default function Orders() {
     // const orderList1: { status: boolean, body: IOrder[] } = await getData("orders")
     const orderList: { status: boolean, data: IOrder[] } = await getOrdersFromMongoDB("orders")
     if (orderList.status) {
-      const sortedOrders = orderList.data.sort((a, b) => parseInt(b.order_date!) - parseInt(a.order_date!))
+      const sortedOrders = orderList.data.sort((a, b) => parseInt(b.id!) - parseInt(a.id!))
       setOrders(sortedOrders);
       setIsLoading(false);
     } else {

@@ -2,7 +2,7 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { IArticles, IArticlesForm, ICustomers, IForm, IFormModal } from '../interface/general';
 import { useTranslations } from 'next-intl';
-import { formatNumber } from '../shared/constants';
+import { extaListStatic, formatNumber } from '../shared/constants';
 import { getMenusFromMongoDB } from '../shared/mongodbCrud';
 
 export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, addToOrderList, handlePrint, isSubmitted }: IFormModal) => {
@@ -29,16 +29,6 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
 
     }, [])
 
-    const kasset = sessionStorage.getItem("kasset") ? sessionStorage.getItem("kasset") : "1" //TODO: Kassets
-    /**
-     * 
-     * if kasset 2 following prices should be changed or decreased 20% off:
-     * all single pizza price €10
-     * all jumbo pizza price €10
-     * all family pizza price €10
-     * all party pizza price €10
-     */
-
     const handleChangeCompNum = (e: any) => {
         const value = e.target.value;
         setSelectedOption(value);
@@ -63,11 +53,12 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
         }
     };
 
+    const [category, setCategory] = useState("SinglPreis")
     const handleChangePrice = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value;
-        setSelectedPrice(value)
-        formDataModal["price"] = formatNumber(parseFloat((value)));
-        // Calculate total based on the new selected price, count, extra, and discount
+        setCategory(JSON.parse(value).name)
+        setSelectedPrice(JSON.parse(value).price)
+        formDataModal["price"] = formatNumber(parseFloat((JSON.parse(value).price)));
         calculateTotal(count, extra, discount);
     };
 
@@ -95,12 +86,8 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
     };
 
     // Handler for extra change
-    const extraList = [
-        { name: "S1", price: "1.00" }, { name: "S2", price: "1.90" }, { name: "S3", price: "2.50" },
-        { name: "J1", price: "1.50" }, { name: "J2", price: "2.50" }, { name: "J3", price: "3.50" },
-        { name: "F1", price: "2.00" }, { name: "F2", price: "3.30" }, { name: "F3", price: "4.90" },
-        { name: "P1", price: "3.00" }, { name: "P2", price: "5.20" }, { name: "P3", price: "6.90" },
-    ]
+    const extraList = extaListStatic
+
     const handleExtraChange = (e: any) => {
         const newExtra = Number(e.target.value);
         setExtra(newExtra);
@@ -116,6 +103,15 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
         formDataModal["discount"] = newDiscount
     };
 
+    // const kasset = sessionStorage.getItem("kasset") ? sessionStorage.getItem("kasset") : "1" //TODO: Kassets
+    /**
+     * 
+     * if kasset 2 following prices should be changed or decreased 20% off:
+     * all single pizza price €10
+     * all jumbo pizza price €10
+     * all family pizza price €10
+     * all party pizza price €10
+     */
 
     return (
         <form onSubmit={handleSubmit}>
@@ -156,11 +152,13 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                         <option value="">
                                         </option>
                                         {priceOptions && priceOptions.length > 0 &&
-                                            priceOptions.map((p) => (
-                                                <option key={p.name} value={p.price}>
-                                                    {p.name}
-                                                </option>
-                                            ))}
+                                            priceOptions.map((p) => {
+                                                return (
+                                                    <option key={p.name} value={JSON.stringify({ name: p.name, price: p.price })}>
+                                                        {p.name}
+                                                    </option>
+                                                )
+                                            })}
                                     </select>
                                 </td>
                                 <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
@@ -201,12 +199,35 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                     <select className="w-full p-2 border rounded-md" onChange={handleExtraChange}>
                                         <option value="">
                                         </option>
-                                        {extraList && extraList.length > 0 &&
-                                            extraList.map((p) => (
-                                                <option key={p.name} value={p.price}>
-                                                    {p.name} (${p.price})
-                                                </option>
-                                            ))}
+                                        {extraList.length > 0 &&
+                                            extraList.map((p) => {
+
+                                                if (category === "SinglPreis") {
+                                                    return (
+                                                        <option key={p.name} value={p.SinglPreis}>
+                                                            {p.id}-{p.name}
+                                                        </option>
+                                                    )
+                                                } else if (category === "JumboPreis") {
+                                                    return (
+                                                        <option key={p.name} value={p.JumboPreis}>
+                                                            {p.id}-{p.name}
+                                                        </option>
+                                                    )
+                                                } else if (category === "FamilyPreis") {
+                                                    return (
+                                                        <option key={p.name} value={p.FamilyPreis}>
+                                                            {p.id}-{p.name}
+                                                        </option>
+                                                    )
+                                                } else if (category === "PartyPreis") {
+                                                    return (
+                                                        <option key={p.name} value={p.PartyPreis}>
+                                                            {p.id}-{p.name}
+                                                        </option>
+                                                    )
+                                                }
+                                            })}
                                     </select>
                                 </td>
 
@@ -280,10 +301,10 @@ const Form = ({ formData, fields, handleChange, handleSubmit, handleClose, filte
                                                 />
                                                 {showOptions && field.placeholder === "Str" && (
                                                     <span className="options-list absolute mt-10 h-44 w-fit px-6 overflow-x-hidden overflow-y-scroll bg-white  border rounded-md">
-                                                        {filteredStr.map((obj: any, index: any) => (
+                                                        {filteredStr.map((obj: any, index = 1) => (
                                                             <button
                                                                 type='button'
-                                                                key={index}
+                                                                key={index + 1}
                                                                 className="option block w-full p-2 text-left hover:bg-slate-500 hover:text-white"
                                                                 onClick={() => handleOptionClick(obj)}
                                                             >
