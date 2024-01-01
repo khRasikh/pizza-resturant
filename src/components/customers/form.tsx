@@ -2,7 +2,7 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { IArticles, IArticlesForm, ICustomers, IForm, IFormModal } from '../interface/general';
 import { useTranslations } from 'next-intl';
-import { extaListStatic, formatNumber } from '../shared/constants';
+import { clearMenuForm, extaListStatic, formatNumber } from '../shared/constants';
 import { getMenusFromMongoDB } from '../shared/mongodbCrud';
 import clsx from 'clsx';
 import { PrintIcon, SaveIcon } from '../shared/icons';
@@ -18,18 +18,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
     const [total, setTotal] = useState<number>(0);
     const [discount, setDiscount] = useState<number>(0);
     const [menu, setMenu] = useState<IArticles[]>([])
-
-    useEffect(() => {
-        const fetchMenus = async () => {
-            // const menus = await getMenusFromFile()
-            const menus = await getMenusFromMongoDB("menus")
-            if (menus.data) {
-                setMenu(menus.data)
-            }
-        }
-        fetchMenus()
-
-    }, [])
+    const [category, setCategory] = useState("SinglPreis")
 
     const handleChangeCompNum = (e: any) => {
         const value = e.target.value;
@@ -55,7 +44,6 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
         }
     };
 
-    const [category, setCategory] = useState("SinglPreis")
     const handleChangePrice = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value;
         setCategory(JSON.parse(value).name)
@@ -106,23 +94,46 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
         formDataModal["discount"] = newDiscount
     };
 
-    // const kasset = sessionStorage.getItem("kasset") ? sessionStorage.getItem("kasset") : "1" //TODO: Kassets
+    const kasset = sessionStorage.getItem("kasset") ? sessionStorage.getItem("kasset")?.toString() : "1" //TODO: Kassets
+
+    useEffect(() => {
+        const fetchMenus = async () => {
+            // const menus = await getMenusFromFile()
+            const getMenus = await getMenusFromMongoDB("menus")
+            if (kasset === "1" && getMenus.data) {
+                setMenu(getMenus.data)
+            } else if (kasset === "2" && getMenus.data) {
+                const newPrices = updatePrices(getMenus.data)
+                setMenu(newPrices)
+                console.log("test newprice", newPrices)
+
+            }
+        }
+        fetchMenus()
+
+    }, [])
+
     /**
-     * 
+     * TODO: NEEDS MORE UPDATEDS
      * if kasset 2 following prices should be changed or decreased 20% off:
      * all single pizza price €5.90
      * all jumbo pizza price €8.90
      * all family pizza price €5.90
      * all party pizza price €10
      */
-    const [isClicked, setIsClicked] = useState(false);
-
-    const handleSubmitOrdersAsync = () => {
-        if (!isClicked) {
-            () => handleSubmit
-            setIsClicked(true);
-        }
-    }
+    const updatePrices = (menu: IArticles[]) => {
+        const updatedList = menu.map((item, index) => {
+            if (index >= 1 && index <= 29) {
+                return {
+                    ...item,
+                    SinglPreis: Number(5.90),
+                    JumboPreis: Number(8.90),
+                };
+            }
+            return item; // For items outside the specified range, return the original item
+        });
+        return updatedList;
+    };
 
     return (
         <form onSubmit={handleSubmit}>
@@ -250,7 +261,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                             <p className='text-black hover:text-green-700 font-bold px-1 text-xs'>{t("Button.add")}</p>
                                         </button>}
 
-                                        {!isSubmitted ? <button type="submit" className={clsx(`my-4 pb-4 flex px-1`)} onClick={handleSubmitOrdersAsync}>
+                                        {!isSubmitted ? <button type="submit" className={clsx(`my-4 pb-4 flex px-1`)} onClick={() => handleSubmit}>
                                             <SaveIcon />
                                             <p className='text-black hover:text-green-700 font-bold px-1 text-xs'>{t("Button.save")}</p>
 
