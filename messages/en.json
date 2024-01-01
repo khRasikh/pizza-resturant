@@ -125,7 +125,11 @@
       "createNewOrder": "Create New Order for",
       "lastOrders": "Last Orders by",
       "noNewOrdersYet": "No New Orders Yet",
-      "notAvailable": "Not Available"
+      "notAvailable": "Not Available",
+      "records": "Records",
+      "count": "Count",
+      "discount": "Discount",
+      "total": "Total"
     },
     "notFound": "No Menu Found!",
     "loading": "Loading..."

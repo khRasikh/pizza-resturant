@@ -4,6 +4,8 @@ import { IArticles, IArticlesForm, ICustomers, IForm, IFormModal } from '../inte
 import { useTranslations } from 'next-intl';
 import { extaListStatic, formatNumber } from '../shared/constants';
 import { getMenusFromMongoDB } from '../shared/mongodbCrud';
+import clsx from 'clsx';
+import { PrintIcon, SaveIcon } from '../shared/icons';
 
 export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, addToOrderList, handlePrint, isSubmitted }: IFormModal) => {
     const t = useTranslations("Body")
@@ -59,13 +61,14 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
         setCategory(JSON.parse(value).name)
         setSelectedPrice(JSON.parse(value).price)
         formDataModal["price"] = formatNumber(parseFloat((JSON.parse(value).price)));
-        calculateTotal(count, extra, discount);
+        calculateTotal(formDataModal["count"], extra, discount);
     };
 
     // Function to calculate the total with discount
     const calculateTotal = (newCount: number, newExtra: number, newDiscount: number) => {
+        const c = newCount === 0 ? formDataModal["count"] : newCount
         if (selectedPrice) {
-            let discountedTotal = (newCount * parseFloat(selectedPrice) + newExtra);
+            let discountedTotal = (c * parseFloat(selectedPrice) + newExtra);
             // Calculate the discount amount
             const discountAmount = (discountedTotal * newDiscount) / 100;
             // Apply the discount to the total
@@ -91,8 +94,8 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
     const handleExtraChange = (e: any) => {
         const newExtra = Number(e.target.value);
         setExtra(newExtra);
-        calculateTotal(count, newExtra, discount); // Pass discount as an argument here
         formDataModal["extra"] = newExtra;
+        calculateTotal(count, newExtra, discount); // Pass discount as an argument here
     };
 
     // Handler for discount change
@@ -107,11 +110,19 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
     /**
      * 
      * if kasset 2 following prices should be changed or decreased 20% off:
-     * all single pizza price €10
-     * all jumbo pizza price €10
-     * all family pizza price €10
+     * all single pizza price €5.90
+     * all jumbo pizza price €8.90
+     * all family pizza price €5.90
      * all party pizza price €10
      */
+    const [isClicked, setIsClicked] = useState(false);
+
+    const handleSubmitOrdersAsync = () => {
+        if (!isClicked) {
+            () => handleSubmit
+            setIsClicked(true);
+        }
+    }
 
     return (
         <form onSubmit={handleSubmit}>
@@ -201,7 +212,6 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                         </option>
                                         {extraList.length > 0 &&
                                             extraList.map((p) => {
-
                                                 if (category === "SinglPreis") {
                                                     return (
                                                         <option key={p.name} value={p.SinglPreis}>
@@ -237,20 +247,16 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                             <svg className="w-4 h-4 text-green-800 hover:bg-green-300 hover:text-black rounded-full dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 5.757v8.486M5.757 10h8.486M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                             </svg>
-                                            <p className='text-black hover:text-green-700 font-bold px-1 text-md'>{t("Button.add")}</p>
+                                            <p className='text-black hover:text-green-700 font-bold px-1 text-xs'>{t("Button.add")}</p>
                                         </button>}
-                                        {!isSubmitted ? <button type="submit" className='my-4 pb-4 flex px-1' onClick={() => handleSubmit}>
-                                            <svg className="w-4 h-4 text-black hover:text-green-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="20" fill="none" viewBox="0 0 18 20">
-                                                <path stroke="currentColor" strokeLinecap="round" strokeWidth="3" d="M12 2h4a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h4m6 0v3H6V2m6 0a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1M5 5h8m-5 5h5m-8 0h.01M5 14h.01M8 14h5" />
-                                            </svg>
-                                            <p className='text-black hover:text-green-700 font-bold px-1 text-md'>{t("Button.save")}</p>
+
+                                        {!isSubmitted ? <button type="submit" className={clsx(`my-4 pb-4 flex px-1`)} onClick={handleSubmitOrdersAsync}>
+                                            <SaveIcon />
+                                            <p className='text-black hover:text-green-700 font-bold px-1 text-xs'>{t("Button.save")}</p>
 
                                         </button> :
                                             <button type='button' className='my-4 py-1 flex px-2' onClick={handlePrint}>
-                                                <svg className="w-4 h-4 hover:text-green-800 text-black dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M5 20h10a1 1 0 0 0 1-1v-5H4v5a1 1 0 0 0 1 1Z" />
-                                                    <path d="M18 7H2a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2v-3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Zm-1-2V2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3h14Z" />
-                                                </svg>
+                                                <PrintIcon />
                                                 <p className='text-black hover:text-green-700 font-bold px-1 text-md'>{t("Button.print")}</p>
                                             </button>}
                                     </div>

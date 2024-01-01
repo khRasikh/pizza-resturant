@@ -1,8 +1,8 @@
 "use client"
 import clsx from 'clsx';
-import { IConsumerInOrder, ICustomers, ITable, ITableOrder, NoResultFoundProps } from '../interface/general';
+import { IConsumerInOrder, ICustomers, IOrder, ITable, ITableOrder, NoResultFoundProps } from '../interface/general';
 import { useState, useEffect } from 'react';
-import { timeZone, dateTimeFormat, OrderColumns, formatNumber } from './constants';
+import { timeZone, dateTimeFormat, OrderColumns, formatNumber, clearOrderFields } from './constants';
 import { useTranslations } from 'next-intl';
 import { OrderModal } from '../customers/modal';
 import { formattedDate } from '../lib/customDate';
@@ -25,6 +25,7 @@ export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }
 
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
+        // isModalOpen && window.location.reload() //TODO: update this more
     };
 
     const createOrderAsync = (customerInOrder: ICustomers) => {
@@ -223,7 +224,7 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow })
                             <td className="whitespace-nowrap px-4 py-2">€{formatNumber(Number(i.extra))} </td>
                             <td className="whitespace-nowrap px-4 py-2">% {i.discount} </td>
                             <td className="whitespace-nowrap px-4 py-2">€ {formatNumber(Number(i.total))}</td>
-                            <td className="whitespace-nowrap px-4 py-2">{i.order_date ? formattedDate(i.order_date?.toString()) : formattedDate(new Date().toString()).substring(10)}</td>
+                            <td className="whitespace-nowrap px-4 py-2">{i.order_date && formattedDate(i.order_date?.toString())}</td>
                             <td className="whitespace-nowrap px-3 py-1">
                                 <div className='flex flex-row'>
                                     <button onClick={() => confirmDelete(i.id)} >
@@ -452,6 +453,30 @@ export const PaginationCustomized = ({ totalItems, pageNumber, pageItemsSize, se
                 </div>
             </div>
 
+        </div>
+    );
+};
+
+export const TableSummary = ({ list }: { list: IOrder[] }) => {
+    // Calculate number of records
+    const numberOfRecords = list.length;
+
+    // Calculate total prices
+    const totalPrices = list.reduce((total, order) => parseFloat(`${total}`) + parseFloat(order.total), 0);
+
+
+    // Calculate number of packages
+    const numberOfPackages = list.reduce((total, order) => total + order.count, 0);
+
+    // Calculate total discounts
+    const totalDiscounts = list.reduce((total, order) => total + order.discount, 0);
+    const t = useTranslations("Body")
+    return (
+        <div className="mt-4 p-2 border-t text-lg flex justify-between mx-6 text-green-700 font-bold ">
+            <p>{t("Label.records")}: {numberOfRecords}</p>
+            <p>{t("Label.count")}:{numberOfPackages}</p>
+            <p>{t("Label.discount")}:%{formatNumber(totalDiscounts / numberOfRecords)}</p>
+            <p>{t("Label.total")}:€{formatNumber(totalPrices)}</p>
         </div>
     );
 };

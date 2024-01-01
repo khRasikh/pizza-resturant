@@ -1,7 +1,17 @@
 import { IPrint } from "../interface/general";
 import { formatNumber } from "../shared/constants";
 import { formattedDate } from "./customDate";
-
+// {
+//     "id": "6",
+//     "customer_id": "1352",
+//     "name": "CALZONE",
+//     "price": "9.99",
+//     "count": 22,
+//     "extra": 1,
+//     "discount": 22,
+//     "total": 219.78,
+//     "order_date": "Mon Jan 01 2024 12:07:34 GMT+0100 (Central European Standard Time)"
+// }
 export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
   let totalPrices = 0;
 
@@ -16,6 +26,7 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
                 <td>${order.count}X</td>
                 <td>${order.id}:</td>
                 <td>${order.name}</td>
+                <td>€${formatNumber(Number(order.extra))}</td>
                 <td>${formatNumber(Number(order.total))}</td>
                 <td>-</td>
             </tr>
@@ -39,7 +50,7 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
                 <!-- Second Row - Data and Bill No -->
                 <div class="flex justify-between mb-4">
                     <div>${formattedDate()}</div>
-                    <div>Nr: ${12}</div>
+                    <div>Nr: ${orderList[0].id}</div>
                 </div>
 
                 <div class="flex flex-col">
@@ -66,6 +77,7 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
                                 <th>Anz</th>
                                 <th>Nr.</th>
                                 <th>Bez.</th>
+                                <th>Extra</th>
                                 <th>Pr</th>
                                 <th>%MW</th>
                             </tr>

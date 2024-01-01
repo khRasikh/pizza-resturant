@@ -46,11 +46,11 @@ export const clearOrderFields = {
   customer_id: 0,
   name: "",
   price: "",
-  count: 0,
+  count: 1,
   extra: "",
   discount: 0,
   total: "",
-  order_date: "",
+  order_date: new Date().toString(),
 };
 
 export const toastMessages = {

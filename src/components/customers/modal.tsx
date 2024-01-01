@@ -1,47 +1,47 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import { FormCreateOrder } from './form';
-import { OrderColumns, clearOrderFields, toastMessages } from '../shared/constants';
+import { OrderColumns, clearOrderFields, formatNumber, toastMessages } from '../shared/constants';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
-import { TableOrder, TableLastOrders, } from '../shared/table';
+import { TableOrder, TableLastOrders, TableSummary, } from '../shared/table';
 import { handlePrint } from '../lib/print';
 import { IOrder, IOrderModal } from '../interface/general';
-import { getDataByID } from '../shared/psqlCrud';
-import { addDataToMongoDB } from '../shared/mongodbCrud';
+// import { getDataByID } from '../shared/psqlCrud';
+import { addDataToMongoDB, getOrdersByIDFromMongoDB } from '../shared/mongodbCrud';
 
 export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => {
     const t = useTranslations("Body")
-    const [formData, setFormData] = useState(clearOrderFields);
+    const [formDataModal, setFormDataModal] = useState(clearOrderFields);
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
     const [orderList, setOrderList] = useState<IOrder[]>([]);
     const [lastOrders, setLastOrders] = useState<any[]>([])
-    formData["customer_id"] = customer.KNr!
+    formDataModal["customer_id"] = customer.KNr!
 
-    // formData["discount"] = customer.Rabatt!
-    // Function to add values to the array in formData
+    // formDataModal["discount"] = customer.Rabatt!
+    // Function to add values to the array in formDataModal
     const addToOrderList = () => {
-        const newOrder = { ...formData };
+        const newOrder = { ...formDataModal };
 
-        const { id, price, count, total, customer_id } = formData;
+        const { id, price, count, total, customer_id } = formDataModal;
+        formDataModal["order_date"] = new Date().toString()
 
         if (!id || !count || !price || !total || !customer_id) {
             return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
         }
         setOrderList([...orderList, newOrder]);
-        setFormData(clearOrderFields)
+        setFormDataModal(clearOrderFields)
     };
 
-    const submit = async (e: any) => {
+    const submitAsync = async (e: any) => {
         e.preventDefault();
 
-        const { id, price, count, total, customer_id } = formData;
+        const { id, price, count, total, customer_id } = formDataModal;
 
         if (!id || !count || !price || !customer_id || !total) {
             return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
         }
-        formData.order_date = `${new Date()}`
-        // Here, implement your code to send formData to your backend API
+        // Here, implement your code to send formDataModal to your backend API
         // const addOrder = await fetch("/api/psql/order/add", {
         //     method: "POST",
         //     body: JSON.stringify(orderList),
@@ -50,11 +50,11 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         //     },
         //     cache: "no-cache",
         // });
-        const addOrder = await addDataToMongoDB(formData, "orders")
+        const addOrder = await addDataToMongoDB(orderList, "orders")
         if (addOrder.status) {
-            setFormData(clearOrderFields);
             toast.success(t("Form.successMessage"), toastMessages.OPTION);
             setIsSubmitted(true)
+            setFormDataModal(clearOrderFields);
         } else {
             toast.error(t("Form.errorMessage"), toastMessages.OPTION);
         }
@@ -67,9 +67,8 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         if (name === 'total') {
             newValue = parseFloat(value).toFixed(2);
         }
-
-        setFormData({
-            ...formData,
+        setFormDataModal({
+            ...formDataModal,
             [name]: newValue
         });
     };
@@ -78,10 +77,11 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         const fetchOrders = async () => {
             try {
                 if (customer.KNr !== 0) {
-                    const getLastOrders = await getDataByID("orders", customer.KNr!)
+                    // const getLastOrders = await getDataByID("orders", customer.KNr!)
+                    const getLastOrders = await getOrdersByIDFromMongoDB("orders", customer.KNr!)
 
-                    if (getLastOrders.body.length > 0) {
-                        setLastOrders(getLastOrders.body)
+                    if (getLastOrders.data.length > 0) {
+                        setLastOrders(getLastOrders.data)
                     }
                 }
             } catch (error) {
@@ -90,7 +90,6 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         }
         fetchOrders()
     }, [lastOrders])
-
 
     return (
         <div className="overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-300 bg-opacity-70 z-50">
@@ -124,25 +123,26 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
                         </button>
                     </div>
 
-                    <FormCreateOrder formDataModal={formData} handleChange={change} handleSubmit={submit} addToOrderList={addToOrderList}
+                    <FormCreateOrder formDataModal={formDataModal} handleChange={change} handleSubmit={submitAsync} addToOrderList={addToOrderList}
                         handlePrint={() => handlePrint({ customer, orderList, toggleModal })} isSubmitted={isSubmitted} />
 
-                    <div className="overflow-scroll max-h-[30vh]">
-                        <TableOrder items={orderList} columns={OrderColumns} deleteRow={function (id: string): void {
-                            throw new Error('Function not implemented.');
-                        }} />
-                    </div>
+                    {orderList.length > 0 ? <div className="overflow-scroll max-h-[40vh]">
+                        <TableOrder items={orderList} columns={OrderColumns} deleteRow={() => console.log("under construction F")} />
+                        <TableSummary list={orderList} />
+                    </div> :
 
-                    {lastOrders.length > 0 && <div className="overflow-scroll max-h-[20vh] justify-center items-center text-center
+                        <div className="overflow-scroll max-h-[40vh] justify-center items-center text-center
                     mt-6 bg-slate-200">
-                        <h3 className="text-lg text-black py-2">
-                            {t("Label.lastOrders")} {customer.Name}(<span className='text-green-700 font-bold'> {customer.KNr}</span>)
-                        </h3>
-                        <TableLastOrders ordered={lastOrders} />
-                    </div>
+                            <h3 className="text-lg text-black py-2">
+                                {t("Label.lastOrders")} {customer.Name}(<span className='text-green-700 font-bold'> {customer.KNr}</span>)
+                            </h3>
+                            <TableLastOrders ordered={lastOrders} />
+                        </div>
                     }
                 </div>
             </div>
         </div>
     );
 }
+
+

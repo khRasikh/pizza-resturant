@@ -18,7 +18,7 @@ export async function getMenusFromMongoDB(tableName: string) {
     const sortedData: any[] = data.sort((a, b) => {
       const compNumA = parseInt(a.CompNum, 10);
       const compNumB = parseInt(b.CompNum, 10);
-      return compNumB - compNumA;
+      return compNumA - compNumB;
     });
 
     const organizedData: IArticles[] = sortedData.map((i) => ({
@@ -127,6 +127,47 @@ export async function getOrdersFromMongoDB(tableName: string) {
   }
 }
 
+export async function getOrdersByIDFromMongoDB(tableName: string, customer_id: number) {
+  try {
+    const client = await clientPromise;
+    const db = client.db("resturant");
+
+    // const data = await db.collection("orders").find({}).sort({ metacritic: -1 }).toArray();
+    const data = await db
+      .collection(tableName)
+      .find({ customer_id: customer_id.toString() }, { projection: { _id: 0 } })
+      .sort({ id: -1 })
+      .toArray();
+
+    const sortedData: any[] = data.sort((a, b) => {
+      const KNrA = parseInt(a.order_date, 10); // Convert order_date to number
+      const KNrB = parseInt(b.order_date, 10);
+
+      return KNrB - KNrA; // Sort in descending numeric order
+    });
+    const organizedData: IOrder[] = sortedData.map((i) => ({
+      id: i.id,
+      customer_id: i.customer_id,
+      name: i.name,
+      price: i.price,
+      count: i.count,
+      extra: i.extra,
+      discount: i.discount,
+      total: i.total,
+      order_date: i.order_date,
+    }));
+
+    return {
+      status: true,
+      data: organizedData,
+      message: "OK",
+    };
+  } catch (err) {
+    console.error("Error deleting data:", err);
+    return { status: false, data: [], message: "Internal Server Error" };
+  }
+}
+
 export async function addDataToMongoDB(newData: any, tableName: string) {
   try {
     const client = await clientPromise;
@@ -138,9 +179,9 @@ export async function addDataToMongoDB(newData: any, tableName: string) {
       newData.KNr = (totalDocuments + 1).toString();
     }
 
-    const result = await collection.insertMany([newData]);
+    const result = await collection.insertMany(newData);
 
-    if (result.insertedCount === 1) {
+    if (result.insertedCount >= 1) {
       console.log("Success: Record added successfully");
       return { status: true, statusCode: 200, message: "Record added successfully" };
     } else {
@@ -182,7 +223,7 @@ export async function deleteOrderFromMongoDB(id: string, tableName: string) {
     const collection: Collection<Document> = db.collection(tableName);
 
     const result = await collection.deleteOne({
-      id: JSON.parse(`${id}`) || id,
+      id: id.toString(),
     });
 
     if (result.deletedCount === 1) {

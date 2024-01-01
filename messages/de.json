@@ -109,7 +109,7 @@
       "KNr": "KNr"
     },
     "Button": {
-      "add": "Hinzufügen",
+      "add": "Neu",
       "addMenu": "Neues Menü",
       "addCustomer": "Neuer Kunde",
       "submit": "Senden",
@@ -121,11 +121,15 @@
       "confirmDelete": "Sind Sie sicher, dass Sie diesen Datensatz löschen möchten?",
       "pagination": "Pro Seite"
     },
-    "Label":{
+    "Label": {
       "createNewOrder": "Neue Bestellung für",
       "lastOrders": "Letzte Bestellungen von",
       "noNewOrdersYet": "Noch keine neuen Bestellungen",
-      "notAvailable": "Nicht verfügbar"
+      "notAvailable": "Nicht verfügbar",
+      "records": "Datensätze",
+      "count": "Anzahl",
+      "discount": "Rabatt",
+      "total": "Gesamt"
     },
     "notFound": "Kein Menü gefunden!",
     "loading": "Laden..."

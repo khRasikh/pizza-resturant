@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { DefaultPageNumber, OrderColumns, toastMessages } from "@/components/shared/constants";
-import { NoResultFound, PaginationCustomized, TableOrder } from "@/components/shared/table";
+import { NoResultFound, PaginationCustomized, TableOrder, TableSummary } from "@/components/shared/table";
 import { filterData } from "@/components/lib/filter";
 import { IOrder } from "@/components/interface/general";
 import { deleteOrderFromMongoDB, getOrdersFromMongoDB } from "@/components/shared/mongodbCrud";
@@ -60,7 +60,7 @@ export default function Orders() {
   const deleteOrder = async (orderId: string) => {
     try {
       // const response = await deleteDataFromTextFile(JSON.parse(orderId), "orders")
-      const response = await deleteOrderFromMongoDB(JSON.parse(orderId), "orders")
+      const response = await deleteOrderFromMongoDB(orderId, "orders")
 
       if (response.status) {
         toast.success(t1("Form.successMessage"), toastMessages.OPTION);
@@ -96,6 +96,7 @@ export default function Orders() {
                 deleteRow={deleteOrder}
                 columns={OrderColumns}
               />
+              <TableSummary list={currentItems} />
               <PaginationCustomized
                 pageItemsSize={pageItemsSize}
                 totalItems={filteredOrders.length}
