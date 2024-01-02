@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { CustomerColumns, DefaultPageNumber, Tables, clearCustomerForm, toastMessages } from "@/components/shared/constants";
+import { CustomerColumns, DefaultPageNumber, Tables, clearCustomerForm, defaultCustomer, toastMessages } from "@/components/shared/constants";
 import Form from "@/components/customers/form";
 import { NoResultFound, PaginationCustomized, Table } from "@/components/shared/table";
 import SearchBar from "@/components/shared/search";
@@ -12,6 +12,7 @@ import { filterData } from "@/components/lib/filter";
 import { ICustomers } from "@/components/interface/general";
 import { addDataToMongoDB, deleteCustomerFromMongoDB, getCustomersFromMongoDB } from "@/components/shared/mongodbCrud";
 import { getCustomersFromFile, readDataFromTextFile } from "@/app/fileCrud";
+import { OrderModal } from "@/components/customers/modal";
 
 export default function Customers() {
   const t = useTranslations("CustomerPage");
@@ -189,6 +190,7 @@ export default function Customers() {
         </div>
       )}
 
+      {pickup && <OrderModal customer={defaultCustomer} toggleModal={() => setPickup(false)} />}
       <div className="overflow-x-auto sm:-mx-6 lg:-mx-8  h-screen">
         <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
 

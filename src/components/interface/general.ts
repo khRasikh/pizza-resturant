@@ -92,7 +92,7 @@ export interface IOrder {
   extra: string;
   discount: number;
   total: string;
-  order_date?: string
+  order_date: string
 }
 export interface IPrint {
   orderList: IOrder[];

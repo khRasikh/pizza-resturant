@@ -136,3 +136,18 @@ export const extaListStatic = [
   { id: 47, name: "Jalapenos", SinglPreis: 1.9, JumboPreis: 2.5, FamilyPreis: 3.3, PartyPreis: 5.2 },
   { id: 48, name: "Chicken", SinglPreis: 1.9, JumboPreis: 2.5, FamilyPreis: 3.3, PartyPreis: 5.2 },
 ];
+
+export const defaultCustomer = {
+  KNr: 542,
+  Name: "abholen",
+  Tel: "01676431281",
+  Str: "abholen",
+  Ort: "Pizza Resturant",
+  Seit: "0",
+  Mal: 0,
+  DM: "1",
+  letzte: "1",
+  Rabatt: 0,
+  Fix: 0,
+  Bemerkung: "no",
+};

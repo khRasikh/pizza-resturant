@@ -16,7 +16,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
     const [orderList, setOrderList] = useState<IOrder[]>([]);
     const [lastOrders, setLastOrders] = useState<any[]>([])
-    formDataModal["customer_id"] = customer.KNr!
+    formDataModal["customer_id"] = customer.KNr ?? 542
 
     // formDataModal["discount"] = customer.Rabatt!
     // Function to add values to the array in formDataModal
