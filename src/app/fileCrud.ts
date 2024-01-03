@@ -102,12 +102,13 @@ export async function getCustomersFromFile(table: string) {
   try {
     const file = await fs.readFile(process.cwd() + `/${table}.json`, "utf8");
     const data: ICustomers[] = JSON.parse(file);
-    if (data) {
+    if (data.length > 0) {
       return { status: true, data, message: "OK" };
     }
+    return { status: false, data, message: "OK" };
   } catch (err) {
     console.error("Error deleting data:", err);
-    return { status: false, message: "Failed to delete record" };
+    return { status: false, data: [], message: "Failed to delete record" };
   }
 }
 

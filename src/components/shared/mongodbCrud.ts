@@ -176,7 +176,8 @@ export async function addDataToMongoDB(newData: any, tableName: string) {
 
     if (tableName === "customers") {
       const totalDocuments = await collection.countDocuments({});
-      newData.KNr = (totalDocuments + 1).toString();
+      newData.KNr = (totalDocuments + 7754 + 1).toString();
+      newData = [newData];
     }
 
     const result = await collection.insertMany(newData);

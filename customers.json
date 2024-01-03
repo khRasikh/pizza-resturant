@@ -108540,47 +108540,5 @@
       "lezte": "    0,00",
       "Rabatt": "10.06.13",
       "Fix\r": "0\r"
-  },
-  {
-      "KNr": "7756",
-      "Name": "Test 2",
-      "Tel": "01231231",
-      "Str": "Dingolfinger Str.3  Et:13",
-      "Ort": "81673 München    []",
-      "Bemerkung": "NO",
-      "Seit": "8",
-      "Mal": "",
-      "DM": "",
-      "lezte": "",
-      "Rabatt": "90",
-      "Fix\r": "\r"
-  },
-  {
-      "KNr": "7757",
-      "Name": "Ahmad Reza",
-      "Tel": "016398474890",
-      "Str": "Bernadottestr. 33   /Et: ",
-      "Ort": "81827 München    []",
-      "Bemerkung": "no benchmark is here",
-      "Seit": "934897",
-      "Mal": "",
-      "DM": "",
-      "lezte": "",
-      "Rabatt": "90",
-      "Fix\r": "\r"
-  },
-  {
-      "KNr": "7758",
-      "Name": "Rahimi",
-      "Tel": "0123123111",
-      "Str": "Ina Seidel Bogen 26",
-      "Ort": "81929 München",
-      "Bemerkung": "",
-      "Seit": "0",
-      "Mal": "",
-      "DM": "",
-      "lezte": "",
-      "Rabatt": "22",
-      "Fix\r": ""
   }
 ]

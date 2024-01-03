@@ -11,7 +11,7 @@ import SearchBar from "@/components/shared/search";
 import { filterData } from "@/components/lib/filter";
 import { ICustomers } from "@/components/interface/general";
 import { addDataToMongoDB, deleteCustomerFromMongoDB, getCustomersFromMongoDB } from "@/components/shared/mongodbCrud";
-import { getCustomersFromFile, readDataFromTextFile } from "@/app/fileCrud";
+import { getCustomersFromFile } from "@/app/fileCrud";
 import { OrderModal } from "@/components/customers/modal";
 
 export default function Customers() {
@@ -22,16 +22,29 @@ export default function Customers() {
   const [showForm, setShowForm] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const mergeCustomerLists = (list1: any, list2: any) => {
+    // Assuming both lists have a unique identifier like 'KNr'
+    const merged: any = new Map();
+
+    list1.forEach((customer: { KNr: any; }) => {
+      merged.set(customer.KNr, customer);
+    });
+
+    list2.forEach((customer: { KNr: any; }) => {
+      merged.set(customer.KNr, customer);
+    });
+
+    return Array.from(merged.values());
+  };
+
   const fetchCustomers = async () => {
-    // const customerList: { headers: any, body: any[] } = await readDataFromTextFile("customers")
-    // const customerList1: any = await getCustomersFromFile("customers")
-    // if (customerList1.status) {
-    //   console.log(customerList1.data)
-    // }
-    const customerList: { data: any[], status: boolean } = await getCustomersFromMongoDB("customers")
-    // console.log(customerList.body)
-    if (customerList.status) {
-      const sortedCustomers = customerList.data.sort((a, b) => parseInt(b.KNr) - parseInt(a.KNr))
+    // const customerListLocal: { headers: any, body: any[] } = await readDataFromTextFile("customers")
+    const customerListLocal: { data: ICustomers[], status: boolean } = await getCustomersFromFile("customers")
+
+    const customerList: { data: any[], status: boolean } = await getCustomersFromMongoDB("customers");
+    if (customerList.status || customerListLocal.status) {
+      const mergedCustomers: any = mergeCustomerLists(customerListLocal.data, customerList.data);
+      const sortedCustomers = mergedCustomers.sort((a: { KNr: string; }, b: { KNr: string; }) => parseInt(b.KNr) - parseInt(a.KNr));
       setCustomers(sortedCustomers);
       setIsLoading(false);
     } else {
