@@ -2,7 +2,7 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { IArticles, IArticlesForm, ICustomers, IForm, IFormModal } from '../interface/general';
 import { useTranslations } from 'next-intl';
-import { clearMenuForm, extaListStatic, formatNumber } from '../shared/constants';
+import { extaListStatic, formatNumber } from '../shared/constants';
 import { getMenusFromMongoDB } from '../shared/mongodbCrud';
 import clsx from 'clsx';
 import { PrintIcon, SaveIcon } from '../shared/icons';
@@ -10,7 +10,6 @@ import { PrintIcon, SaveIcon } from '../shared/icons';
 export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, addToOrderList, handlePrint, isSubmitted }: IFormModal) => {
     const t = useTranslations("Body")
     const sizes = ["SinglPreis", "JumboPreis", "FamilyPreis", "PartyPreis"] as const
-    const [selectedOption, setSelectedOption] = useState('');
     const [selectedPrice, setSelectedPrice] = useState<string>();
     const [priceOptions, setPriceOptions] = useState<any[]>()
     const [count, setCount] = useState<number>(0);
@@ -18,15 +17,12 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
     const [total, setTotal] = useState<number>(0);
     const [discount, setDiscount] = useState<number>(0);
     const [menu, setMenu] = useState<IArticles[]>([])
-    const [category, setCategory] = useState("SinglPreis")
+    const [category, setCategory] = useState<string>("SinglPreis")
 
     const handleChangeCompNum = (e: any) => {
-        const value = e.target.value;
-        setSelectedOption(value);
-
+        const value = e.target.value
         // Find the price associated with the selected CompNum
-        const selectedMenu = menu.length > 0 && menu.find((item) => item.CompNum.toString() === value.toString()
-        );
+        const selectedMenu = menu.length > 0 && menu.find((item) => item.CompNum.toString() === value.toString());
 
         if (selectedMenu) {
             setSelectedPrice(selectedMenu.SinglPreis.toString()); // selected by default
@@ -34,29 +30,94 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                 name: priceKey,
                 price: selectedMenu[priceKey]
             }));
-
             setPriceOptions(priceDetails)
             formDataModal["id"] = value
             formDataModal["name"] = selectedMenu.Name
-
-        } else {
-            setSelectedPrice('');
+            formDataModal["price"] = "0"
+            calculateTotal(count, extra, discount);
         }
+        // else {
+        //     setSelectedPrice('');
+        // }
     };
 
     const handleChangePrice = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = e.target.value;
-        setCategory(JSON.parse(value).name)
-        setSelectedPrice(JSON.parse(value).price)
-        formDataModal["price"] = formatNumber(parseFloat((JSON.parse(value).price)));
-        calculateTotal(formDataModal["count"], extra, discount);
+        const priceValue = e.target.value.trim()
+        if (priceValue !== '') {
+            setCategory(JSON.parse(priceValue).name)
+            setSelectedPrice(JSON.parse(priceValue).price)
+            formDataModal["price"] = formatNumber(parseFloat((JSON.parse(priceValue).price)));
+        }
+        calculateTotal(count, extra, discount);
+    };
+
+
+    // Handler for count change
+    const handleCountChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const countValue = e.target.value.trim()
+        if (countValue !== '' && /^\d+$/.test(countValue)) {
+            const newCount = parseInt(e.target.value);
+            setCount(newCount);
+            formDataModal["count"] = newCount;
+            calculateTotal(newCount, extra, discount);
+        }
+    };
+
+    const handleExtraChangeV2 = (e: ChangeEvent<HTMLInputElement>) => {
+        const extraValue = e.target.value
+        const extraNumber = Math.abs(parseInt(extraValue))
+        if (extaListStatic.length > 0 && !isNaN(extraNumber) && parseInt(extraValue) >= -48 && parseInt(extraValue) <= 48) {
+            const getExtraObject = extaListStatic.filter((i) => i.id === extraNumber)
+            let newExtrafromObject = 0
+            if (category === "SinglPreis" && extraValue !== "0") {
+                // console.log("test SinglPreis", getExtraObject[0]["SinglPreis"])
+                newExtrafromObject = Number(getExtraObject[0]["SinglPreis"])
+            } else if (category === "JumboPreis" && extraValue !== "0") {
+                // console.log("test JumboPreis", getExtraObject[0]["JumboPreis"])
+                newExtrafromObject = Number(getExtraObject[0]["JumboPreis"])
+            } else if (category === "FamilyPreis" && extraValue !== "0") {
+                // console.log("test FamilyPreis", getExtraObject[0]["FamilyPreis"])
+                newExtrafromObject = Number(getExtraObject[0]["FamilyPreis"])
+            } else if (category === "PartyPreis" && extraValue !== "0") {
+                // console.log("test PartyPreis", getExtraObject[0]["PartyPreis"])
+                newExtrafromObject = Number(getExtraObject[0]["PartyPreis"])
+            }
+
+            if (extraValue > "0" && extraValue !== "0") {
+                setExtra(newExtrafromObject);
+                formDataModal["extra"] = newExtrafromObject;
+                calculateTotal(count, newExtrafromObject, discount);
+            } else if (extraValue === "0") {
+                setExtra(0);
+                formDataModal["extra"] = 0;
+                calculateTotal(count, 0, discount);
+            } else {
+                setExtra(-newExtrafromObject);
+                formDataModal["extra"] = -newExtrafromObject;
+                calculateTotal(count, -newExtrafromObject, discount);
+            }
+
+        }
+
+    }
+
+    // Handler for discount change
+    const handleDiscountChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const discountValue = e.target.value.trim()
+        if (discountValue !== '' && /^\d+$/.test(discountValue)) {
+            const newDiscount = parseInt(discountValue, 10);
+            setDiscount(newDiscount);
+            formDataModal["discount"] = newDiscount
+            calculateTotal(count, extra, newDiscount);
+        }
     };
 
     // Function to calculate the total with discount
     const calculateTotal = (newCount: number, newExtra: number, newDiscount: number) => {
         const c = newCount === 0 ? formDataModal["count"] : newCount
         if (selectedPrice) {
-            let discountedTotal = (c * parseFloat(selectedPrice) + newExtra);
+            console.log("test newCount, newExtra, newDiscount, selectedPrice", newCount, newExtra, newDiscount, formDataModal["price"])
+            let discountedTotal = (c * parseFloat(formDataModal["price"]) + newExtra);
             // Calculate the discount amount
             const discountAmount = (discountedTotal * newDiscount) / 100;
             // Apply the discount to the total
@@ -66,32 +127,6 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
             // Format the total to two decimal places using formatNumber function if needed
             setTotal(Number(formatNumber(discountedTotal)));
         }
-    };
-
-    // Handler for count change
-    const handleCountChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const newCount = parseInt(e.target.value);
-        setCount(newCount);
-        calculateTotal(newCount, extra, discount); // Pass discount as an argument here
-        formDataModal["count"] = newCount;
-    };
-
-    // Handler for extra change
-    const extraList = extaListStatic
-
-    const handleExtraChange = (e: any) => {
-        const newExtra = Number(e.target.value);
-        setExtra(newExtra);
-        formDataModal["extra"] = newExtra;
-        calculateTotal(count, newExtra, discount); // Pass discount as an argument here
-    };
-
-    // Handler for discount change
-    const handleDiscountChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const newDiscount = parseInt(e.target.value)
-        setDiscount(newDiscount);
-        calculateTotal(count, extra, newDiscount); // Pass the new discount as an argument here
-        formDataModal["discount"] = newDiscount
     };
 
     const kasset = sessionStorage.getItem("kasset") ? sessionStorage.getItem("kasset")?.toString() : "1" //TODO: Kassets
@@ -105,22 +140,13 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
             } else if (kasset === "2" && getMenus.data) {
                 const newPrices = updatePrices(getMenus.data)
                 setMenu(newPrices)
-                console.log("test newprice", newPrices)
-
             }
         }
         fetchMenus()
 
     }, [])
 
-    /**
-     * TODO: NEEDS MORE UPDATEDS
-     * if kasset 2 following prices should be changed or decreased 20% off:
-     * all single pizza price €5.90
-     * all jumbo pizza price €8.90
-     * all family pizza price €5.90
-     * all party pizza price €10
-     */
+
     const updatePrices = (menu: IArticles[]) => {
         const updatedList = menu.map((item, index) => {
             if (index >= 1 && index <= 29) {
@@ -128,6 +154,12 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                     ...item,
                     SinglPreis: Number(5.90),
                     JumboPreis: Number(8.90),
+                };
+            }
+            else if (index >= 37 && index <= 49 || index >= 79 && index <= 88) {
+                return {
+                    ...item,
+                    SinglPreis: Number(5.90),
                 };
             }
             return item; // For items outside the specified range, return the original item
@@ -158,14 +190,15 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                         value={formDataModal["CompNum"] === 0 ? "" : formDataModal["CompNum"]}
                                         name="CompNum"
                                         onChange={handleChangeCompNum}
+                                        onKeyDown={handleChangeCompNum}
+                                        onKeyUp={handleChangeCompNum}
                                         className="w-full p-2 border rounded-md disabled"
-                                        placeholder={t("Form.count")}
+                                        placeholder={t("Form.CompNum")}
                                     />
                                 </td>
                                 <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
                                     <select className="w-full p-2 border rounded-md" onChange={handleChangePrice}>
-                                        <option value="">
-                                        </option>
+                                        <option value="">select</option>
                                         {priceOptions && priceOptions.length > 0 &&
                                             priceOptions.map((p) => {
                                                 return (
@@ -193,7 +226,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                         type="number"
                                         name="rabatt"
                                         onChange={handleDiscountChange}
-                                        // value={formDataModal["discount"]}
+                                        value={formDataModal["discount"]}
                                         className="w-full p-2 border rounded-md"
                                         placeholder={`${t("Form.Rabatt")} (%)`}
                                     />
@@ -210,39 +243,15 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
 
                                 </td>
 
-                                <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
-                                    <select className="w-full p-2 border rounded-md" onChange={handleExtraChange}>
-                                        <option value="">
-                                        </option>
-                                        {extraList.length > 0 &&
-                                            extraList.map((p) => {
-                                                if (category === "SinglPreis") {
-                                                    return (
-                                                        <option key={p.name} value={p.SinglPreis}>
-                                                            {p.id}-{p.name}
-                                                        </option>
-                                                    )
-                                                } else if (category === "JumboPreis") {
-                                                    return (
-                                                        <option key={p.name} value={p.JumboPreis}>
-                                                            {p.id}-{p.name}
-                                                        </option>
-                                                    )
-                                                } else if (category === "FamilyPreis") {
-                                                    return (
-                                                        <option key={p.name} value={p.FamilyPreis}>
-                                                            {p.id}-{p.name}
-                                                        </option>
-                                                    )
-                                                } else if (category === "PartyPreis") {
-                                                    return (
-                                                        <option key={p.name} value={p.PartyPreis}>
-                                                            {p.id}-{p.name}
-                                                        </option>
-                                                    )
-                                                }
-                                            })}
-                                    </select>
+                                <td className={`${"pl-1 py-1 border-gray-500 text-green-700 font-extrabold"}`}>
+                                    <input
+                                        type="number"
+                                        name="extra"
+                                        // value={formDataModal["extra"]}
+                                        onChange={handleExtraChangeV2}
+                                        className="w-full p-2 border rounded-md disabled"
+                                        placeholder={`${t("Form.extra")}(€)`}
+                                    />
                                 </td>
 
                                 <td>
