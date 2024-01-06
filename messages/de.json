@@ -92,6 +92,8 @@
       "CompNum": "Artikelnummer",
       "IhreNum": "Ihre Nummer",
       "Name": "Pizza-Name",
+      "MenuID": "Menü-ID",
+      "Size": "Größe",
       "SinglPreis": "Singlepreis",
       "JumboPreis": "Jumbo-Preis",
       "FamilyPreis": "Familienpreis",

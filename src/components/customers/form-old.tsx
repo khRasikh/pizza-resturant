@@ -2,7 +2,7 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { IArticles, IArticlesForm, ICustomers, IForm, IFormModal } from '../interface/general';
 import { useTranslations } from 'next-intl';
-import { clearMenuForm, extaListStatic, formatNumber } from '../shared/constants';
+import {                                    extaListStatic, formatNumber } from '../shared/constants';
 import { getMenusFromMongoDB } from '../shared/mongodbCrud';
 import clsx from 'clsx';
 import { PrintIcon, SaveIcon } from '../shared/icons';
@@ -22,6 +22,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
 
     const handleChangeCompNum = (e: any) => {
         const value = e.target.value;
+        console.log("test",value)
         setSelectedOption(value);
 
         // Find the price associated with the selected CompNum
@@ -153,13 +154,29 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                     />
                                 </td>
                                 <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
+                                    {/*solution 1 <select
+                                        className="w-full p-2 border rounded-md"
+                                        value={selectedOption}
+                                        onChange={handleChangeCompNum}
+                                    >
+                                        <option value="">{t("Form.select")}</option>
+                                        {menu.length > 0 &&
+                                            menu.map((item) => (
+                                                <option key={item.CompNum}
+                                                    value={item.CompNum}
+                                                >
+                                                    {item.CompNum}: {item.Name}
+                                                </option>
+                                            ))}
+                                    </select> */}
+                                    {/* solution 2 */}
                                     <input
                                         type="number"
-                                        value={formDataModal["CompNum"] === 0 ? "" : formDataModal["CompNum"]}
-                                        name="CompNum"
+                                        value={formDataModal["menu"] === 0 ? "" : formDataModal["menu"]}
+                                        name="menu"
                                         onChange={handleChangeCompNum}
                                         className="w-full p-2 border rounded-md disabled"
-                                        placeholder={t("Form.count")}
+                                        placeholder={t("Form.MenuID")}
                                     />
                                 </td>
                                 <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>

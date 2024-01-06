@@ -92,6 +92,8 @@
       "CompNum": "Article Number",
       "IhreNum": "Ihre Number",
       "Name": "Pizza Name",
+      "MenuID": "Menu ID",
+      "Size": "Size",
       "SinglPreis": "Single Price",
       "JumboPreis": "Jumbo Price",
       "FamilyPreis": "Family Price",

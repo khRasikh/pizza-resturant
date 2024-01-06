@@ -46,7 +46,7 @@ export const clearOrderFields = {
   customer_id: 0,
   name: "",
   price: "",
-  count: 1,
+  count: 0,
   extra: "",
   discount: 0,
   total: "",
