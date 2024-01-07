@@ -131,7 +131,8 @@
       "records": "Records",
       "count": "Count",
       "discount": "Discount",
-      "total": "Total"
+      "total": "Total",
+      "select": "Select"
     },
     "notFound": "No Menu Found!",
     "loading": "Loading..."

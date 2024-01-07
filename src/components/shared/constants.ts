@@ -47,7 +47,7 @@ export const clearOrderFields = {
   name: "",
   price: "",
   count: 0,
-  extra: "",
+  extra: { id: 0, name: "", price: 0 },
   discount: 0,
   total: "",
   order_date: new Date().toString(),

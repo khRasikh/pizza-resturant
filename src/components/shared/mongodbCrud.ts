@@ -179,6 +179,9 @@ export async function addDataToMongoDB(newData: any, tableName: string) {
       newData.KNr = (totalDocuments + 7754 + 1).toString();
       newData = [newData];
     }
+    if (tableName === "menus") {
+      newData = [newData];
+    }
 
     const result = await collection.insertMany(newData);
 

@@ -131,7 +131,8 @@
       "records": "Datensätze",
       "count": "Anzahl",
       "discount": "Rabatt",
-      "total": "Gesamt"
+      "total": "Gesamt",
+      "select": "Auswählen"
     },
     "notFound": "Kein Menü gefunden!",
     "loading": "Laden..."

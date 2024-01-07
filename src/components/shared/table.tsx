@@ -167,7 +167,7 @@ export const TableLastOrders: React.FC<ITableLastOrders> = ({ ordered }) => {
                         <td className="whitespace-nowrap px-2 py-1">{i.customer_id}</td>
                         <td className="whitespace-nowrap px-2 py-1">{i.count}</td>
                         <td className="whitespace-nowrap px-2 py-1">€{i.price}</td>
-                        <td className="whitespace-nowrap px-2 py-1">{i.extra} </td>
+                        <td className="whitespace-nowrap px-2 py-1">{i.extra.price == 0 ? "Nein" : i.extra.name + "(€" + formatNumber(Number(i.extra.price)) + ")"}</td>
                         <td className="whitespace-nowrap px-2 py-1">% {i.discount ? i.discount : 0} </td>
                         <td className="whitespace-nowrap px-2 py-1">€{formatNumber(Number(i.total))}</td>
                         <td className="whitespace-nowrap px-1 py-2">{i.order_date && formattedDate(i.order_date?.toString())}</td>
@@ -221,7 +221,7 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow })
                             <td className="whitespace-nowrap px-4 py-2">{i.customer_id}</td>
                             <td className="whitespace-nowrap px-4 py-2">{i.count}</td>
                             <td className="whitespace-nowrap px-4 py-2">€ {i.price}</td>
-                            <td className="whitespace-nowrap px-4 py-2">€{formatNumber(Number(i.extra))} </td>
+                            <td className="whitespace-nowrap px-4 py-2">{i.extra.price == 0 ? "Nein" : i.extra.name + "(€" + formatNumber(Number(i.extra.price)) + ")"} </td>
                             <td className="whitespace-nowrap px-4 py-2">% {i.discount} </td>
                             <td className="whitespace-nowrap px-4 py-2">€ {formatNumber(Number(i.total))}</td>
                             <td className="whitespace-nowrap px-4 py-2">{i.order_date && formattedDate(i.order_date?.toString())}</td>

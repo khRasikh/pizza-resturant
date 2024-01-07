@@ -48,7 +48,7 @@ export interface IFieldCustomer {
 export interface IForm {
   formData: any;
   fields: IFieldCustomer[];
-  filteredStr: any
+  filteredStr: any;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
   handleClose: () => void;
@@ -89,15 +89,15 @@ export interface IOrder {
   name: string;
   price: string;
   count: number;
-  extra: string;
+  extra: { id: number; name: string; price: number };
   discount: number;
   total: string;
-  order_date: string
+  order_date: string;
 }
 export interface IPrint {
   orderList: IOrder[];
   toggleModal: () => void;
-  customer: ICustomers
+  customer: ICustomers;
 }
 export interface IConsumerInOrder {
   KNr: number;

@@ -13,7 +13,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
     const [selectedPrice, setSelectedPrice] = useState<string>();
     const [priceOptions, setPriceOptions] = useState<any[]>()
     const [count, setCount] = useState<number>(0);
-    const [extra, setExtra] = useState<number>(0);
+    const [extra, setExtra] = useState<{ id: number, name: string, price: number }>({ id: 0, name: "", price: 0 });
     const [total, setTotal] = useState<number>(0);
     const [discount, setDiscount] = useState<number>(0);
     const [menu, setMenu] = useState<IArticles[]>([])
@@ -34,7 +34,8 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
             formDataModal["id"] = value
             formDataModal["name"] = selectedMenu.Name
             formDataModal["price"] = "0"
-            calculateTotal(count, extra, discount);
+            formDataModal["extra"] = { id: 0, name: "", price: 0 }
+            calculateTotal(count, extra.price, discount);
         }
         // else {
         //     setSelectedPrice('');
@@ -48,7 +49,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
             setSelectedPrice(JSON.parse(priceValue).price)
             formDataModal["price"] = formatNumber(parseFloat((JSON.parse(priceValue).price)));
         }
-        calculateTotal(count, extra, discount);
+        calculateTotal(count, extra.price, discount);
     };
 
 
@@ -59,7 +60,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
             const newCount = parseInt(e.target.value);
             setCount(newCount);
             formDataModal["count"] = newCount;
-            calculateTotal(newCount, extra, discount);
+            calculateTotal(newCount, extra.price, discount);
         }
     };
 
@@ -84,19 +85,18 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
             }
 
             if (extraValue > "0" && extraValue !== "0") {
-                setExtra(newExtrafromObject);
-                formDataModal["extra"] = newExtrafromObject;
+                setExtra({ id: extraNumber, name: getExtraObject[0].name, price: newExtrafromObject });
+                formDataModal["extra"] = { id: extraNumber, name: getExtraObject[0].name, price: newExtrafromObject };
                 calculateTotal(count, newExtrafromObject, discount);
             } else if (extraValue === "0") {
-                setExtra(0);
-                formDataModal["extra"] = 0;
+                setExtra({ id: 0, name: getExtraObject[0].name, price: 0 });
+                formDataModal["extra"] = { id: 0, name: "", price: 0 };
                 calculateTotal(count, 0, discount);
             } else {
-                setExtra(-newExtrafromObject);
-                formDataModal["extra"] = -newExtrafromObject;
-                calculateTotal(count, -newExtrafromObject, discount);
+                setExtra({ id: extraNumber, name: getExtraObject[0].name, price: -newExtrafromObject });
+                formDataModal["extra"] = { id: extraNumber, name: getExtraObject[0].name, price: -newExtrafromObject };
+                calculateTotal(count, extra.price, discount);
             }
-
         }
 
     }
@@ -108,7 +108,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
             const newDiscount = parseInt(discountValue, 10);
             setDiscount(newDiscount);
             formDataModal["discount"] = newDiscount
-            calculateTotal(count, extra, newDiscount);
+            calculateTotal(count, extra.price, newDiscount);
         }
     };
 
@@ -116,7 +116,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
     const calculateTotal = (newCount: number, newExtra: number, newDiscount: number) => {
         const c = newCount === 0 ? formDataModal["count"] : newCount
         if (selectedPrice) {
-            console.log("test newCount, newExtra, newDiscount, selectedPrice", newCount, newExtra, newDiscount, formDataModal["price"])
+            // console.log("test newCount, newExtra, newDiscount, selectedPrice", newCount, newExtra, newDiscount, formDataModal["price"])
             let discountedTotal = (c * parseFloat(formDataModal["price"]) + newExtra);
             // Calculate the discount amount
             const discountAmount = (discountedTotal * newDiscount) / 100;
@@ -198,7 +198,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                 </td>
                                 <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
                                     <select className="w-full p-2 border rounded-md" onChange={handleChangePrice}>
-                                        <option value="">select</option>
+                                        <option value="">{t("Label.select")}</option>
                                         {priceOptions && priceOptions.length > 0 &&
                                             priceOptions.map((p) => {
                                                 return (
@@ -272,6 +272,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                                 <PrintIcon />
                                                 <p className='text-black hover:text-green-700 font-bold px-1 text-md'>{t("Button.print")}</p>
                                             </button>}
+
                                     </div>
                                 </td>
                             </tr>

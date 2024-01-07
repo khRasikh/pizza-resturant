@@ -4,21 +4,34 @@ import { formattedDate } from "./customDate";
 
 export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
   let totalPrices = 0;
+  let totalDiscounts = 0;
+  let totalMW = 0;
 
   // Generating HTML for order items
   const orderItemsHTML = orderList
     .map((order) => {
       totalPrices += Number(order.total); // Calculate totalPrices
+      totalDiscounts += (Number(order.discount) * Number(order.price)) / 100;
+      totalMW += (Number(order.price) * 0.7) / 100;
 
       return `
             <tr>
                 <td>${order.count}X</td>
                 <td>${order.id}:</td>
                 <td>${order.name}</td>
-                <td>€${formatNumber(Number(order.extra))}</td>
                 <td>${formatNumber(Number(order.total))}</td>
-                <td>-</td>
+                <td>${formatNumber((Number(order.price) * 0.7) / 100)}</td>
             </tr>
+           ${
+             order.extra.id !== 0
+               ? `<tr>
+                <td>-</td>
+                <td>${order.extra.id}</td>
+                <td>${order.extra.name}</td>
+                <td>€${formatNumber(Number(order.extra.price))}</td>
+            </tr>`
+               : ""
+           }
         `;
     })
     .join("");
@@ -84,7 +97,6 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
                             <th>Anz</th>
                             <th>Nr.</th>
                             <th>Bez.</th>
-                            <th>Extra</th>
                             <th>Pr</th>
                             <th>%MW</th>
                         </tr>
@@ -95,13 +107,26 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
                 </table>
             </div>
 
-            <!-- Sixth Row - Dash -->
             <div class="divider my-4 border-b border-dashed border-gray-500"></div>
-
-            <!-- Seventh Row - Total -->
+          
             <div class="flex justify-between">
                 <div>Rechnungsbetrag Brutto:</div>
-                <div class="font-bold">€ ${totalPrices.toFixed(2)}</div>
+                <div class="font-bold"> € ${(totalDiscounts + totalPrices).toFixed(2)}</div>
+            </div>
+
+            <div class="flex justify-between">
+                <div>Gesamtrabatt:</div>
+                <div class="font-bold">- € ${totalDiscounts.toFixed(2)}</div>
+            </div>
+
+            <div class="flex justify-between">
+                <div>VAT (MW):</div>
+                <div class="font-bold"> € ${totalMW.toFixed(2)}</div>
+            </div>
+
+            <div class="flex justify-between">
+                <div>Rechnungsbetrag Netto:</div>
+                <div class="font-bold">€ ${(totalPrices + totalMW).toFixed(2)}</div>
             </div>
 
             <div class="flex justify-between mt-4 mb-2">

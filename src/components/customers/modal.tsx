@@ -50,6 +50,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         //     },
         //     cache: "no-cache",
         // });
+
         const addOrder = await addDataToMongoDB(orderList, "orders")
         if (addOrder.status) {
             toast.success(t("Form.successMessage"), toastMessages.OPTION);
