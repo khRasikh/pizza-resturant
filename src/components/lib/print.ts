@@ -10,10 +10,12 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
   // Generating HTML for order items
   const orderItemsHTML = orderList
     .map((order) => {
+
       totalPrices += Number(order.total); // Calculate totalPrices
       totalDiscounts += (Number(order.discount) * Number(order.price)) / 100;
       totalMW += (Number(order.price) * 0.7) / 100;
 
+    //   <td>€${formatNumber(Number(order.extra.price))}</td>
       return `
             <tr>
                 <td>${order.count}X</td>
@@ -28,7 +30,7 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
                 <td>-</td>
                 <td>${order.extra.id}</td>
                 <td>${order.extra.name}</td>
-                <td>€${formatNumber(Number(order.extra.price))}</td>
+                <td>Kein</td>
             </tr>`
                : ""
            }
@@ -45,17 +47,26 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
             @media print {
                 @page {
                     size: A5; /* Set the page size to A5 */
+                    margin: 20mm
                 }
                 
                 /* Additional styles for better print layout if needed */
                 body {
                     font-family: Arial, sans-serif; /* Example: Change font-family for better readability */
+                    font-size: 12pt; 
                 }
                 
                 /* Define other print-specific styles if needed */
                 /* For example, hiding certain elements from print */
                 .no-print {
                     display: none;
+
+                }
+                table {
+                    font-size: 12pt; /* Adjust the font size as needed */
+                }
+                .table {
+                    font-size: 12pt; /* Adjust the font size as needed */
                 }
             }
         </style>
@@ -63,11 +74,7 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
     <body class="bg-white">
         <div class="bill-container mx-auto  rounded-md ">
             <!-- First Row - Logo -->
-            <div class="flex justify-center mb-4">
-                <img src="logo.png" alt="Logo" class="w-32 h-32" />
-            </div>
 
-            <!-- Second Row - Data and Bill No -->
             <div class="flex justify-between mb-4">
                 <div>${formattedDate()}</div>
                 <div>Nr: ${orderList[0].id}</div>

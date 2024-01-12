@@ -2,7 +2,7 @@
 import clsx from 'clsx';
 import { IConsumerInOrder, ICustomers, IOrder, ITable, ITableOrder, NoResultFoundProps } from '../interface/general';
 import { useState, useEffect } from 'react';
-import { timeZone, dateTimeFormat, OrderColumns, formatNumber, clearOrderFields } from './constants';
+import { timeZone, dateTimeFormat, OrderColumns, formatNumber } from './constants';
 import { useTranslations } from 'next-intl';
 import { OrderModal } from '../customers/modal';
 import { formattedDate } from '../lib/customDate';
@@ -167,7 +167,7 @@ export const TableLastOrders: React.FC<ITableLastOrders> = ({ ordered }) => {
                         <td className="whitespace-nowrap px-2 py-1">{i.customer_id}</td>
                         <td className="whitespace-nowrap px-2 py-1">{i.count}</td>
                         <td className="whitespace-nowrap px-2 py-1">€{i.price}</td>
-                        <td className="whitespace-nowrap px-2 py-1">{i.extra.price == 0 ? "Nein" : i.extra.name + "(€" + formatNumber(Number(i.extra.price)) + ")"}</td>
+                        <td className="whitespace-nowrap px-2 py-1">{i.extra.name + "(€" + formatNumber(Number(i.extra.price)) + ")"}</td>
                         <td className="whitespace-nowrap px-2 py-1">% {i.discount ? i.discount : 0} </td>
                         <td className="whitespace-nowrap px-2 py-1">€{formatNumber(Number(i.total))}</td>
                         <td className="whitespace-nowrap px-1 py-2">{i.order_date && formattedDate(i.order_date?.toString())}</td>
@@ -189,12 +189,14 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow })
     };
 
     const confirmDelete = (id: string) => {
-        const isConfirmed = window.confirm(`${t("Table.confirmDelete")}`);
-        if (isConfirmed) {
-            deleteRow(id);
-        } else {
-            console.info("Delete cancelled")
-        }
+        // solution 1
+        // const isConfirmed = window.confirm(`${t("Table.confirmDelete")}`);
+        // if (isConfirmed) {
+        //     deleteRow(id);
+        // } else {
+        //     console.info("Delete cancelled")
+        // }
+        deleteRow(id);
     };
 
     return (
@@ -227,7 +229,7 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow })
                             <td className="whitespace-nowrap px-4 py-2">{i.order_date && formattedDate(i.order_date?.toString())}</td>
                             <td className="whitespace-nowrap px-3 py-1">
                                 <div className='flex flex-row'>
-                                    <button onClick={() => confirmDelete(i.id)} >
+                                    <button onClick={() => confirmDelete(i.id)}>
                                         <DeleteIcon />
                                     </button>
                                 </div>

@@ -4,19 +4,19 @@ import { useTranslations } from "next-intl";
 import { ISearchBar } from "../interface/general";
 import { useState } from "react";
 
-const SearchBar = ({ onSearch, placeholderValue = "" }: ISearchBar) => {
+const SearchBar = ({ onSearch, placeholderValue = "", searchTerm }: ISearchBar) => {
   const t = useTranslations("PageLayout");
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTermNew, setSearchTermNew] = useState(searchTerm);
 
   const handleSearchTerm = (e: any) => {
     const value = e.target.value;
     onSearch(value);
-    setSearchTerm(value)
+    setSearchTermNew(value)
   };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    onSearch('SUMBMITTED'+searchTerm);
+    onSearch('SUMBMITTED'+searchTermNew);
   };
 
   return (

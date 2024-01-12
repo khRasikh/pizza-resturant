@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import { FormCreateOrder } from './form';
-import { OrderColumns, clearOrderFields, formatNumber, toastMessages } from '../shared/constants';
+import { OrderColumns, clearOrderFields, toastMessages } from '../shared/constants';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
 import { TableOrder, TableLastOrders, TableSummary, } from '../shared/table';
@@ -34,6 +34,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
     };
 
     const submitAsync = async (e: any) => {
+
         e.preventDefault();
 
         const { id, price, count, total, customer_id } = formDataModal;
@@ -50,15 +51,18 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         //     },
         //     cache: "no-cache",
         // });
-
-        const addOrder = await addDataToMongoDB(orderList, "orders")
-        if (addOrder.status) {
-            toast.success(t("Form.successMessage"), toastMessages.OPTION);
-            setIsSubmitted(true)
-            setFormDataModal(clearOrderFields);
-        } else {
-            toast.error(t("Form.errorMessage"), toastMessages.OPTION);
-        }
+        addToOrderList()
+        setFormDataModal(clearOrderFields)
+        console.log('test Enter key pressed', orderList);
+        // Your logic for handling the Enter key press goes here
+        // const addOrder = await addDataToMongoDB(orderList, "orders")
+        // if (addOrder.status) {
+        //     toast.success(t("Form.successMessage"), toastMessages.OPTION);
+        //     setIsSubmitted(true)
+        //     setFormDataModal(clearOrderFields);
+        // } else {
+        //     toast.error(t("Form.errorMessage"), toastMessages.OPTION);
+        // }
     };
 
     const change = (e: any) => {
@@ -92,8 +96,27 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         fetchOrders()
     }, [lastOrders])
 
+    const handlePrintAsync = async () => {
+
+        const addOrder = await addDataToMongoDB(orderList, "orders")
+
+        if (addOrder.status) {
+            toast.success(t("Form.successMessage"), toastMessages.OPTION);
+            setIsSubmitted(true)
+            setFormDataModal(clearOrderFields);
+            handlePrint({ customer, orderList, toggleModal })
+        } else {
+            toast.error(t("Form.errorMessage"), toastMessages.OPTION);
+        }
+    }
+
+    const handlePressKey = (e: any) => {
+        if (e.key === "F9") {
+            orderList.length > 0 ? handlePrintAsync() : toast.error(t("Form.errorMessage"), toastMessages.OPTION);
+        }
+    }
     return (
-        <div className="overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-300 bg-opacity-70 z-50">
+        <button onKeyDown={(e) => handlePressKey(e)} className="overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-300 bg-opacity-70 z-50">
             <div className="bg-white overflow-x-hidden rounded-lg p-4 md:p-8 min-w-[95%] md:min-w-[80%] lg:max-w-[50%]">
                 <div className="overflow-y-auto overflow-x-hidden relative h-[70vh] max-h-[70vh]">
                     <div className="overflow-y-auto overflow-x-hidden flex items-center justify-between border-b mb-5">
@@ -125,7 +148,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
                     </div>
 
                     <FormCreateOrder formDataModal={formDataModal} handleChange={change} handleSubmit={submitAsync} addToOrderList={addToOrderList}
-                        handlePrint={() => handlePrint({ customer, orderList, toggleModal })} isSubmitted={isSubmitted} />
+                        handlePrint={handlePrintAsync} isSubmitted={isSubmitted} />
 
                     {orderList.length > 0 ? <div className="overflow-scroll max-h-[40vh]">
                         <TableOrder items={orderList} columns={OrderColumns} deleteRow={() => console.log("under construction F")} />
@@ -142,7 +165,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
                     }
                 </div>
             </div>
-        </div>
+        </button>
     );
 }
 

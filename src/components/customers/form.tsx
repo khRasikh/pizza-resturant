@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { extaListStatic, formatNumber } from '../shared/constants';
 import { getMenusFromMongoDB } from '../shared/mongodbCrud';
 import clsx from 'clsx';
-import { PrintIcon, SaveIcon } from '../shared/icons';
+import { AddICon, PrintIcon } from '../shared/icons';
 
 export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, addToOrderList, handlePrint, isSubmitted }: IFormModal) => {
     const t = useTranslations("Body")
@@ -42,12 +42,36 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
         // }
     };
 
-    const handleChangePrice = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    // const handleChangePrice = (e: any) => {
+    //     const priceValue = e.target.value.trim()
+    //     console.log("test price", priceValue)
+    //     if (priceValue !== '') {
+    //         setCategory(JSON.parse(priceValue).name)
+    //         setSelectedPrice(JSON.parse(priceValue).price)
+    //         formDataModal["price"] = formatNumber(parseFloat((JSON.parse(priceValue).price)));
+    //     }
+    //     calculateTotal(count, extra.price, discount);
+    // };
+
+    const handleChangePrice = (e: any) => {
         const priceValue = e.target.value.trim()
-        if (priceValue !== '') {
-            setCategory(JSON.parse(priceValue).name)
-            setSelectedPrice(JSON.parse(priceValue).price)
-            formDataModal["price"] = formatNumber(parseFloat((JSON.parse(priceValue).price)));
+
+        if (priceValue.toString().toLowerCase() === "s" && priceOptions) {
+            setCategory(priceOptions[0].name)
+            setSelectedPrice(priceOptions[0].price)
+            formDataModal["price"] = formatNumber(parseFloat((priceOptions[0]).price))
+        } else if (priceValue !== '' && priceValue === "j" && priceOptions) {
+            setCategory(priceOptions[1].name)
+            setSelectedPrice(priceOptions[1].price)
+            formDataModal["price"] = formatNumber(parseFloat((priceOptions[1]).price))
+        } else if (priceValue !== '' && priceValue === "f" && priceOptions) {
+            setCategory(priceOptions[2].name)
+            setSelectedPrice(priceOptions[2].price)
+            formDataModal["price"] = formatNumber(parseFloat((priceOptions[2]).price))
+        } else if (priceValue !== '' && priceValue === "p" && priceOptions) {
+            setCategory(priceOptions[3].name)
+            setSelectedPrice(priceOptions[3].price)
+            formDataModal["price"] = formatNumber(parseFloat((priceOptions[3]).price))
         }
         calculateTotal(count, extra.price, discount);
     };
@@ -60,7 +84,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
             const newCount = parseInt(e.target.value);
             setCount(newCount);
             formDataModal["count"] = newCount;
-            calculateTotal(newCount, extra.price, discount);
+            calculateTotal(newCount, extra.price > 0 ? extra.price : 0, discount);
         }
     };
 
@@ -92,9 +116,10 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                 setExtra({ id: 0, name: getExtraObject[0].name, price: 0 });
                 formDataModal["extra"] = { id: 0, name: "", price: 0 };
                 calculateTotal(count, 0, discount);
-            } else {
-                setExtra({ id: extraNumber, name: getExtraObject[0].name, price: -newExtrafromObject });
-                formDataModal["extra"] = { id: extraNumber, name: getExtraObject[0].name, price: -newExtrafromObject };
+            }
+            else {
+                setExtra({ id: extraNumber, name: getExtraObject[0].name, price: 0 });
+                formDataModal["extra"] = { id: extraNumber, name: getExtraObject[0].name, price: 0 };
                 calculateTotal(count, extra.price, discount);
             }
         }
@@ -167,6 +192,11 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
         return updatedList;
     };
 
+    const handlePrintAsync = () => {
+        return handlePrint()
+    }
+
+
     return (
         <form onSubmit={handleSubmit}>
             <div className="overflow-hidden">
@@ -197,7 +227,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                     />
                                 </td>
                                 <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
-                                    <select className="w-full p-2 border rounded-md" onChange={handleChangePrice}>
+                                    {/* <select className="w-full p-2 border rounded-md" onChange={handleChangePrice}>
                                         <option value="">{t("Label.select")}</option>
                                         {priceOptions && priceOptions.length > 0 &&
                                             priceOptions.map((p) => {
@@ -207,7 +237,17 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                                     </option>
                                                 )
                                             })}
-                                    </select>
+                                    </select> */}
+                                    <input
+                                        type="text"
+                                        // value={category} 
+                                        name="price"
+                                        onChange={handleChangePrice}
+                                        onKeyDown={handleChangePrice}
+                                        onKeyUp={handleChangePrice}
+                                        className="w-full p-2 border rounded-md uppercase"
+                                        placeholder={t("Form.category")}
+                                    />
                                 </td>
                                 <td className={`${"pl-1 py-1 border-gray-500 font-bold"}`}>
                                     <input
@@ -256,23 +296,18 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
 
                                 <td>
                                     <div className='flex'>
-                                        {!isSubmitted && <button className='mx-1 mt-2 py-2 flex' type='button' onClick={addToOrderList}>
-                                            <svg className="w-4 h-4 text-green-800 hover:bg-green-300 hover:text-black rounded-full dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 5.757v8.486M5.757 10h8.486M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                            </svg>
+                                        {/* {!isSubmitted && <button className='mx-1 mt-2 py-2 flex' type='button' onClick={addToOrderList}>
+                                           <SaveIcon />
+                                           <p className='text-black hover:text-green-700 font-bold px-1 text-xs'>{t("Button.save")}</p>
+                                        </button>} */}
+                                        <button type="submit" className={clsx(`my-4 pb-4 flex px-1`)} onClick={() => handleSubmit}>
+                                            <AddICon />
                                             <p className='text-black hover:text-green-700 font-bold px-1 text-xs'>{t("Button.add")}</p>
-                                        </button>}
-
-                                        {!isSubmitted ? <button type="submit" className={clsx(`my-4 pb-4 flex px-1`)} onClick={() => handleSubmit}>
-                                            <SaveIcon />
-                                            <p className='text-black hover:text-green-700 font-bold px-1 text-xs'>{t("Button.save")}</p>
-
-                                        </button> :
-                                            <button type='button' className='my-4 py-1 flex px-2' onClick={handlePrint}>
-                                                <PrintIcon />
-                                                <p className='text-black hover:text-green-700 font-bold px-1 text-md'>{t("Button.print")}</p>
-                                            </button>}
-
+                                        </button>
+                                        <button type='button' className='my-3 pt-1 py-1 flex px-2' onClick={handlePrintAsync}>
+                                            <PrintIcon />
+                                            <p className='text-black hover:text-green-700 font-bold px-1 text-md'>{t("Button.print")}</p>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -324,7 +359,7 @@ const Form = ({ formData, fields, handleChange, handleSubmit, handleClose, filte
                                                         {filteredStr.map((obj: any, index = 1) => (
                                                             <button
                                                                 type='button'
-                                                                key={index + 1}
+                                                                key={Number(index)}
                                                                 className="option block w-full p-2 text-left hover:bg-slate-500 hover:text-white"
                                                                 onClick={() => handleOptionClick(obj)}
                                                             >

@@ -18,6 +18,7 @@ export default function Customers() {
   const t = useTranslations("CustomerPage");
   const t1 = useTranslations("Body");
   const [customers, setCustomers] = useState<ICustomers[]>([clearCustomerForm]);
+  const [customer, setCustomer] = useState<ICustomers>(defaultCustomer);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showForm, setShowForm] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -58,6 +59,7 @@ export default function Customers() {
   }, [customers]);
 
   const [pickup, setPickup] = useState<boolean>(false)
+
   const handleSearch = (value: string) => {
     if (value === "SUMBMITTED0") {
       setPickup(true)
@@ -133,11 +135,18 @@ export default function Customers() {
   const [pageNumber, setPageNumber] = useState<number>(1);
 
   useEffect(() => {
-    const indexOfLastItem = currentPage * pageItemsSize;
-    const indexOfFirstItem = indexOfLastItem - pageItemsSize;
-    const updatedCurrentItems = filteredCustumers.slice(indexOfFirstItem, indexOfLastItem);
-    setCurrentItems(updatedCurrentItems);
-    setCurrentPage(pageNumber);
+    const fetchUpdatedConsumers = () => {
+      const indexOfLastItem = currentPage * pageItemsSize;
+      const indexOfFirstItem = indexOfLastItem - pageItemsSize;
+      const updatedCurrentItems = filteredCustumers.slice(indexOfFirstItem, indexOfLastItem);
+      if (updatedCurrentItems.length === 1) {
+        setCustomer(updatedCurrentItems[0])
+        setPickup(true)
+      }
+      setCurrentItems(updatedCurrentItems);
+      setCurrentPage(pageNumber);
+    }
+    fetchUpdatedConsumers()
   }, [customers, pageItemsSize]);
 
   //delete
@@ -163,6 +172,12 @@ export default function Customers() {
     setFilteredStr([])
   };
 
+  const handleToggelModal = () => {
+    handleSearch("")
+    setSearchTerm("")
+    setPickup(false)
+    setCustomer(defaultCustomer)
+  }
   return (
     <PageLayout title={t("title")}>
       {showForm ? (
@@ -203,7 +218,7 @@ export default function Customers() {
         </div>
       )}
 
-      {pickup && <OrderModal customer={defaultCustomer} toggleModal={() => setPickup(false)} />}
+      {pickup && customer && <OrderModal customer={customer} toggleModal={handleToggelModal} />}
       <div className="overflow-x-auto sm:-mx-6 lg:-mx-8  h-screen">
         <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
 
