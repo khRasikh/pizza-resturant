@@ -139,7 +139,7 @@ export default function Customers() {
       const indexOfLastItem = currentPage * pageItemsSize;
       const indexOfFirstItem = indexOfLastItem - pageItemsSize;
       const updatedCurrentItems = filteredCustumers.slice(indexOfFirstItem, indexOfLastItem);
-      if (updatedCurrentItems.length === 1) {
+      if (updatedCurrentItems.length === 1 && searchTerm !== "") {
         setCustomer(updatedCurrentItems[0])
         setPickup(true)
       }
