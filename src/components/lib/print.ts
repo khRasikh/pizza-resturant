@@ -10,12 +10,10 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
   // Generating HTML for order items
   const orderItemsHTML = orderList
     .map((order) => {
-
       totalPrices += Number(order.total); // Calculate totalPrices
       totalDiscounts += (Number(order.discount) * Number(order.price)) / 100;
       totalMW += (Number(order.price) * 0.7) / 100;
 
-    //   <td>€${formatNumber(Number(order.extra.price))}</td>
       return `
             <tr>
                 <td>${order.count}X</td>
@@ -60,7 +58,6 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
                 /* For example, hiding certain elements from print */
                 .no-print {
                     display: none;
-
                 }
                 table {
                     font-size: 12pt; /* Adjust the font size as needed */
@@ -91,7 +88,6 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
                     <div>${customer.Ort}</div>
                 </div>
             </div>
-
 
             <!-- Fourth Row - Dash -->
             <div class="divider my-4 border-b border-dashed border-gray-500"></div>
@@ -148,17 +144,26 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
                 <div></div>
             </div>
         </div>
+
+        <!-- JavaScript to trigger print directly in the current window -->
+        <script>
+          window.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+              window.print(); // Trigger the print
+              location.reload(); // Reload the page
+            }
+            else {
+                location.reload(); // Reload the page
+            }
+          });
+        </script>
     </body>
     </html>
-    `;
+  `;
 
-  // Open a new window to print the content
-  const printWindow = window.open();
-  if (printWindow) {
-    printWindow.document.write(content);
-    printWindow.document.close();
-    printWindow.print();
-  }
+  // Write the content to the current document
+  document.write(content);
+  document.close();
 
   toggleModal();
 };
