@@ -162,7 +162,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
 
 
     return (
-        <button onKeyDown={(e) => handlePressKey(e)} className="overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-300 bg-opacity-70 z-50">
+        <button autoFocus onKeyDown={(e) => handlePressKey(e)} className="overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-300 bg-opacity-70 z-50">
             <div className="bg-white overflow-x-hidden rounded-lg p-4 md:p-8 min-w-[95%] md:min-w-[80%] lg:max-w-[50%]">
                 <div className="overflow-y-auto overflow-x-hidden relative h-[70vh] max-h-[70vh]">
                     <div className="overflow-y-auto overflow-x-hidden flex items-center justify-between border-b mb-5">

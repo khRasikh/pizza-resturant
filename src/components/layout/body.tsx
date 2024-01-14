@@ -66,17 +66,24 @@ export default function Body({ children, title }: Readonly<IBody>) {
   if (session && doesEmailExist(user.email)) {
 
     return (
-      <div onKeyDown={(e) => handlePressKey(e)} className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute left-0 top-1 h-[20500px] w-[20500px] -translate-x-[47.5%] rounded-full  from-slate-900 via-cyan-500" />
-        </div>
-        <div className="container relative flex grow flex-col px-4">
-          <h1 className="text-2xl font-semibold leading-tight tracking-tight text-black md:text-xl">
-            {t("session.welcome")} {title}
-          </h1>
-          <div className="mt-6 text-gray-800 md:text-lg">{children}</div>
-        </div>
+      <button 
+      type="button" 
+      autoFocus 
+      onKeyDown={(e) => handlePressKey(e)} 
+      className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-start md:justify-start flex items-center justify-center content-center"
+    >
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute left-0 top-1 h-[20500px] w-[20500px] -translate-x-[47.5%] rounded-full  from-slate-900 via-cyan-500" />
       </div>
+      <div className="container relative flex grow flex-col px-4">
+        <h1 className="text-2xl font-semibold leading-tight tracking-tight text-black md:text-xl">
+          {t("session.welcome")} {title}
+        </h1>
+        <div className="mt-6 text-gray-800 md:text-lg text-left">{children}</div>
+        
+      </div>
+    </button>
+    
     );
   }
 
