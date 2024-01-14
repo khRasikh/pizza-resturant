@@ -9,10 +9,11 @@ import Form from "@/components/customers/form";
 import { NoResultFound, PaginationCustomized, Table } from "@/components/shared/table";
 import SearchBar from "@/components/shared/search";
 import { filterData } from "@/components/lib/filter";
-import { ICustomers } from "@/components/interface/general";
+import { ICustomerFormLastData, ICustomers } from "@/components/interface/general";
 import { addDataToMongoDB, deleteCustomerFromMongoDB, getCustomersFromMongoDB } from "@/components/shared/mongodbCrud";
-import { getCustomersFromFile } from "@/app/fileCrud";
 import { OrderModal } from "@/components/customers/modal";
+
+interface ICustomerList { data: { items: any[], pageSize: number, pageNumber: number, total: number }, status: boolean }
 
 export default function Customers() {
   const t = useTranslations("CustomerPage");
@@ -22,6 +23,24 @@ export default function Customers() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showForm, setShowForm] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [total, setTotal] = useState<number>(0);
+  //pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentItems, setCurrentItems] = useState<ICustomers[]>([]);
+  const [pageItemsSize, setPageItemsSize] = useState<number>(DefaultPageNumber);
+  const [pageNumber, setPageNumber] = useState<number>(1);
+
+  // form
+  const [formData, setFormData] = useState(clearCustomerForm);
+
+  // filter str input textbox
+  const [filteredStr, setFilteredStr] = useState<any>([])
+
+  //open modal after search
+  const [pickup, setPickup] = useState<boolean>(false)
+
+  //search ssr
+  const [searchSSR, setSearchSSR] = useState<string>("")
 
   const mergeCustomerLists = (list1: any, list2: any) => {
     // Assuming both lists have a unique identifier like 'KNr'
@@ -38,31 +57,47 @@ export default function Customers() {
     return Array.from(merged.values());
   };
 
-  const fetchCustomers = async () => {
-    // const customerListLocal: { headers: any, body: any[] } = await readDataFromTextFile("customers")
-    const customerListLocal: { data: ICustomers[], status: boolean } = await getCustomersFromFile("customers")
+  // solution 1: without pagination
+  // const fetchCustomers = async () => {
+  //   // const customerListLocal: { headers: any, body: any[] } = await readDataFromTextFile("customers")
+  //   const customerListLocal: { data: ICustomers[], status: boolean } = await getCustomersFromFile("customers")
 
-    const customerList: { data: any[], status: boolean } = await getCustomersFromMongoDB("customers");
-    if (customerList.status || customerListLocal.status) {
-      const mergedCustomers: any = mergeCustomerLists(customerListLocal.data, customerList.data);
-      const sortedCustomers = mergedCustomers.sort((a: { KNr: string; }, b: { KNr: string; }) => parseInt(b.KNr) - parseInt(a.KNr));
-      setCustomers(sortedCustomers);
+  //   const customerList: { data: any[], status: boolean } = await getCustomersFromMongoDB("customers");
+  //   if (customerList.status || customerListLocal.status) {
+  //     const mergedCustomers: any = mergeCustomerLists(customerListLocal.data, customerList.data);
+  //     const sortedCustomers = mergedCustomers.sort((a: { KNr: string; }, b: { KNr: string; }) => parseInt(b.KNr) - parseInt(a.KNr));
+  //     setCustomers(sortedCustomers);
+  //     setIsLoading(false);
+  //   } else {
+  //     setCustomers([]);
+  //     setIsLoading(false);
+  //   }
+  // };
+  // solution 2: with server side pagination
+  const fetchCustomers = async () => {
+    const customerList: ICustomerList = await getCustomersFromMongoDB("customers", searchSSR, pageNumber, pageItemsSize);
+    if (customerList.status) {
+      setTotal(customerList.data.total)
+      setCustomers(customerList.data.items);
       setIsLoading(false);
     } else {
       setCustomers([]);
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     fetchCustomers();
+    // }, [pageNumber, pageItemsSize]);
   }, [customers]);
 
-  const [pickup, setPickup] = useState<boolean>(false)
-
   const handleSearch = (value: string) => {
-    if (value === "SUMBMITTED0") {
+    if (value.startsWith("SUMBMITTED") && value === "SUMBMITTED0") {
       setPickup(true)
+    } else if (value.startsWith("SUMBMITTED") && !value.endsWith("0")) {
+      const currentSearch = value.substring(10)
+      setSearchSSR(currentSearch.toString())
+    } else if (value === "") {
+      setSearchSSR("")
     }
     setSearchTerm(value);
     setPageNumber(1);
@@ -70,10 +105,7 @@ export default function Customers() {
   //search & filter
   const filteredCustumers = filterData(customers, searchTerm);
 
-  // form
-  const [formData, setFormData] = useState(clearCustomerForm);
-
-  const submit = async (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     const { Name, Tel, Str }: ICustomers = formData;
@@ -94,9 +126,6 @@ export default function Customers() {
     }
   };
 
-
-  // filter str input textbox
-  const [filteredStr, setFilteredStr] = useState<any>([])
   const change = (e: any) => {
     const { name, value } = e.target;
 
@@ -128,11 +157,6 @@ export default function Customers() {
     // { name: "Fix", value: formData.Fix ? formData.Fix : '', placeholder: t1("Form.fixed") },
   ];
 
-  //pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentItems, setCurrentItems] = useState<ICustomers[]>([]);
-  const [pageItemsSize, setPageItemsSize] = useState<number>(DefaultPageNumber);
-  const [pageNumber, setPageNumber] = useState<number>(1);
 
   useEffect(() => {
     const fetchUpdatedConsumers = () => {
@@ -178,13 +202,17 @@ export default function Customers() {
     setPickup(false)
     setCustomer(defaultCustomer)
   }
+  const customerFormDataLast: ICustomerFormLastData = {
+    change, filteredStr, inputFields
+  }
+
   return (
     <PageLayout title={t("title")}>
       {showForm ? (
         <div className="flex flex-col items-center">
           <div className="flex flex-row">
             <div>
-              <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
+              <SearchBar searchTerm={searchTerm} onSearch={handleSearch} placeholderValue="Kundennummer" />
             </div>
             <div>
               <button
@@ -211,14 +239,14 @@ export default function Customers() {
             formData={formData}
             fields={inputFields}
             handleChange={change}
-            handleSubmit={submit}
+            handleSubmit={handleSubmit}
             handleClose={toggleForm}
             filteredStr={filteredStr}
           />
         </div>
       )}
 
-      {pickup && customer && <OrderModal customer={customer} toggleModal={handleToggelModal} />}
+      {pickup && customer && <OrderModal customer={customer} toggleModal={handleToggelModal} customerFormLastData={customerFormDataLast} />}
       <div className="overflow-x-auto sm:-mx-6 lg:-mx-8  h-screen">
         <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
 
@@ -232,7 +260,7 @@ export default function Customers() {
               />
               <PaginationCustomized
                 pageItemsSize={pageItemsSize}
-                totalItems={filteredCustumers.length}
+                totalItems={total}
                 pageNumber={pageNumber}
                 setPageItemsSize={setPageItemsSize}
                 setPageNumber={setPageNumber}

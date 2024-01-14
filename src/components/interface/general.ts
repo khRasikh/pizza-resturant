@@ -48,7 +48,7 @@ export interface IFieldCustomer {
 export interface IForm {
   formData: any;
   fields: IFieldCustomer[];
-  filteredStr: any;
+  filteredStr?: any;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
   handleClose: () => void;
@@ -105,9 +105,16 @@ export interface IConsumerInOrder {
   Tel: string;
 }
 
+export interface ICustomerFormLastData {
+  inputFields: any[];
+  change: (e: any) => void;
+  filteredStr: any;
+}
+
 export interface IOrderModal {
   toggleModal: () => void;
   customer: ICustomers;
+  customerFormLastData?: ICustomerFormLastData;
 }
 
 //Files Interfaces

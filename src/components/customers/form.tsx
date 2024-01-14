@@ -42,17 +42,6 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
         // }
     };
 
-    // const handleChangePrice = (e: any) => {
-    //     const priceValue = e.target.value.trim()
-    //     console.log("test price", priceValue)
-    //     if (priceValue !== '') {
-    //         setCategory(JSON.parse(priceValue).name)
-    //         setSelectedPrice(JSON.parse(priceValue).price)
-    //         formDataModal["price"] = formatNumber(parseFloat((JSON.parse(priceValue).price)));
-    //     }
-    //     calculateTotal(count, extra.price, discount);
-    // };
-
     const handleChangePrice = (e: any) => {
         const priceValue = e.target.value.trim()
 

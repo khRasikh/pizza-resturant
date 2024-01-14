@@ -1,16 +1,16 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import { FormCreateOrder } from './form';
-import { OrderColumns, clearOrderFields, toastMessages } from '../shared/constants';
+import Form, { FormCreateOrder } from './form';
+import { OrderColumns, Tables, clearCustomerForm, clearOrderFields, toastMessages } from '../shared/constants';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
 import { TableOrder, TableLastOrders, TableSummary, } from '../shared/table';
 import { handlePrint } from '../lib/print';
-import { IOrder, IOrderModal } from '../interface/general';
+import { ICustomers, IOrder, IOrderModal } from '../interface/general';
 // import { getDataByID } from '../shared/psqlCrud';
-import { addDataToMongoDB, getOrdersByIDFromMongoDB } from '../shared/mongodbCrud';
+import { addDataToMongoDB, getOrdersByIDFromMongoDB, updateDataToMongoDB } from '../shared/mongodbCrud';
 
-export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => {
+export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, customerFormLastData }) => {
     const t = useTranslations("Body")
     const [formDataModal, setFormDataModal] = useState(clearOrderFields);
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -53,7 +53,6 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         // });
         addToOrderList()
         setFormDataModal(clearOrderFields)
-        console.log('test Enter key pressed', orderList);
         // Your logic for handling the Enter key press goes here
         // const addOrder = await addDataToMongoDB(orderList, "orders")
         // if (addOrder.status) {
@@ -110,11 +109,58 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
         }
     }
 
+    // update customer 
+    const [newCustomer, setNewCustomer] = useState(false)
     const handlePressKey = (e: any) => {
-        if (e.key === "F9") {
+        if (e.key === "F9") { // pring and save
             orderList.length > 0 ? handlePrintAsync() : toast.error(t("Form.errorMessage"), toastMessages.OPTION);
         }
+        else if (e.key === "Escape" && newCustomer) { // close update 
+            setNewCustomer(false)
+        }
+        else if (e.key === "Escape" && !newCustomer) { // exit modal 
+            toggleModal()
+        }
+        else if (e.key === "F3") { //edit customer
+            setNewCustomer(true)
+            console.log("test customer", customer)
+        }
     }
+    const t1 = useTranslations("Body")
+
+    // update form 
+    const [formData, setFormData] = useState(customer);
+
+    const handleUpdateChange = (e: any) => {
+        const { name, value } = e.target;
+
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
+    const handleUpdateCustomerAsync = async (e: any) => {
+        e.preventDefault();
+
+        const { Name, Tel, Str }: ICustomers = formData;
+
+        if (!Name || !Tel || !Str) {
+            return toast.error(t1("Form.inCompleteMessage"), toastMessages.OPTION);
+        }
+
+        // const addCustomer = await addDataToTextFile<ICustomers>(formData, Tables.Customers)
+        const updateCustomer = await updateDataToMongoDB(`${customer.KNr!}` ?? "542", formData, Tables.Customers)
+
+        if (updateCustomer.status) {
+            toast.success(t1("Form.successMessage"), toastMessages.OPTION);
+            setNewCustomer(false);
+        } else {
+            toast.error(t1("Form.errorMessage"), toastMessages.OPTION);
+        }
+    };
+
+
     return (
         <button onKeyDown={(e) => handlePressKey(e)} className="overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-300 bg-opacity-70 z-50">
             <div className="bg-white overflow-x-hidden rounded-lg p-4 md:p-8 min-w-[95%] md:min-w-[80%] lg:max-w-[50%]">
@@ -123,6 +169,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
                         <h3 className="text-lg text-black mb-4">
                             {t("Label.createNewOrder")} {customer.Name}(<span className='text-green-700 font-bold'> {customer.KNr}</span>)
                         </h3>
+
                         <button
                             type="button"
                             onClick={toggleModal}
@@ -146,7 +193,16 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
                             </svg>
                         </button>
                     </div>
-
+                    {newCustomer && customerFormLastData ? <div className='flex flex-row w-full justify-center'>
+                        <Form
+                            formData={formData}
+                            fields={customerFormLastData?.inputFields}
+                            handleChange={handleUpdateChange}
+                            handleSubmit={handleUpdateCustomerAsync}
+                            handleClose={() => setNewCustomer(false)}
+                            filteredStr={customerFormLastData.filteredStr} //TOOD: UPDATE
+                        />
+                    </div> : ""}
                     <FormCreateOrder formDataModal={formDataModal} handleChange={change} handleSubmit={submitAsync} addToOrderList={addToOrderList}
                         handlePrint={handlePrintAsync} isSubmitted={isSubmitted} />
 
@@ -163,6 +219,14 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => 
                             <TableLastOrders ordered={lastOrders} />
                         </div>
                     }
+
+                    <div className='my-4 flex flex-row justify-between'>
+                        <div><span className='font-bold'>Bearbeiten</span>: F3</div>
+                        <div><span className='font-bold'>Neue Bestellung</span>: Enter</div>
+                        <div><span className='font-bold'>Speichern</span>: F9</div>
+                        <div><span className='font-bold'>Drucken</span>: F9</div>
+                        <div><span className='font-bold'>Beenden</span>: ESC</div>
+                    </div>
                 </div>
             </div>
         </button>

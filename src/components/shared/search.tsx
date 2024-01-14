@@ -16,7 +16,7 @@ const SearchBar = ({ onSearch, placeholderValue = "", searchTerm }: ISearchBar) 
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    onSearch('SUMBMITTED'+searchTermNew);
+    onSearch('SUMBMITTED' + searchTermNew);
   };
 
   return (
