@@ -28,18 +28,18 @@ const AuthorizationPage: React.FC = () => {
             <div className="max-w-[460px]">{t.rich('description')}</div>
             Welcome to AuthorizationPage
             <div className='flex flex-row '>
-                {isModel1Allowed ? <button className='bg-blue-500 m-3 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded' onClick={handleModel1Click}>
-                    Model 1</button> : <button className="bg-blue-500 m-3 text-white font-bold py-2 px-4 rounded opacity-50 cursor-not-allowed">
+                {isModel1Allowed ? <button className='bg-blue-900 m-3 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded' onClick={handleModel1Click}>
+                    Model 1</button> : <button className="bg-blue-900 m-3 text-white font-bold py-2 px-4 rounded opacity-50 cursor-not-allowed">
                     unauthorized
                 </button>}
-                {isModel2Allowed ? <button className='bg-blue-500 m-3 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded' onClick={handleModel2Click}>Model 2</button> :
-                    <button className="bg-blue-500 m-3 text-white font-bold py-2 px-4 rounded opacity-50 cursor-not-allowed">
+                {isModel2Allowed ? <button className='bg-blue-900 m-3 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded' onClick={handleModel2Click}>Model 2</button> :
+                    <button className="bg-blue-900 m-3 text-white font-bold py-2 px-4 rounded opacity-50 cursor-not-allowed">
                         unauthorized
                     </button>}
-                <button className='bg-blue-500 m-3 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded'>Model 1</button>
-                <button className='bg-blue-500 m-3 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded'>Model 2</button>
-                <button className='bg-blue-500 m-3 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded'>Functionality 1</button>
-                <button className='bg-blue-500 m-3 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded'> Functionality 2</button>
+                <button className='bg-blue-900 m-3 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded'>Model 1</button>
+                <button className='bg-blue-900 m-3 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded'>Model 2</button>
+                <button className='bg-blue-900 m-3 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded'>Functionality 1</button>
+                <button className='bg-blue-900 m-3 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded'> Functionality 2</button>
 
             </div>
 

@@ -1,6 +1,6 @@
 "use server";
 
-import { Collection } from "mongodb";
+import { Collection, ObjectId } from "mongodb";
 import { IArticles, ICustomers, IOrder } from "../interface/general";
 import clientPromise from "../lib/mongodb";
 
@@ -138,7 +138,11 @@ export async function getCustomersFromMongoDB(
     };
   } catch (err) {
     console.error("Error retrieving data:", err);
-    return { status: false, data: { items: [], pageNumber: 1, pageSize: 1, total: 0 }, message: "Internal Server Error" };
+    return {
+      status: false,
+      data: { items: [], pageNumber: 1, pageSize: 1, total: 0 },
+      message: "Internal Server Error",
+    };
   }
 }
 
@@ -231,7 +235,7 @@ export async function addDataToMongoDB(newData: any, tableName: string) {
 
     if (tableName === "customers") {
       const totalDocuments = await collection.countDocuments({});
-      newData.KNr = (totalDocuments + 7754 + 1).toString();
+      newData.KNr = (totalDocuments + 1).toString();
       newData = [newData];
     } else if (tableName === "menus") {
       newData = [newData];
@@ -239,9 +243,12 @@ export async function addDataToMongoDB(newData: any, tableName: string) {
 
     const result = await collection.insertMany(newData);
 
+    const getLastResult = await db
+      .collection("customers")
+      .findOne({ _id: result.insertedIds["0"] }, { projection: { _id: 0 } });
     if (result.insertedCount >= 1) {
-      console.log("Success: Record added successfully");
-      return { status: true, statusCode: 200, message: "Record added successfully" };
+      console.log("Success: Record added successfully", getLastResult);
+      return { status: true, statusCode: 200, data: getLastResult, message: "Record added successfully" };
     } else {
       console.log("Failed to add record");
       return { status: false, message: "Failed to add data" };

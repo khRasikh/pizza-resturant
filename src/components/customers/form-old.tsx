@@ -7,7 +7,7 @@ import { getMenusFromMongoDB } from '../shared/mongodbCrud';
 import clsx from 'clsx';
 import { PrintIcon, SaveIcon } from '../shared/icons';
 
-export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, addToOrderList, handlePrint, isSubmitted }: IFormModal) => {
+export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmitFormOrder, addToOrderList, handlePrint, isSubmitted }: IFormModal) => {
     const t = useTranslations("Body")
     const sizes = ["SinglPreis", "JumboPreis", "FamilyPreis", "PartyPreis"] as const
     const [selectedOption, setSelectedOption] = useState('');
@@ -137,7 +137,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmitFormOrder}>
             <div className="overflow-hidden">
                 <div className="w-full">
                     <table className="min-w-full text-left text-sm font-light items-center justify-center">
@@ -271,7 +271,7 @@ export const FormCreateOrder = ({ formDataModal, handleChange, handleSubmit, add
                                             <p className='text-black hover:text-green-700 font-bold px-1 text-xs'>{t("Button.add")}</p>
                                         </button>}
 
-                                        {!isSubmitted ? <button type="submit" className={clsx(`my-4 pb-4 flex px-1`)} onClick={() => handleSubmit}>
+                                        {!isSubmitted ? <button type="submit" className={clsx(`my-4 pb-4 flex px-1`)} onClick={() => handleSubmitFormOrder}>
                                             <SaveIcon />
                                             <p className='text-black hover:text-green-700 font-bold px-1 text-xs'>{t("Button.save")}</p>
 

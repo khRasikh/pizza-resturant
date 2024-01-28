@@ -1,32 +1,38 @@
 "use client";
 import PageLayout from "@/components/PageLayout";
 import { useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { CustomerColumns, DefaultPageNumber, Tables, clearCustomerForm, defaultCustomer, toastMessages } from "@/components/shared/constants";
+import {
+  DefaultPageNumber,
+  Tables,
+  clearCustomerForm,
+  defaultCustomer,
+  toastMessages,
+} from "@/components/shared/constants";
 import Form from "@/components/customers/form";
-import { NoResultFound, PaginationCustomized, Table } from "@/components/shared/table";
 import SearchBar from "@/components/shared/search";
 import { filterData } from "@/components/lib/filter";
 import { ICustomerFormLastData, ICustomers } from "@/components/interface/general";
-import { addDataToMongoDB, deleteCustomerFromMongoDB, getCustomersFromMongoDB } from "@/components/shared/mongodbCrud";
+import { addDataToMongoDB, getCustomersFromMongoDB } from "@/components/shared/mongodbCrud";
 import { OrderModal } from "@/components/customers/modal";
+import { AddICon } from "@/components/shared/icons";
 
-interface ICustomerList { data: { items: any[], pageSize: number, pageNumber: number, total: number }, status: boolean }
+interface ICustomerList {
+  data: { items: any[]; pageSize: number; pageNumber: number; total: number };
+  status: boolean;
+}
 
 export default function Customers() {
   const t = useTranslations("CustomerPage");
   const t1 = useTranslations("Body");
   const [customers, setCustomers] = useState<ICustomers[]>([clearCustomerForm]);
-  const [customer, setCustomer] = useState<ICustomers>(defaultCustomer);
+  const [customer, setCustomer] = useState<ICustomers>(clearCustomerForm);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showForm, setShowForm] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [total, setTotal] = useState<number>(0);
   //pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentItems, setCurrentItems] = useState<ICustomers[]>([]);
   const [pageItemsSize, setPageItemsSize] = useState<number>(DefaultPageNumber);
   const [pageNumber, setPageNumber] = useState<number>(1);
 
@@ -34,71 +40,69 @@ export default function Customers() {
   const [formData, setFormData] = useState(clearCustomerForm);
 
   // filter str input textbox
-  const [filteredStr, setFilteredStr] = useState<any>([])
+  const [filteredStr, setFilteredStr] = useState<any>([]);
 
   //open modal after search
-  const [pickup, setPickup] = useState<boolean>(false)
+  const [pickup, setPickup] = useState<boolean>(false);
 
   //search ssr
-  const [searchSSR, setSearchSSR] = useState<string>("")
+  const [searchSSR, setSearchSSR] = useState<string>("");
 
   const mergeCustomerLists = (list1: any, list2: any) => {
     // Assuming both lists have a unique identifier like 'KNr'
     const merged: any = new Map();
 
-    list1.forEach((customer: { KNr: any; }) => {
+    list1.forEach((customer: { KNr: any }) => {
       merged.set(customer.KNr, customer);
     });
 
-    list2.forEach((customer: { KNr: any; }) => {
+    list2.forEach((customer: { KNr: any }) => {
       merged.set(customer.KNr, customer);
     });
 
     return Array.from(merged.values());
   };
 
-  // solution 1: without pagination
-  // const fetchCustomers = async () => {
-  //   // const customerListLocal: { headers: any, body: any[] } = await readDataFromTextFile("customers")
-  //   const customerListLocal: { data: ICustomers[], status: boolean } = await getCustomersFromFile("customers")
-
-  //   const customerList: { data: any[], status: boolean } = await getCustomersFromMongoDB("customers");
-  //   if (customerList.status || customerListLocal.status) {
-  //     const mergedCustomers: any = mergeCustomerLists(customerListLocal.data, customerList.data);
-  //     const sortedCustomers = mergedCustomers.sort((a: { KNr: string; }, b: { KNr: string; }) => parseInt(b.KNr) - parseInt(a.KNr));
-  //     setCustomers(sortedCustomers);
-  //     setIsLoading(false);
-  //   } else {
-  //     setCustomers([]);
-  //     setIsLoading(false);
-  //   }
-  // };
-  // solution 2: with server side pagination
-  const fetchCustomers = async () => {
-    const customerList: ICustomerList = await getCustomersFromMongoDB("customers", searchSSR, pageNumber, pageItemsSize);
-    if (customerList.status) {
-      setTotal(customerList.data.total)
-      setCustomers(customerList.data.items);
-      setIsLoading(false);
+  const confirmNewCustomer = (): boolean => {
+    const isConfirmed = window.confirm(`${"Neu Kunden?"}`);
+    if (isConfirmed) {
+      console.log("test confired");
+      toggleForm();
+      return true;
     } else {
-      setCustomers([]);
-      setIsLoading(false);
+      console.info("test new consumer cancelled");
+      return false;
     }
   };
-  useEffect(() => {
-    fetchCustomers();
-    // }, [pageNumber, pageItemsSize]);
-  }, [customers]);
 
-  const handleSearch = (value: string) => {
-    if (value.startsWith("SUMBMITTED") && value === "SUMBMITTED0") {
-      setPickup(true)
-    } else if (value.startsWith("SUMBMITTED") && !value.endsWith("0")) {
-      const currentSearch = value.substring(10)
-      setSearchSSR(currentSearch.toString())
+  const handleSearch = async (value: string) => {
+    if (value === "0") {
+      setPickup(true);
+      setCustomer(defaultCustomer);
+    } else if (value !== "0" && value !== "") {
+      const getConsumerBySearch: ICustomerList = await getCustomersFromMongoDB(
+        "customers",
+        value.trim().toString(),
+        pageNumber,
+        pageItemsSize
+      );
+      const { data, status } = getConsumerBySearch;
+      if (status && data.items.length > 0) {
+        setCustomer(data.items[0]);
+        setShowForm(true);
+        console.log("test ssr consumer", data.items[0]);
+        setIsLoading(false);
+        setPickup(true);
+      } else {
+        confirmNewCustomer();
+      }
+
+      const currentSearch = value.substring(10);
+      setSearchSSR(currentSearch.toString());
     } else if (value === "") {
-      setSearchSSR("")
+      setSearchSSR("");
     }
+
     setSearchTerm(value);
     setPageNumber(1);
   };
@@ -115,12 +119,15 @@ export default function Customers() {
     }
 
     // const addCustomer = await addDataToTextFile<ICustomers>(formData, Tables.Customers)
-    const addCustomer = await addDataToMongoDB(formData, Tables.Customers)
+    const addCustomer = await addDataToMongoDB(formData, Tables.Customers);
 
     if (addCustomer.status) {
       setFormData(clearCustomerForm);
       toast.success(t1("Form.successMessage"), toastMessages.OPTION);
       setShowForm(true);
+      if (addCustomer.data) {
+        setCustomer(addCustomer.data! as unknown as ICustomers);
+      }
     } else {
       toast.error(t1("Form.errorMessage"), toastMessages.OPTION);
     }
@@ -133,10 +140,9 @@ export default function Customers() {
       // Grouping by Postal Codes (Ort)
       const matchingObjects = customers.length > 0 && customers.filter((obj: any) => obj.Str.includes(value));
       if (Array.isArray(matchingObjects) && value.length > 0) {
-        setFilteredStr(matchingObjects)
+        setFilteredStr(matchingObjects);
       }
     }
-
     setFormData({
       ...formData,
       [name]: value,
@@ -151,90 +157,75 @@ export default function Customers() {
     { name: "Seit", value: formData.Seit, placeholder: t1("Form.Seit") },
     // { name: "Mal", value: formData.Mal ? formData.Mal : '', placeholder: t1("Form.Mal") },
     // { name: "DM", value: formData.DM || '', placeholder: t1("Form.DM") },
-    { name: "letzte", value: formData.letzte || '', placeholder: t1("Form.letzte") },
-    { name: "Rabatt", value: formData.Rabatt ? formData.Rabatt : '', placeholder: t1("Form.Rabatt") },
-    { name: "Bemerkung", value: formData.Bemerkung || '', placeholder: t1("Form.Bemerkung") },
+    { name: "letzte", value: formData.letzte || "", placeholder: t1("Form.letzte") },
+    { name: "Rabatt", value: formData.Rabatt ? formData.Rabatt : "", placeholder: t1("Form.Rabatt") },
+    { name: "Bemerkung", value: formData.Bemerkung || "", placeholder: t1("Form.Bemerkung") },
     // { name: "Fix", value: formData.Fix ? formData.Fix : '', placeholder: t1("Form.fixed") },
   ];
 
-
-  useEffect(() => {
-    const fetchUpdatedConsumers = () => {
-      const indexOfLastItem = currentPage * pageItemsSize;
-      const indexOfFirstItem = indexOfLastItem - pageItemsSize;
-      const updatedCurrentItems = filteredCustumers.slice(indexOfFirstItem, indexOfLastItem);
-      if (updatedCurrentItems.length === 1 && searchTerm !== "") {
-        setCustomer(updatedCurrentItems[0])
-        setPickup(true)
-      }
-      setCurrentItems(updatedCurrentItems);
-      setCurrentPage(pageNumber);
-    }
-    fetchUpdatedConsumers()
-  }, [customers, pageItemsSize]);
-
-  //delete
-  const deleteCustomer = async (consumerId: string) => {
-    try {
-      // const response = await deleteDataFromTextFile(JSON.parse(consumerId), "customers")
-      const response = await deleteCustomerFromMongoDB(JSON.parse(consumerId), "customers")
-
-      if (response.status) {
-        toast.success(t1("Form.successMessage"), toastMessages.OPTION);
-      } else {
-        toast.error(t1("Form.errorMessage"), toastMessages.OPTION);
-      }
-    } catch (error) {
-      toast.error(t1("Form.errorMessage"), toastMessages.OPTION);
-      console.error("Error deleting customer:", error);
-    }
-  };
-
   const toggleForm = () => {
     setShowForm(!showForm);
-    setFormData(clearCustomerForm)
-    setFilteredStr([])
+    setFormData(clearCustomerForm);
+    setFilteredStr([]);
   };
 
   const handleToggelModal = () => {
-    handleSearch("")
-    setSearchTerm("")
-    setPickup(false)
-    setCustomer(defaultCustomer)
-  }
+    handleSearch("");
+    setSearchTerm("");
+    setPickup(false);
+    setCustomer(clearCustomerForm);
+  };
   const customerFormDataLast: ICustomerFormLastData = {
-    change, filteredStr, inputFields
-  }
+    change,
+    filteredStr,
+    inputFields,
+  };
 
   return (
     <PageLayout title={t("title")}>
       {showForm ? (
-        <div className="flex flex-col items-center">
-          <div className="flex flex-row">
-            <div>
-              <SearchBar searchTerm={searchTerm} onSearch={handleSearch} placeholderValue="Kundennummer" />
+        <div className="top-0 -mt-6">
+          <div className="flex flex-row justify-between">
+            <div className="flex flex-col">
+              <p>
+                <span className="bg-red-500 px-2 py-1 my-2 font-extrabold text-yellow-300 rounded-sm">K-Nr:</span>
+                <span className="px-2 py-1 my-2 font-extrabold text-yellow-300">{customer.KNr}</span>
+              </p>
             </div>
-            <div>
-              <button
-                onClick={toggleForm}
-                type="button"
-                className="flex rounded-md hover:text-black hover:font-bold
-                  bg-slate-50-200 hover:white pr-4 pl-2 pb-2 pt-2 text-sm font-medium 
-                  leading-normal text-primary hover:text-primary-600 focus:text-primary-600
-                  focus:outline-none focus:ring-0 active:text-primary-700 shadow-md mx-2 mt-2">
-                <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
-                  className="w-6 h-5 font-bold hover:text-green-700">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg></span>
-                {t1("Button.addCustomer")}
+            <div className="flex flex-col">
+              <p>
+                <span className="bg-red-500 px-2 py-1 my-2 font-extrabold text-yellow-300 rounded-sm">Name:</span>
+                <span className="px-2 py-1 my-2 font-extrabold text-lime-300">{customer.Name}</span>
+              </p>
+            </div>
+            <div className="flex flex-col">
+              <p>
+                <span className="bg-red-500 px-2 py-1 my-2 font-extrabold text-yellow-300 rounded-sm">Phone:</span>
+                <span className="px-2 py-1 my-2 font-extrabold text-lime-300">{customer.Tel}</span>
+              </p>
+            </div>
+            <div className="flex">
+              <SearchBar searchTerm={searchTerm} onSearch={handleSearch} placeholderValue="Kundennummer" />
+              <button onClick={toggleForm} type="button">
+                <AddICon />
               </button>
-
+            </div>
+          </div>
+          <div>
+            <div className="flex flex-col -mt-8">
+              <p className="flex flex-row">
+                <span className="bg-red-500 px-2 py-1 my-1 font-extrabold text-yellow-300 w-16 rounded-sm">Str.</span>
+                <span className="px-2 py-1 my-1 font-extrabold text-lime-300">{customer.Str}</span>
+              </p>
+              <p className="flex flex-row">
+                <span className="bg-red-500 px-2 py-1 my-1 font-extrabold text-yellow-300 w-16 rounded-sm">Ort.</span>
+                <span className="px-2 py-1 my-1 font-extrabold text-yellow-300">{customer.Ort}</span>
+              </p>
             </div>
           </div>
         </div>
       ) : (
-        <div className="bg-slate-200 rounded-md px-8">
-
+        <div className="bg-blue-900 rounded-md px-8">
           <Form
             formData={formData}
             fields={inputFields}
@@ -245,38 +236,9 @@ export default function Customers() {
           />
         </div>
       )}
-
-      {pickup && customer && <OrderModal customer={customer} toggleModal={handleToggelModal} customerFormLastData={customerFormDataLast} />}
-      <div className="overflow-x-auto sm:-mx-6 lg:-mx-8  h-screen">
-        <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-
-          {currentItems.length > 0 && !isLoading ? (
-            <div>
-              <Table
-                isLoading={isLoading}
-                items={currentItems}
-                deleteRow={deleteCustomer}
-                columns={CustomerColumns}
-              />
-              <PaginationCustomized
-                pageItemsSize={pageItemsSize}
-                totalItems={total}
-                pageNumber={pageNumber}
-                setPageItemsSize={setPageItemsSize}
-                setPageNumber={setPageNumber}
-              />
-            </div>
-          ) : (
-            <div>
-              {filteredCustumers.length === 0 && !isLoading ? (
-                <NoResultFound message={t1("notFound")} />
-              ) : (
-                <NoResultFound message={t1("loading")} />
-              )}
-            </div>
-          )}
-        </div>
-      </div>
+      {pickup && customer && (
+        <OrderModal customer={customer} toggleModal={handleToggelModal} customerFormLastData={customerFormDataLast} />
+      )}
     </PageLayout>
   );
 }

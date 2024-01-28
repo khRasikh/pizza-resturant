@@ -77,7 +77,7 @@ export interface IArticlesForm {
 export interface IFormModal {
   formDataModal: any;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  handleSubmitFormOrder: (e: FormEvent<HTMLFormElement>) => void;
   addToOrderList: () => void;
   handlePrint: () => void;
   isSubmitted: boolean;

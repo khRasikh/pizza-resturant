@@ -3,25 +3,41 @@ import { SessionProvider } from "next-auth/react";
 import { IPageLayout } from "./interface/general";
 import { ToastContainer } from "react-toastify";
 
-
-export default function PageLayout({ children, title }: Readonly<
-  IPageLayout>) {
+export default function PageLayout({ children, title }: Readonly<IPageLayout>) {
   return (
     <SessionProvider>
       <ToastContainer />
-      <div className="bg-white h-screen ">
+      <div className="bg-blue-900 h-screen ">
         <div className="relative flex grow flex-col ">
           <Body title={title}>{children} </Body>
-
         </div>
       </div>
-      <div className='flex flex-row justify-between -mt-28 py-8 z-100 bg-slate-100'>
+      <div className="flex flex-row justify-between py-2 z-100 bg-blue-400">
         <div></div>
-        <div><span className='font-bold'>Bearbeiten</span>: F3</div>
-        <div><span className='font-bold'>Neue Bestellung</span>: Enter</div>
-        <div><span className='font-bold'>Speichern</span>: F9</div>
-        <div><span className='font-bold'>Drucken</span>: F9</div>
-        <div><span className='font-bold'>Beenden</span>: ESC</div>
+        <div>
+          <span className="font-bold text-red-600">F3=</span>
+          <span className="text-black font-extrabold">Bearbeiten</span>
+        </div>
+        <div>
+          <span className="font-bold text-red-600">Enter=</span>{" "}
+          <span className="text-black font-extrabold">Neue Bestellung</span>
+        </div>
+        <div>
+          <span className="font-bold text-red-600">F9=</span>{" "}
+          <span className="text-black font-extrabold">Speichern</span>
+        </div>
+        <div>
+          <span className="font-bold text-red-600">F9=</span>
+          <span className="text-black font-extrabold">Drucken</span>
+        </div>
+        <div>
+          <span className="font-bold text-red-600">F11=</span>
+          <span className="text-black font-extrabold">Großer Bildschirm</span>
+        </div>
+        <div>
+          <span className="font-bold text-red-600">ESC=</span>{" "}
+          <span className="text-black font-extrabold">Beenden</span>
+        </div>
         <div></div>
       </div>
     </SessionProvider>

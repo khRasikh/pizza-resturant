@@ -70,7 +70,7 @@ export const CustomerColumns = ["KNr", "Name", "Tel", "Str", "Ort", "Bemerkung"]
 
 export const DefaultPageNumber = 10;
 
-export const OrderColumns = ["Anz", "Nr.", "Bez.", "Pr", "Extra", "Rabatt", "Total", "Datum"];
+export const OrderColumns = ["Anz", "Nr.", "Bez.", "S/J", "Extra", "Preis"];
 
 export const Tables = {
   Article: "article",
@@ -140,7 +140,7 @@ export const extaListStatic = [
 export const defaultCustomer = {
   KNr: 542,
   Name: "abholen",
-  Tel: "01676431281",
+  Tel: "-",
   Str: "abholen",
   Ort: "Pizza Resturant",
   Seit: "0",

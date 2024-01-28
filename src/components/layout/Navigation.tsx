@@ -11,7 +11,7 @@ export default function Navigation() {
 
   return (
     <SessionProvider>
-      <div className="bg-slate-200">
+      <div className="bg-blue-600">
         <div className="w-full mx-auto max-w-screen-xl px-4 md:flex md:items-center md:justify-between">
           <AuthenticatedNavigation />
         </div>
@@ -40,7 +40,7 @@ const AuthenticatedNavigation: FC<AuthenticatedNavigationProps> = () => {
     </nav>
   }
   return (
-    <nav className="container font-extrabold flex justify-between p-2 text-black">
+    <nav className="w-full font-extrabold flex justify-between p-2 text-black">
       <div>
         <NavigationLink href="/menu">{t1("menu")}</NavigationLink>
         <NavigationLink href="/customers">{t1("customers")}</NavigationLink>

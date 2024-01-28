@@ -12,15 +12,14 @@ export default function Body({ children, title }: Readonly<IBody>) {
 
   const t = useTranslations("Body");
 
-  const router = useRouter()
-  const locale = useLocale()
+  const router = useRouter();
+  const locale = useLocale();
 
   const handlePressKey = (e: any) => {
     if (e.key === "F10") {
-      router.push("/" + locale + "/customers")
+      router.push("/" + locale + "/customers");
     }
-  }
-
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -36,7 +35,7 @@ export default function Body({ children, title }: Readonly<IBody>) {
   if (isLoading) {
     // Loading state while fetching data
     return (
-      <div className="w-full flex items-center justify-center mt-36">
+      <div className="bg-blue-900 text-white w-full flex items-center justify-center mt-36">
         <p>Loading...</p>
       </div>
     );
@@ -49,7 +48,7 @@ export default function Body({ children, title }: Readonly<IBody>) {
 
   if (!session) {
     return (
-      <div onKeyDown={(e) => handlePressKey(e)} className="w-full flex items-center justify-center mt-36">
+      <div onKeyDown={(e) => handlePressKey(e)} className="bg-blue-900 w-full flex items-center justify-center mt-36">
         <div className="max-w-screen-xl p-4 text-center">
           <h1 className="text-3xl font-semibold leading-tight tracking-tight text-black md:text-2xl">
             {t("session.welcome")} {title}
@@ -64,32 +63,29 @@ export default function Body({ children, title }: Readonly<IBody>) {
 
   const { user } = session;
   if (session && doesEmailExist(user.email)) {
-
     return (
-      <button 
-      type="button" 
-      autoFocus 
-      onKeyDown={(e) => handlePressKey(e)} 
-      className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-start md:justify-start flex items-center justify-center content-center"
-    >
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute left-0 top-1 h-[20500px] w-[20500px] -translate-x-[47.5%] rounded-full  from-slate-900 via-cyan-500" />
+      <div className="justify-between">
+        <div
+          onKeyDown={(e) => handlePressKey(e)}
+          className="w-full bg-blue-900 mx-auto max-w-screen-xl p-4 md:flex md:items-start md:justify-start flex items-center justify-center content-center"
+        >
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute left-0 top-1 h-[20500px] w-[20500px] -translate-x-[47.5%] rounded-full  from-slate-900 via-cyan-500" />
+          </div>
+          <div className="relative flex grow flex-col px-4">
+            <div className="mt-6 text-gray-800 md:text-lg text-left">{children}</div>
+          </div>
+        </div>
       </div>
-      <div className="container relative flex grow flex-col px-4">
-        <h1 className="text-2xl font-semibold leading-tight tracking-tight text-black md:text-xl">
-          {t("session.welcome")} {title}
-        </h1>
-        <div className="mt-6 text-gray-800 md:text-lg text-left">{children}</div>
-        
-      </div>
-    </button>
-    
     );
   }
 
   return (
     <div>
-      <div onKeyDown={(e) => handlePressKey(e)} className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-center">
+      <div
+        onKeyDown={(e) => handlePressKey(e)}
+        className="w-full bg-blue-900 mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-center"
+      >
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute left-0 top-1 h-[20500px] w-[20500px] -translate-x-[47.5%] rounded-full  from-slate-900 via-cyan-500" />
         </div>

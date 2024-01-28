@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { DefaultPageNumber, OrderColumns, toastMessages } from "@/components/shared/constants";
-import { NoResultFound, PaginationCustomized, TableOrder, TableSummary } from "@/components/shared/table";
+import { NoResultFound, PaginationCustomized, TableAllOrder, TableSummary } from "@/components/shared/table";
 import { filterData } from "@/components/lib/filter";
 import { IOrder } from "@/components/interface/general";
 import { deleteOrderFromMongoDB, getOrdersFromMongoDB } from "@/components/shared/mongodbCrud";
@@ -90,7 +90,7 @@ export default function Orders() {
 
           {currentItems.length > 0 && !isLoading ? (
             <div>
-              <TableOrder
+              <TableAllOrder
                 // isLoading={isLoading}
                 items={currentItems}
                 deleteRow={deleteOrder}
