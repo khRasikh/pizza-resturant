@@ -25,6 +25,7 @@ export const FormCreateOrder = ({
   const [discount, setDiscount] = useState<number>(0);
   const [menu, setMenu] = useState<IArticles[]>([]);
   const [category, setCategory] = useState<string>("SinglPreis");
+  const [compNum, setCumpNum] = useState<number>(0);
 
   const handleChangeCompNum = (e: any) => {
     const value = e.target.value;
@@ -73,7 +74,7 @@ export const FormCreateOrder = ({
   };
 
   // Handler for count change
-  const handleCountChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleCountChange = (e: ChangeEvent<any>) => {
     const countValue = e.target.value.trim();
     if (countValue !== "" && /^\d+$/.test(countValue)) {
       const newCount = parseInt(e.target.value);
@@ -83,7 +84,7 @@ export const FormCreateOrder = ({
     }
   };
 
-  const handleExtraChangeV2 = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleExtraChangeV2 = (e: ChangeEvent<any>) => {
     const extraValue = e.target.value;
     const extraNumber = Math.abs(parseInt(extraValue));
     if (extaListStatic.length > 0 && !isNaN(extraNumber) && parseInt(extraValue) >= -48 && parseInt(extraValue) <= 48) {
@@ -120,7 +121,7 @@ export const FormCreateOrder = ({
   };
 
   // Handler for discount change
-  const handleDiscountChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleDiscountChange = (e: ChangeEvent<any>) => {
     const discountValue = e.target.value.trim();
     if (discountValue !== "" && /^\d+$/.test(discountValue)) {
       const newDiscount = parseInt(discountValue, 10);
@@ -191,19 +192,25 @@ export const FormCreateOrder = ({
   const handleSubmit = async (e: any) => {
     try {
       await handleSubmitFormOrder(e);
-      console.log("Test Form order submitted successfully");
+      console.log("Test Form order submitted successfully", selectedPrice, priceOptions, count, extra);
       // Reset form fields and other necessary operations
       formDataModal["count"] = 0;
       formDataModal["id"] = "0";
       formDataModal["price"] = "0";
       formDataModal["category"] = "";
       formDataModal["total"] = "0";
-      setTotal(0);
+      formDataModal["extra"] = { id: 0, name: "", price: 0 };
+      //clear display data in inputs
+      setCount(0);
       setCategory("");
-       // Check if firstInputRef is not null or undefined before accessing its properties
-    if (firstInputRef.current !== null && firstInputRef.current !== undefined) {
-      firstInputRef.current.focus(); // Focus the input element
-    }
+      setCumpNum(0);
+      setDiscount(0);
+      setTotal(0);
+      setExtra({ id: 0, name: "", price: 0 });
+      // Check if firstInputRef is not null or undefined before accessing its properties
+      if (firstInputRef.current !== null && firstInputRef.current !== undefined) {
+        firstInputRef.current.focus(); // Focus the input element
+      }
     } catch (error) {
       console.error("Test Error submitting form order:", error);
     }
@@ -221,9 +228,11 @@ export const FormCreateOrder = ({
                     autoFocus
                     ref={firstInputRef}
                     type="number"
-                    value={formDataModal["count"] === 0 ? "" : formDataModal["count"]}
+                    // value={formDataModal["count"] > 0 ? formDataModal["count"] : ""}
+                    value={count === 0 ? "" : count}
                     name="count"
                     onChange={handleCountChange}
+                    onKeyUp={handleCountChange}
                     className="w-full p-2 border-blue-500 disabled bg-blue-900 placeholder-white"
                     // placeholder={t("Form.count")}
                   />
@@ -232,7 +241,7 @@ export const FormCreateOrder = ({
                   <input
                     type="number"
                     // value={formDataModal["CompNum"] === 0 ? "" : formDataModal["CompNum"]}
-                    value={formDataModal["id"] === "0" ? "" : formDataModal["id"]}
+                    // value={formDataModal["id"] === "0" ? "" : formDataModal["id"]}
                     name="CompNum"
                     onChange={handleChangeCompNum}
                     onKeyDown={handleChangeCompNum}
@@ -253,23 +262,15 @@ export const FormCreateOrder = ({
                     // placeholder={t("Form.category")}
                   />
                 </td>
-                <td className={`${"pl-1 py-1 bg-blue-900 font-bold"}`}>
-                  <input
-                    type="text"
-                    name="price"
-                    value={formDataModal["price"].toString() === "0" ? "" : formDataModal["price"]}
-                    onChange={handleChange}
-                    className="w-full p-2 border-blue-500 bg-blue-900 placeholder-white disabled"
-                    // placeholder={t("Form.price")}
-                  />
-                </td>
 
                 <td className={`${"pl-1 py-1 bg-blue-900 text-yellow-300 font-extrabold"}`}>
                   <input
                     type="number"
                     name="rabatt"
                     onChange={handleDiscountChange}
-                    value={formDataModal["discount"] === 0 ? "" : formDataModal["discount"]}
+                    onKeyUp={handleDiscountChange}
+                    // value={formDataModal["discount"] === 0 ? "" : formDataModal["discount"]}
+                    value={discount > 0 ? discount : ""}
                     className="w-full p-2 border-blue-500 bg-blue-900 placeholder-white"
                     placeholder={`${t("Form.Rabatt")} (%)`}
                   />
@@ -289,8 +290,10 @@ export const FormCreateOrder = ({
                   <input
                     type="number"
                     name="extra"
-                    value={formDataModal["extra"] === 0 ? "" : formDataModal["extra"]}
+                    // value={formDataModal["extra"] === 0 ? "" : formDataModal["extra"]}
+                    // value={extra.price === 0 ? "" : extra.price}
                     onChange={handleExtraChangeV2}
+                    onKeyUp={handleExtraChangeV2}
                     className="w-full p-2 border-blue-500 bg-blue-900 placeholder-white disabled"
                     placeholder={`${t("Form.extra")}(€)`}
                   />
@@ -298,7 +301,7 @@ export const FormCreateOrder = ({
 
                 <td>
                   <div className="flex">
-                  {/* {!isSubmitted && <button className='mx-1 mt-2 py-2 flex' type='button' onClick={addToOrderList}>
+                    {/* {!isSubmitted && <button className='mx-1 mt-2 py-2 flex' type='button' onClick={addToOrderList}>
                                           <SaveIcon />
                                           <p className='text-black hover:text-green-700 font-bold px-1 text-xs'>{t("Button.save")}</p>
                                       </button>} */}

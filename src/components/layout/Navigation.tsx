@@ -11,7 +11,7 @@ export default function Navigation() {
 
   return (
     <SessionProvider>
-      <div className="bg-blue-600">
+      <div className="bg-blue-400">
         <div className="w-full mx-auto max-w-screen-xl px-4 md:flex md:items-center md:justify-between">
           <AuthenticatedNavigation />
         </div>

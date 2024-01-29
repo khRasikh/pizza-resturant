@@ -1,23 +1,17 @@
 "use client";
 import PageLayout from "@/components/PageLayout";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  DefaultPageNumber,
-  Tables,
-  clearCustomerForm,
-  defaultCustomer,
-  toastMessages,
-} from "@/components/shared/constants";
+import { Tables, clearCustomerForm, defaultCustomer, toastMessages } from "@/components/shared/constants";
 import Form from "@/components/customers/form";
 import SearchBar from "@/components/shared/search";
-import { filterData } from "@/components/lib/filter";
 import { ICustomerFormLastData, ICustomers } from "@/components/interface/general";
 import { addDataToMongoDB, getCustomersFromMongoDB } from "@/components/shared/mongodbCrud";
 import { OrderModal } from "@/components/customers/modal";
 import { AddICon } from "@/components/shared/icons";
+import { getCustomersFromFile } from "@/app/fileCrud";
 
 interface ICustomerList {
   data: { items: any[]; pageSize: number; pageNumber: number; total: number };
@@ -32,9 +26,6 @@ export default function Customers() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showForm, setShowForm] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  //pagination
-  const [pageItemsSize, setPageItemsSize] = useState<number>(DefaultPageNumber);
-  const [pageNumber, setPageNumber] = useState<number>(1);
 
   // form
   const [formData, setFormData] = useState(clearCustomerForm);
@@ -44,24 +35,6 @@ export default function Customers() {
 
   //open modal after search
   const [pickup, setPickup] = useState<boolean>(false);
-
-  //search ssr
-  const [searchSSR, setSearchSSR] = useState<string>("");
-
-  const mergeCustomerLists = (list1: any, list2: any) => {
-    // Assuming both lists have a unique identifier like 'KNr'
-    const merged: any = new Map();
-
-    list1.forEach((customer: { KNr: any }) => {
-      merged.set(customer.KNr, customer);
-    });
-
-    list2.forEach((customer: { KNr: any }) => {
-      merged.set(customer.KNr, customer);
-    });
-
-    return Array.from(merged.values());
-  };
 
   const confirmNewCustomer = (): boolean => {
     const isConfirmed = window.confirm(`${"Neu Kunden?"}`);
@@ -80,12 +53,7 @@ export default function Customers() {
       setPickup(true);
       setCustomer(defaultCustomer);
     } else if (value !== "0" && value !== "") {
-      const getConsumerBySearch: ICustomerList = await getCustomersFromMongoDB(
-        "customers",
-        value.trim().toString(),
-        pageNumber,
-        pageItemsSize
-      );
+      const getConsumerBySearch: ICustomerList = await getCustomersFromMongoDB("customers", value.trim().toString());
       const { data, status } = getConsumerBySearch;
       if (status && data.items.length > 0) {
         setCustomer(data.items[0]);
@@ -96,19 +64,11 @@ export default function Customers() {
       } else {
         confirmNewCustomer();
       }
-
-      const currentSearch = value.substring(10);
-      setSearchSSR(currentSearch.toString());
-    } else if (value === "") {
-      setSearchSSR("");
     }
 
     setSearchTerm(value);
-    setPageNumber(1);
   };
   //search & filter
-  const filteredCustumers = filterData(customers, searchTerm);
-
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
@@ -125,6 +85,7 @@ export default function Customers() {
       setFormData(clearCustomerForm);
       toast.success(t1("Form.successMessage"), toastMessages.OPTION);
       setShowForm(true);
+      setPickup(true);
       if (addCustomer.data) {
         setCustomer(addCustomer.data! as unknown as ICustomers);
       }
@@ -180,6 +141,16 @@ export default function Customers() {
     filteredStr,
     inputFields,
   };
+
+  useEffect(() => {
+    const fetchStr = async () => {
+      const getCustomers = await getCustomersFromFile("customers");
+      if (getCustomers.status) {
+        setCustomers(getCustomers.data);
+      }
+    };
+    fetchStr();
+  }, []);
 
   return (
     <PageLayout title={t("title")}>
