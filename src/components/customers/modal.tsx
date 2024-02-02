@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Form, { FormCreateOrder } from "./form";
 import { OrderColumns, Tables, clearCustomerForm, clearOrderFields, toastMessages } from "../shared/constants";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { toast } from "react-toastify";
 import { TableOrder, TableLastOrders, TableSummary } from "../shared/table";
 import { handlePrint } from "../lib/print";
@@ -10,6 +10,7 @@ import { ICustomers, IOrder, IOrderModal } from "../interface/general";
 // import { getDataByID } from '../shared/psqlCrud';
 import { addDataToMongoDB, getOrdersByIDFromMongoDB, updateDataToMongoDB } from "../shared/mongodbCrud";
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
 
 export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, customerFormLastData }) => {
   const t = useTranslations("Body");
@@ -94,26 +95,38 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
 
   // update customer
   const [newCustomer, setNewCustomer] = useState(false);
+  const route = useRouter();
+  const local = useLocale();
   const handlePressKey = (e: any) => {
-    if (e.key === "F9") {
+    if (e.key === "F12") {
+      e.preventDefault(); // Prevent default browser behavior
+      route.push(`/${local}/orders`);
+    } else if (e.key === "F9") {
+      e.preventDefault(); // Prevent default browser behavior
       // pring and save
       orderList.length > 0 ? handlePrintAsync() : toast.error(t("Form.errorMessage"), toastMessages.OPTION);
     } else if (e.key === "Escape" && newCustomer) {
+      e.preventDefault(); // Prevent default browser behavior
       // close update
       setNewCustomer(false);
-    } else if (e.key === "Escape" && !newCustomer && lastOrders.length === 0) {
-      // exit modal
-      toggleModal();
-    } else if (e.key === "Escape" && !newCustomer && lastOrders.length > 0) {
-      // exit modal
-      setIsDisplayLastOrder(false);
+    } else if (e.key === "Escape" && !newCustomer) {
+      e.preventDefault(); // Prevent default browser behavior
+      // close update
+      window.location.reload();
     } else if (e.key === "F3") {
       e.preventDefault(); // Prevent default browser behavior
-      // Add your custom logic here
       setNewCustomer(true);
-      console.log("test customer", customer);
+    } else if (e.key === "F2") {
+      e.preventDefault(); // Prevent default browser behavior
+      // redirect to orders list
+      window.location.reload();
+    } else if (e.key === "F1" && !newCustomer && lastOrders.length > 0) {
+      e.preventDefault(); // Prevent default browser behavior
+      // exit modal
+      setIsDisplayLastOrder(false);
     }
   };
+
   const t1 = useTranslations("Body");
 
   // update form
@@ -138,7 +151,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
     }
 
     // const addCustomer = await addDataToTextFile<ICustomers>(formData, Tables.Customers)
-    const updateCustomer = await updateDataToMongoDB(`${customer.KNr!}` ?? "542", formData, Tables.Customers);
+    const updateCustomer = await updateDataToMongoDB(`${customer.KNr!}` ?? "0", formData, Tables.Customers);
 
     if (updateCustomer.status) {
       toast.success(t1("Form.successMessage"), toastMessages.OPTION);
@@ -193,10 +206,10 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
           addToOrderList={addToOrderList}
           handlePrint={handlePrintAsync}
           isSubmitted={isSubmitted}
+          orderList={orderList}
+          lastOrders={lastOrders}
         />
       </div>
-
-      {orderList.length > 0 && <TableSummary list={orderList} />}
     </div>
   );
 };

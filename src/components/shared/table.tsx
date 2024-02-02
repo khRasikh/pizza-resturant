@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import { timeZone, dateTimeFormat, OrderColumns, formatNumber } from "./constants";
 import { useTranslations } from "next-intl";
 import { OrderModal } from "../customers/modal";
-import { formattedDate } from "../lib/customDate";
 import { DeleteIcon } from "./icons";
 
 export const Table: React.FC<ITable> = ({ isLoading, items, columns, deleteRow }) => {
@@ -324,7 +323,6 @@ export const TableAllOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow
   const [isModalOpen, setIsModalOpen] = useState(false);
   const t = useTranslations("Body");
 
-
   const confirmDelete = (id: string) => {
     // solution 1
     // const isConfirmed = window.confirm(`${t("Table.confirmDelete")}`);
@@ -347,7 +345,7 @@ export const TableAllOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow
                 </th>
               );
             })}
-            <th>Action</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
@@ -644,24 +642,37 @@ export const TableSummary = ({ list }: { list: IOrder[] }) => {
   // Calculate total discounts
   const totalDiscounts = list.reduce((total, order) => total + order.discount, 0);
   const t = useTranslations("Body");
+
   return (
-    <div className="mt-4 p-2 border-t text-lg flex justify-between mx-6  font-bold ">
-      <p>
-        <span className="bg-red-500 px-1 rounded-sm">{t("Label.records")}: </span>{" "}
-        <span className="text-yellow-300 mx-3">{numberOfRecords}</span>
-      </p>
-      <p>
-        <span className="bg-red-500 px-1 rounded-sm">{t("Label.count")}: </span>{" "}
-        <span className="text-yellow-300 mx-3">{numberOfPackages}</span>
-      </p>
-      <p>
-        <span className="bg-red-500 px-1 rounded-sm">{t("Label.discount")}: </span>{" "}
-        <span className="text-yellow-300 mx-3">%{formatNumber(totalDiscounts / numberOfRecords)}</span>
-      </p>
-      <p>
-        <span className="bg-red-500 px-1 rounded-sm">{t("Label.total")}:</span>{" "}
-        <span className="text-yellow-300 mx-3">€{formatNumber(totalPrices)}</span>
-      </p>
-    </div>
+    <>
+      <div className={`${"pl-1 py-2 bg-blue-900 font-extrabold flex "}`}>
+        <p className="my-2 mx-2 px-2 text-yellow-300">Count:</p>
+        <p className="my-2 text-green-400">{Number(numberOfPackages)}</p>
+      </div>
+      <div className={`${"pl-1 py-2 bg-blue-900 font-extrabold flex "}`}>
+        <p className="my-2 mx-2 px-2  text-yellow-300">Sum:</p>
+        <p className="my-2 text-green-400">{formatNumber(totalPrices)}</p>
+      </div>
+    </>
   );
+  // return (
+  //   <div className="mt-4 p-2 border-t text-lg flex justify-between mx-6  font-bold ">
+  //     <p>
+  //       <span className="bg-red-500 px-1 rounded-sm">{t("Label.records")}: </span>{" "}
+  //       <span className="text-yellow-300 mx-3">{numberOfRecords}</span>
+  //     </p>
+  //     <p>
+  //       <span className="bg-red-500 px-1 rounded-sm">{t("Label.count")}: </span>{" "}
+  //       <span className="text-yellow-300 mx-3">{numberOfPackages}</span>
+  //     </p>
+  //     <p>
+  //       <span className="bg-red-500 px-1 rounded-sm">{t("Label.discount")}: </span>{" "}
+  //       <span className="text-yellow-300 mx-3">%{formatNumber(totalDiscounts / numberOfRecords)}</span>
+  //     </p>
+  //     <p>
+  //       <span className="bg-red-500 px-1 rounded-sm">{t("Label.total")}:</span>{" "}
+  //       <span className="text-yellow-300 mx-3">€{formatNumber(totalPrices)}</span>
+  //     </p>
+  //   </div>
+  // );
 };

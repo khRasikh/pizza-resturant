@@ -6,6 +6,7 @@ import { clearOrderFields, extaListStatic, formatNumber } from "../shared/consta
 import { getMenusFromMongoDB } from "../shared/mongodbCrud";
 import clsx from "clsx";
 import { AddICon, PrintIcon } from "../shared/icons";
+import { TableSummary } from "../shared/table";
 
 export const FormCreateOrder = ({
   formDataModal,
@@ -14,6 +15,8 @@ export const FormCreateOrder = ({
   addToOrderList,
   handlePrint,
   isSubmitted,
+  orderList,
+  lastOrders,
 }: IFormModal) => {
   const t = useTranslations("Body");
   const sizes = ["SinglPreis", "JumboPreis", "FamilyPreis", "PartyPreis"] as const;
@@ -222,7 +225,7 @@ export const FormCreateOrder = ({
         <div className="w-full">
           <table className="min-w-full text-left text-sm font-light items-center justify-center bg-blue-900">
             <tbody>
-              <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-1">
+              <tr className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-1">
                 <td className={`${"pl-1 py-1  text-yellow-300 font-extrabold"}`}>
                   <input
                     autoFocus
@@ -250,6 +253,16 @@ export const FormCreateOrder = ({
                     // placeholder={t("Form.CompNum")}
                   />
                 </td>
+
+                <td className={`${"pl-1 py-1 bg-blue-900 font-bold"}`}>
+                  <div
+                    className="w-full p-2 border-blue-500 disabled bg-blue-900 placeholder-white uppercase"
+                    placeholder={t("Form.name")}
+                  >
+                    {formDataModal["name"]}
+                  </div>
+                </td>
+
                 <td className={`${"pl-1 py-1 bg-blue-900 font-bold"}`}>
                   <input
                     type="text"
@@ -259,30 +272,7 @@ export const FormCreateOrder = ({
                     onKeyDown={handleChangePrice}
                     onKeyUp={handleChangePrice}
                     className="w-full p-2 border-blue-500 disabled bg-blue-900 placeholder-white uppercase"
-                    // placeholder={t("Form.category")}
-                  />
-                </td>
-
-                <td className={`${"pl-1 py-1 bg-blue-900 text-yellow-300 font-extrabold"}`}>
-                  <input
-                    type="number"
-                    name="rabatt"
-                    onChange={handleDiscountChange}
-                    onKeyUp={handleDiscountChange}
-                    // value={formDataModal["discount"] === 0 ? "" : formDataModal["discount"]}
-                    value={discount > 0 ? discount : ""}
-                    className="w-full p-2 border-blue-500 bg-blue-900 placeholder-white"
-                    placeholder={`${t("Form.Rabatt")} (%)`}
-                  />
-                </td>
-
-                <td className={`${"pl-1 py-1 bg-blue-900 text-yellow-300 font-extrabold"}`}>
-                  <input
-                    type="text"
-                    name="total"
-                    value={formDataModal["total"] === 0 ? "" : formatNumber(formDataModal["total"])}
-                    className="w-full p-2 border-blue-500 bg-blue-900 placeholder-white disabled"
-                    // placeholder={`${t("Form.total")}(€)`}
+                    placeholder={t("Form.category")}
                   />
                 </td>
 
@@ -294,32 +284,67 @@ export const FormCreateOrder = ({
                     // value={extra.price === 0 ? "" : extra.price}
                     onChange={handleExtraChangeV2}
                     onKeyUp={handleExtraChangeV2}
+                    onKeyDown={handleExtraChangeV2}
                     className="w-full p-2 border-blue-500 bg-blue-900 placeholder-white disabled"
                     placeholder={`${t("Form.extra")}(€)`}
                   />
                 </td>
 
-                <td>
-                  <div className="flex">
-                    {/* {!isSubmitted && <button className='mx-1 mt-2 py-2 flex' type='button' onClick={addToOrderList}>
-                                          <SaveIcon />
-                                          <p className='text-black hover:text-green-700 font-bold px-1 text-xs'>{t("Button.save")}</p>
-                                      </button>} */}
-                    <button type="submit" className={clsx(`my-4 pb-4 flex px-1`)} onClick={() => handleSubmitFormOrder}>
-                      <AddICon />
-                      {/* <p className="text-yellow-300 font-bold px-1 text-xs">{t("Button.add")}</p> */}
-                    </button>
-                    <button type="button" className="my-3 pt-1 py-1 flex px-2" onClick={handlePrintAsync}>
-                      <PrintIcon />
-                      {/* <p className="text-yellow-300 font-bold px-1 text-md">{t("Button.print")}</p> */}
-                    </button>
-                  </div>
+                <td className={`${"pl-1 py-1 bg-blue-900 text-yellow-300 font-extrabold"}`}>
+                  <input
+                    type="text"
+                    name="price"
+                    value={
+                      formDataModal["price"].toString() === "0" || formDataModal["price"].toString() === "0.00"
+                        ? ""
+                        : formatNumber(formDataModal["price"])
+                    }
+                    className="w-full p-2 border-blue-500 bg-blue-900 placeholder-white disabled"
+                    placeholder={`${t("Form.price")}(€)`}
+                  />
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
+      <div className="justify-between items-between text-between flex flex-row mx-12 mt-12">
+        <div className={`${"pl-1 py-2 bg-blue-900 text-yellow-300 font-extrabold"}`}>
+          <p className="my-2">Fahr:</p>
+        </div>
+        <div className={`${"pl-1 py-2 bg-blue-900 text-yellow-300 font-extrabold flex"}`}>
+          <p className="my-2 mx-6">Rabbat(%):</p>
+          <input
+            type="number"
+            name="rabatt"
+            onChange={handleDiscountChange}
+            onKeyUp={handleDiscountChange}
+            // value={formDataModal["discount"] === 0 ? "" : formDataModal["discount"]}
+            value={discount > 0 ? discount : 0}
+            className="w-16 mx-2 p-2 border-blue-500 bg-blue-900 placeholder-white"
+            // placeholder={`${t("Form.Rabatt")} (%)`}
+          />
+          <p className="text-red-600 my-2">(€-{lastOrders?.length!})</p>
+        </div>
+        {<TableSummary list={orderList} />}
+      </div>
+
+      <td hidden>
+        <div className="flex">
+          {/* {!isSubmitted && <button className='mx-1 mt-2 py-2 flex' type='button' onClick={addToOrderList}>
+                                          <SaveIcon />
+                                          <p className='text-black hover:text-green-700 font-bold px-1 text-xs'>{t("Button.save")}</p>
+                                      </button>} */}
+          <button type="submit" className={clsx(`my-4 pb-4 flex px-1`)} onClick={() => handleSubmitFormOrder}>
+            <AddICon />
+            {/* <p className="text-yellow-300 font-bold px-1 text-xs">{t("Button.add")}</p> */}
+          </button>
+          <button type="button" className="my-3 pt-1 py-1 flex px-2" onClick={handlePrintAsync}>
+            <PrintIcon />
+            {/* <p className="text-yellow-300 font-bold px-1 text-md">{t("Button.print")}</p> */}
+          </button>
+        </div>
+      </td>
     </form>
   );
 };
@@ -362,9 +387,10 @@ const Form = ({ formData, fields, handleChange, handleSubmit, handleClose, filte
                           <span className="options-list absolute mt-10 h-44 w-fit px-6 overflow-x-hidden overflow-y-scroll bg-white  border rounded-md">
                             {filteredStr.map((obj: any, index = 1) => (
                               <button
+                                autoFocus={index === 0 ? true : false}
                                 type="button"
                                 key={Number(index)}
-                                className="option block w-full p-2 text-left hover:bg-slate-500 hover:text-white"
+                                className="option block w-full p-2 text-left focus:bg-slate-500 focus:text-white hover:bg-slate-500 hover:text-white"
                                 onClick={() => handleOptionClick(obj)}
                               >
                                 {obj.Str}

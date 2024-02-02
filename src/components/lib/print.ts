@@ -132,10 +132,6 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
                 <div class="font-bold">€ ${(totalPrices + totalMW).toFixed(2)}</div>
             </div>
 
-            <div class="flex justify-between mt-4 mb-2">
-                <div>Steuer-Nr: 144/126/80559</div>
-            </div>
-
             <div class="flex justify-between mt-4 ">
                 <div>Vielen Dank Für Ihre Bestellung</div>
             </div>

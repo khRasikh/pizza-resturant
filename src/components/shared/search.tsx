@@ -31,12 +31,14 @@ const SearchBar = ({ onSearch, placeholderValue = "", searchTerm }: ISearchBar) 
     if (e.key === "Escape") {
       // close update
       e.preventDefault();
-      window.location.reload()
+      window.location.reload();
     } else if (e.key === "F3") {
       e.preventDefault(); // Prevent default browser behavior
       // Add your custom logic here
       route.push("/orders");
       console.log("test customer");
+    } else if (e.key === "F2") {
+      window.location.reload();
     }
   };
   return (

@@ -137,12 +137,28 @@ export const extaListStatic = [
   { id: 48, name: "Chicken", SinglPreis: 1.9, JumboPreis: 2.5, FamilyPreis: 3.3, PartyPreis: 5.2 },
 ];
 
-export const defaultCustomer = {
+export const defaultCustomerZero = {
+  KNr: 245,
+  Name: "abholen",
+  Tel: "-",
+  Str: "abholen",
+  Ort: "",
+  Seit: "0",
+  Mal: 0,
+  DM: "1",
+  letzte: "1",
+  Rabatt: 20,
+  Fix: 0,
+  Bemerkung: "no",
+};
+
+
+export const defaultCustomerDoubleZero = {
   KNr: 542,
   Name: "abholen",
   Tel: "-",
   Str: "abholen",
-  Ort: "Pizza Resturant",
+  Ort: "",
   Seit: "0",
   Mal: 0,
   DM: "1",

@@ -81,6 +81,8 @@ export interface IFormModal {
   addToOrderList: () => void;
   handlePrint: () => void;
   isSubmitted: boolean;
+  orderList: IOrder[]
+  lastOrders?: IOrder[]
 }
 
 export interface IOrder {

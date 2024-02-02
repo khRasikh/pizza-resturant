@@ -15,28 +15,33 @@ export default function PageLayout({ children, title }: Readonly<IPageLayout>) {
       <div className="flex flex-row justify-between py-2 z-100 bg-blue-400">
         <div></div>
         <div>
-          <span className="font-bold text-red-600">F3=</span>
-          <span className="text-black font-extrabold">Bearbeiten</span>
+          <span className="font-bold text-red-600">F1=</span>
+          <span className="text-black font-extrabold">B.Neu</span>
         </div>
         <div>
-          <span className="font-bold text-red-600">Enter=</span>{" "}
-          <span className="text-black font-extrabold">Neue Bestellung</span>
+          <span className="font-bold text-red-600">F2=</span> <span className="text-black font-extrabold">Suche</span>
         </div>
         <div>
-          <span className="font-bold text-red-600">F9=</span>{" "}
-          <span className="text-black font-extrabold">Speichern</span>
+          <span className="font-bold text-red-600">F3=</span> <span className="text-black font-extrabold">Anderen</span>
+        </div>
+        <div>
+          <span className="font-bold text-red-600">F4=</span>
+          <span className="text-black font-extrabold">R.OK</span>
+        </div>
+        <div>
+          <span className="font-bold text-red-600">F6=</span>
+          <span className="text-black font-extrabold">Fahrer</span>
+        </div>
+        <div>
+          <span className="font-bold text-red-600">F7=</span>
+          <span className="text-black font-extrabold">R.Neu</span>
         </div>
         <div>
           <span className="font-bold text-red-600">F9=</span>
-          <span className="text-black font-extrabold">Drucken</span>
+          <span className="text-black font-extrabold">Druck</span>
         </div>
         <div>
-          <span className="font-bold text-red-600">F11=</span>
-          <span className="text-black font-extrabold">Großer Bildschirm</span>
-        </div>
-        <div>
-          <span className="font-bold text-red-600">ESC=</span>{" "}
-          <span className="text-black font-extrabold">Beenden</span>
+          <span className="font-bold text-red-600">F10=</span> <span className="text-black font-extrabold">Ende</span>
         </div>
         <div></div>
       </div>

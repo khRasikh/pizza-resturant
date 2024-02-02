@@ -4,7 +4,13 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Tables, clearCustomerForm, defaultCustomer, toastMessages } from "@/components/shared/constants";
+import {
+  Tables,
+  clearCustomerForm,
+  defaultCustomerDoubleZero,
+  defaultCustomerZero,
+  toastMessages,
+} from "@/components/shared/constants";
 import Form from "@/components/customers/form";
 import SearchBar from "@/components/shared/search";
 import { ICustomerFormLastData, ICustomers } from "@/components/interface/general";
@@ -51,8 +57,13 @@ export default function Customers() {
   const handleSearch = async (value: string) => {
     if (value === "0") {
       setPickup(true);
-      setCustomer(defaultCustomer);
-    } else if (value !== "0" && value !== "") {
+      setCustomer(defaultCustomerZero);
+      console.log("test handleSearch zero", customer)
+    } else if (value === "00") {
+      setPickup(true);
+      setCustomer(defaultCustomerDoubleZero);
+      console.log("test handleSearch doublezero", customer)
+    } else if (value !== "0" && value !== "00" && value !== "") {
       const getConsumerBySearch: ICustomerList = await getCustomersFromMongoDB("customers", value.trim().toString());
       const { data, status } = getConsumerBySearch;
       if (status && data.items.length > 0) {
@@ -94,9 +105,10 @@ export default function Customers() {
     }
   };
 
-  const change = (e: any) => {
-    const { name, value } = e.target;
+  const handleChangeInput = (e: any) => {
+    e.preventDefault();
 
+    const { name, value } = e.target;
     if (name === "Str") {
       // Grouping by Postal Codes (Ort)
       const matchingObjects = customers.length > 0 && customers.filter((obj: any) => obj.Str.includes(value));
@@ -137,7 +149,7 @@ export default function Customers() {
     setCustomer(clearCustomerForm);
   };
   const customerFormDataLast: ICustomerFormLastData = {
-    change,
+    change: handleChangeInput,
     filteredStr,
     inputFields,
   };
@@ -200,7 +212,7 @@ export default function Customers() {
           <Form
             formData={formData}
             fields={inputFields}
-            handleChange={change}
+            handleChange={handleChangeInput}
             handleSubmit={handleSubmit}
             handleClose={toggleForm}
             filteredStr={filteredStr}
