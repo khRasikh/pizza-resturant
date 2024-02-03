@@ -42,8 +42,8 @@ export default function Customers() {
   //open modal after search
   const [pickup, setPickup] = useState<boolean>(false);
 
-  const confirmNewCustomer = (): boolean => {
-    const isConfirmed = window.confirm(`${"Neu Kunden?"}`);
+  const confirmNewCustomer = (value: string | number): boolean => {
+    const isConfirmed = window.confirm(`${value + " nicht gefunden. Möchten Sie etwas Neues hinzufügen?"}`);
     if (isConfirmed) {
       console.log("test confired");
       toggleForm();
@@ -58,11 +58,11 @@ export default function Customers() {
     if (value === "0") {
       setPickup(true);
       setCustomer(defaultCustomerZero);
-      console.log("test handleSearch zero", customer)
+      console.log("test handleSearch zero", customer);
     } else if (value === "00") {
       setPickup(true);
       setCustomer(defaultCustomerDoubleZero);
-      console.log("test handleSearch doublezero", customer)
+      console.log("test handleSearch doublezero", customer);
     } else if (value !== "0" && value !== "00" && value !== "") {
       const getConsumerBySearch: ICustomerList = await getCustomersFromMongoDB("customers", value.trim().toString());
       const { data, status } = getConsumerBySearch;
@@ -73,7 +73,7 @@ export default function Customers() {
         setIsLoading(false);
         setPickup(true);
       } else {
-        confirmNewCustomer();
+        confirmNewCustomer(value);
       }
     }
 
@@ -189,7 +189,7 @@ export default function Customers() {
             </div>
             <div className="flex">
               <SearchBar searchTerm={searchTerm} onSearch={handleSearch} placeholderValue="Kundennummer" />
-              <button onClick={toggleForm} type="button">
+              <button hidden onClick={toggleForm} type="button">
                 <AddICon />
               </button>
             </div>

@@ -208,6 +208,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
           isSubmitted={isSubmitted}
           orderList={orderList}
           lastOrders={lastOrders}
+          customerInfo={customer}
         />
       </div>
     </div>

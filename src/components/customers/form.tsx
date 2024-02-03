@@ -17,15 +17,16 @@ export const FormCreateOrder = ({
   isSubmitted,
   orderList,
   lastOrders,
+  customerInfo,
 }: IFormModal) => {
   const t = useTranslations("Body");
   const sizes = ["SinglPreis", "JumboPreis", "FamilyPreis", "PartyPreis"] as const;
   const [selectedPrice, setSelectedPrice] = useState<string>();
   const [priceOptions, setPriceOptions] = useState<any[]>();
-  const [count, setCount] = useState<number>(0);
+  const [count, setCount] = useState<number>(1);
   const [extra, setExtra] = useState<{ id: number; name: string; price: number }>({ id: 0, name: "", price: 0 });
   const [total, setTotal] = useState<number>(0);
-  const [discount, setDiscount] = useState<number>(0);
+  const [discount, setDiscount] = useState<number>(customerInfo.Rabatt!);
   const [menu, setMenu] = useState<IArticles[]>([]);
   const [category, setCategory] = useState<string>("SinglPreis");
   const [compNum, setCumpNum] = useState<number>(0);
@@ -76,21 +77,15 @@ export const FormCreateOrder = ({
     calculateTotal(count, extra.price, discount);
   };
 
-  // Handler for count change
-  const handleCountChange = (e: ChangeEvent<any>) => {
-    const countValue = e.target.value.trim();
-    if (countValue !== "" && /^\d+$/.test(countValue)) {
-      const newCount = parseInt(e.target.value);
-      setCount(newCount);
-      formDataModal["count"] = newCount;
-      calculateTotal(newCount, extra.price > 0 ? extra.price : 0, discount);
-    }
-  };
-
-  const handleExtraChangeV2 = (e: ChangeEvent<any>) => {
+  const handleExtraChangeV2 = (e: any) => {
     const extraValue = e.target.value;
     const extraNumber = Math.abs(parseInt(extraValue));
-    if (extaListStatic.length > 0 && !isNaN(extraNumber) && parseInt(extraValue) >= -48 && parseInt(extraValue) <= 48) {
+    if (
+      extaListStatic.length > 0 &&
+      !isNaN(extraNumber) &&
+      parseInt(extraValue) >= -menu.length &&
+      parseInt(extraValue) <= menu.length
+    ) {
       const getExtraObject = extaListStatic.filter((i) => i.id === extraNumber);
       let newExtrafromObject = 0;
       if (category === "SinglPreis" && extraValue !== "0") {
@@ -107,30 +102,38 @@ export const FormCreateOrder = ({
         newExtrafromObject = Number(getExtraObject[0]["PartyPreis"]);
       }
 
-      if (extraValue > "0" && extraValue !== "0") {
+      if (extraValue > 0 && extraValue !== 0 && extraValue !== "") {
+        console.log("test extrave1", extraValue);
         setExtra({ id: extraNumber, name: getExtraObject[0].name, price: newExtrafromObject });
         formDataModal["extra"] = { id: extraNumber, name: getExtraObject[0].name, price: newExtrafromObject };
         calculateTotal(count, newExtrafromObject, discount);
-      } else if (extraValue === "0") {
-        setExtra({ id: 0, name: getExtraObject[0].name, price: 0 });
-        formDataModal["extra"] = { id: 0, name: "", price: 0 };
-        calculateTotal(count, 0, discount);
       } else {
         setExtra({ id: extraNumber, name: getExtraObject[0].name, price: 0 });
         formDataModal["extra"] = { id: extraNumber, name: getExtraObject[0].name, price: 0 };
         calculateTotal(count, extra.price, discount);
       }
+    } else {
+      console.log("test extrave0", extraValue);
+      setExtra({ id: 0, name: "", price: 0 });
+      formDataModal["extra"] = { id: 0, name: "", price: 0 };
+      calculateTotal(count, 0, discount);
     }
   };
 
   // Handler for discount change
-  const handleDiscountChange = (e: ChangeEvent<any>) => {
-    const discountValue = e.target.value.trim();
-    if (discountValue !== "" && /^\d+$/.test(discountValue)) {
-      const newDiscount = parseInt(discountValue, 10);
-      setDiscount(newDiscount);
-      formDataModal["discount"] = newDiscount;
-      calculateTotal(count, extra.price, newDiscount);
+  const handleDiscountChange = (e: any) => {
+    let discountValue = e.target.value.trim();
+    if (discountValue === "") {
+      setDiscount(0);
+      formDataModal["discount"] = 0;
+      calculateTotal(count, extra.price, 0);
+    } else {
+      let newDiscount = parseInt(discountValue, 10);
+      if (!isNaN(newDiscount) && newDiscount >= 0 && newDiscount <= 100) {
+        setDiscount(newDiscount);
+        formDataModal["discount"] = newDiscount;
+        calculateTotal(count, extra.price, newDiscount);
+      }
     }
   };
 
@@ -193,18 +196,19 @@ export const FormCreateOrder = ({
   const firstInputRef = useRef<HTMLInputElement>(null); // Initialize useRef with proper type
 
   const handleSubmit = async (e: any) => {
+    console.log("test submithandle", e.target.form);
     try {
       await handleSubmitFormOrder(e);
       console.log("Test Form order submitted successfully", selectedPrice, priceOptions, count, extra);
       // Reset form fields and other necessary operations
-      formDataModal["count"] = 0;
+      formDataModal["count"] = 1;
       formDataModal["id"] = "0";
       formDataModal["price"] = "0";
       formDataModal["category"] = "";
       formDataModal["total"] = "0";
       formDataModal["extra"] = { id: 0, name: "", price: 0 };
       //clear display data in inputs
-      setCount(0);
+      setCount(1);
       setCategory("");
       setCumpNum(0);
       setDiscount(0);
@@ -219,6 +223,43 @@ export const FormCreateOrder = ({
     }
   };
 
+  const handleCountChangev2 = (e: any) => {
+    const inputValue = e.target.value;
+    if (inputValue === "1" && e.key === "deleteContentBackward") {
+      setCount(1); // Reset count to 1 if the input is '1' and backspace is pressed
+    } else {
+      const newCount = parseInt(e.target.value);
+      setCount(newCount);
+      formDataModal["count"] = newCount;
+      calculateTotal(newCount, extra.price > 0 ? extra.price : 0, discount);
+    }
+  };
+
+  function lastDiscounts(): number {
+    // Calculate total discount
+    const totalDiscount = lastOrders && lastOrders.reduce((acc, order) => Number(acc + order.discount), 0);
+    if (customerInfo.KNr === 245) {
+      return customerInfo.Rabatt!;
+    } else {
+      if (totalDiscount) {
+        return Number(totalDiscount);
+      }
+      return 0;
+    }
+  }
+
+  function lastDiscountAmount(): number {
+    // Calculate total amount
+    const totalAmount = lastOrders && lastOrders.reduce((acc, order) => Number(acc + order.price), 0);
+    // Calculate total discount
+    const totalDiscount = lastOrders && lastOrders.reduce((acc, order) => Number(acc + order.discount), 0);
+
+    if (totalAmount && totalDiscount) {
+      return Number((totalAmount * totalDiscount) / 100) ?? 0;
+    }
+    return 0;
+  }
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="overflow-hidden bg-blue-900 text-yellow-300 font-extrabold text-2xl">
@@ -232,12 +273,13 @@ export const FormCreateOrder = ({
                     ref={firstInputRef}
                     type="number"
                     // value={formDataModal["count"] > 0 ? formDataModal["count"] : ""}
-                    value={count === 0 ? "" : count}
+                    value={count}
                     name="count"
-                    onChange={handleCountChange}
-                    onKeyUp={handleCountChange}
+                    onChange={handleCountChangev2}
+                    onKeyDown={handleCountChangev2}
+                    onKeyUp={handleCountChangev2}
                     className="w-full p-2 border-blue-500 disabled bg-blue-900 placeholder-white"
-                    // placeholder={t("Form.count")}
+                    placeholder={t("Form.count")}
                   />
                 </td>
                 <td className={`${"pl-1 py-1 bg-blue-900 font-bold"} font-extrabold`}>
@@ -250,7 +292,7 @@ export const FormCreateOrder = ({
                     onKeyDown={handleChangeCompNum}
                     onKeyUp={handleChangeCompNum}
                     className="w-full p-2 border-blue-500 disabled bg-blue-900 placeholder-white"
-                    // placeholder={t("Form.CompNum")}
+                    placeholder={t("Form.CompNum")}
                   />
                 </td>
 
@@ -281,7 +323,6 @@ export const FormCreateOrder = ({
                     type="number"
                     name="extra"
                     // value={formDataModal["extra"] === 0 ? "" : formDataModal["extra"]}
-                    // value={extra.price === 0 ? "" : extra.price}
                     onChange={handleExtraChangeV2}
                     onKeyUp={handleExtraChangeV2}
                     onKeyDown={handleExtraChangeV2}
@@ -292,16 +333,17 @@ export const FormCreateOrder = ({
 
                 <td className={`${"pl-1 py-1 bg-blue-900 text-yellow-300 font-extrabold"}`}>
                   <input
+                    hidden
                     type="text"
                     name="price"
-                    value={
-                      formDataModal["price"].toString() === "0" || formDataModal["price"].toString() === "0.00"
-                        ? ""
-                        : formatNumber(formDataModal["price"])
-                    }
                     className="w-full p-2 border-blue-500 bg-blue-900 placeholder-white disabled"
                     placeholder={`${t("Form.price")}(€)`}
                   />
+                  <div className="w-full p-2 border-blue-500 bg-blue-900 placeholder-white font-extrabold">
+                    {formDataModal["price"].toString() === "0" || formDataModal["price"].toString() === "0.00"
+                      ? ""
+                      : formatNumber(formDataModal["price"])}
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -319,12 +361,13 @@ export const FormCreateOrder = ({
             name="rabatt"
             onChange={handleDiscountChange}
             onKeyUp={handleDiscountChange}
-            // value={formDataModal["discount"] === 0 ? "" : formDataModal["discount"]}
-            value={discount > 0 ? discount : 0}
-            className="w-16 mx-2 p-2 border-blue-500 bg-blue-900 placeholder-white"
+            onKeyDown={handleDiscountChange}
+            value={discount === 0 ? lastDiscounts() : discount}
+            // value={lastDiscounts()}
+            className="w-16 mx-2 p-2 border-blue-500 bg-blue-900 placeholder-white  text-center"
             // placeholder={`${t("Form.Rabatt")} (%)`}
           />
-          <p className="text-red-600 my-2">(€-{lastOrders?.length!})</p>
+          <p className="text-red-600 my-2">(€-{lastDiscountAmount()})</p>
         </div>
         {<TableSummary list={orderList} />}
       </div>
@@ -383,7 +426,7 @@ const Form = ({ formData, fields, handleChange, handleSubmit, handleClose, filte
                           className="w-full p-2 border rounded-md"
                           placeholder={field.placeholder}
                         />
-                        {showOptions && field.placeholder === "Str" && (
+                        {showOptions && formData[field.name].length > 3 && field.placeholder === "Str" && (
                           <span className="options-list absolute mt-10 h-44 w-fit px-6 overflow-x-hidden overflow-y-scroll bg-white  border rounded-md">
                             {filteredStr.map((obj: any, index = 1) => (
                               <button

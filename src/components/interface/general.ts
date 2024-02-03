@@ -83,6 +83,7 @@ export interface IFormModal {
   isSubmitted: boolean;
   orderList: IOrder[]
   lastOrders?: IOrder[]
+  customerInfo: ICustomers
 }
 
 export interface IOrder {
