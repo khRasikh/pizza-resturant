@@ -89,6 +89,8 @@ export interface IFormModal {
 export interface IOrder {
   id: string;
   customer_id: number;
+  customer_name: string
+  category: string
   name: string;
   price: string;
   count: number;

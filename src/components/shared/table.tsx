@@ -234,34 +234,23 @@ interface ITableLastOrders {
 
 export const TableLastOrders: React.FC<ITableLastOrders> = ({ ordered }) => {
   return (
-    <table className=" min-w-full text-center ml-22 text-sm font-light">
-      {/* <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
-        <tr>
-          {OrderColumns.map((l) => {
-            return (
-              <th scope="col" key={l} className="px-2 py-1">
-                {l}
-              </th>
-            );
-          })}
-        </tr>
-      </thead> */}
+    <table className="min-w-full text-start items-start justify-start text-sm font-light">
       <tbody>
         {ordered.length > 0 &&
           ordered.map((i) => (
             <tr
               key={i.order_date}
               className={clsx(
-                `${
+                `px-6 ${
                   i.id % 2 !== 0 ? "bg-neutral-200" : "bg-neutral-100"
                 } hover:bg-slate-300 hover:font-bold hover:rounded-md border-b dark:border-neutral-500 dark:bg-neutral-600`
               )}
             >
-              <td className="whitespace-nowrap px-2 py-1 text-center">{i.count}</td>
-              <td className="whitespace-nowrap px-2 py-1 text-right">{i.id}</td>
-              <td className="whitespace-nowrap px-2 py-1">{i.name}</td>
-              <td className="whitespace-nowrap px-2 py-1">-</td>
-              <td className="whitespace-nowrap px-2 py-1">
+              <td className="whitespace-nowrap pl-8 py-1">{i.count}</td>
+              <td className="whitespace-nowrap px-4 py-1 text-right">{i.id}</td>
+              <td className="whitespace-nowrap px-6 py-1">{i.name}</td>
+              <td className="whitespace-nowrap px-6 py-1">{i.category}</td>
+              <td className="whitespace-nowrap px-6 py-1">
                 {i.extra.name + "(€" + formatNumber(Number(i.extra.price)) + ")"}
               </td>
               {/* <td className="whitespace-nowrap px-2 py-1">% {i.discount ? i.discount : 0} </td> */}
@@ -283,7 +272,7 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow })
   };
 
   return (
-    <table className="min-w-full justify-start text-center pl-6 text-sm font-light">
+    <table className="min-w-full justify-start text-start items-start pl-6 text-sm font-light">
       {isModalOpen && items != null && (
         <OrderModal toggleModal={toggleModal} customer={items as unknown as IConsumerInOrder} />
       )}
@@ -295,13 +284,13 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow })
               className={clsx(
                 `${
                   (index + 1) % 2 !== 0 ? "bg-neutral-100" : "bg-white"
-                }  justify-center items-center content-center text-black border-b hover:bg-slate-300 hover:font-bold hover:rounded-md`
+                }  justify-start items-start content-start text-black border-b hover:bg-slate-300 hover:font-bold hover:rounded-md`
               )}
             >
               <td className="whitespace-nowrap px-4 py-2 w-fit">{i.count}</td>
               <td className="whitespace-nowrap px-4 py-2 w-fit">{i.id}</td>
               <td className="whitespace-nowrap px-4 py-2 w-fit">{i.name}</td>
-              <td className="whitespace-nowrap px-4 py-2 w-fit">-</td>
+              <td className="whitespace-nowrap px-4 py-2 w-fit">{i.category}</td>
               <td className="whitespace-nowrap px-4 py-2 w-fit">
                 {i.extra.price == 0 ? "Nein" : i.extra.name + "(€" + formatNumber(Number(i.extra.price)) + ")"}{" "}
               </td>
@@ -320,7 +309,6 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow })
   );
 };
 export const TableAllOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const t = useTranslations("Body");
 
   const confirmDelete = (id: string) => {
@@ -334,9 +322,11 @@ export const TableAllOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow
     deleteRow(id);
   };
   return (
-    <table className="min-w-full text-center text-sm font-light  justify-center items-center content-center">
+    <table className="min-w-full text-start text-sm font-light  justify-start items-start content-start">
       <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
         <tr>
+          <th className="ml-2">Kunde Name</th>
+          <th className="ml-4">Kunde Nr.</th>
           {OrderColumns.length > 0 &&
             OrderColumns.map((l) => {
               return (
@@ -345,6 +335,7 @@ export const TableAllOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow
                 </th>
               );
             })}
+          <th>Rabbat</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -359,14 +350,17 @@ export const TableAllOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow
                 }  justify-center items-center content-center text-black border-b hover:bg-slate-300 hover:font-bold hover:rounded-md`
               )}
             >
+              <td className="whitespace-nowrap px-4 py-2 ml-2">{i.customer_name}</td>
+              <td className="whitespace-nowrap px-4 py-2">{i.customer_id}</td>
               <td className="whitespace-nowrap px-4 py-2">{i.count}</td>
               <td className="whitespace-nowrap px-4 py-2">{i.id}</td>
               <td className="whitespace-nowrap px-4 py-2 ">{i.name}</td>
-              <td className="whitespace-nowrap px-4 py-2">-</td>
+              <td className="whitespace-nowrap px-4 py-2">{i.category}</td>
               <td className="whitespace-nowrap px-4 py-2">
                 {i.extra.price == 0 ? "Nein" : i.extra.name + "(€" + formatNumber(Number(i.extra.price)) + ")"}{" "}
               </td>
               <td className="whitespace-nowrap px-4 py-2">€ {formatNumber(Number(i.total))}</td>
+              <td className="whitespace-nowrap px-4 py-2">% {i.discount}</td>
               <td className="whitespace-nowrap px-6 py-4">
                 <div className="flex flex-row">
                   <button onClick={() => confirmDelete(i.id)}>

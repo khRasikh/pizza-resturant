@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Form, { FormCreateOrder } from "./form";
 import { OrderColumns, Tables, clearCustomerForm, clearOrderFields, toastMessages } from "../shared/constants";
 import { useLocale, useTranslations } from "next-intl";
@@ -20,6 +20,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
   const [lastOrders, setLastOrders] = useState<any[]>([]);
   const [isDisplayLastOrder, setIsDisplayLastOrder] = useState<boolean>(true);
   formDataModal["customer_id"] = customer.KNr ?? 542;
+  formDataModal["customer_name"] = customer.Name ?? "Kein";
 
   // formDataModal["discount"] = customer.Rabatt!
   // Function to add values to the array in formDataModal
@@ -62,21 +63,25 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
     });
   };
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        if (customer.KNr !== 0) {
-          // const getLastOrders = await getDataByID("orders", customer.KNr!)
-          const getLastOrders = await getOrdersByIDFromMongoDB("orders", customer.KNr!);
+  const fetchOrders = useCallback(async () => {
+    try {
+      if (customer.KNr !== 0) {
+        // const getLastOrders = await getDataByID("orders", customer.KNr!)
+        const getLastOrders = await getOrdersByIDFromMongoDB("orders", customer.KNr!);
 
-          if (getLastOrders.data.length > 0) {
-            setLastOrders(getLastOrders.data);
-          }
+        if (getLastOrders.data.length > 0) {
+          setLastOrders(getLastOrders.data);
+        } else {
+          setLastOrders([]); // Make sure to clear lastOrders if no data is found
         }
-      } catch (error) {
-        console.error("Error fetching data:", error);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, [customer.KNr]); 
+  
+  useEffect(() => {
+    
     fetchOrders();
   }, [lastOrders]);
 
@@ -182,7 +187,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
             {OrderColumns.length > 0 &&
               OrderColumns.map((l) => {
                 return (
-                  <th scope="col" key={l} className={clsx(`px-6 py-2 ${l == "Bez." ? "text-left" : ""}`)}>
+                  <th scope="col" key={l} className={clsx(`px-6 py-2 text-left`)}>
                     {l}
                   </th>
                 );

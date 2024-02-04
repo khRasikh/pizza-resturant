@@ -166,6 +166,8 @@ export async function getOrdersFromMongoDB(tableName: string) {
     const organizedData: IOrder[] = sortedData.map((i) => ({
       id: i.id,
       customer_id: i.customer_id,
+      customer_name: i.customer_name,
+      category: i.category,
       name: i.name,
       price: i.price,
       count: i.count,
@@ -207,6 +209,8 @@ export async function getOrdersByIDFromMongoDB(tableName: string, customer_id: n
     const organizedData: IOrder[] = sortedData.map((i) => ({
       id: i.id,
       customer_id: i.customer_id,
+      customer_name: i.customer_name,
+      category: i.category,
       name: i.name,
       price: i.price,
       count: i.count,
@@ -241,17 +245,26 @@ export async function addDataToMongoDB(newData: any, tableName: string) {
       newData = [newData];
     }
 
-    const result = await collection.insertMany(newData);
+    //remove existing records
+    const deleteLastOrder = await collection.deleteMany({
+      customer_id: newData[0].customer_id.toString(),
+    });
+    if (deleteLastOrder.acknowledged) {
+      const result = await collection.insertMany(newData);
 
-    const getLastResult = await db
-      .collection("customers")
-      .findOne({ _id: result.insertedIds["0"] }, { projection: { _id: 0 } });
-    if (result.insertedCount >= 1) {
-      console.log("Success: Record added successfully", getLastResult);
-      return { status: true, statusCode: 200, data: getLastResult, message: "Record added successfully" };
+      // create new record
+      const getLastResult = await db
+        .collection("customers")
+        .findOne({ _id: result.insertedIds["0"] }, { projection: { _id: 0 } });
+      if (result.insertedCount >= 1) {
+        console.log("Success: Record added successfully", getLastResult);
+        return { status: true, statusCode: 200, data: getLastResult, message: "Record added successfully" };
+      } else {
+        console.log("Failed to add record");
+        return { status: false, message: "Failed to add data" };
+      }
     } else {
-      console.log("Failed to add record");
-      return { status: false, message: "Failed to add data" };
+      return { status: false, message: "Failed to add record" };
     }
   } catch (error) {
     console.error("Failure:", error);

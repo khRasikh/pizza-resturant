@@ -61,17 +61,21 @@ export const FormCreateOrder = ({
       setCategory(priceOptions[0].name);
       setSelectedPrice(priceOptions[0].price);
       formDataModal["price"] = formatNumber(parseFloat(priceOptions[0].price));
+      formDataModal["category"] = "Single";
     } else if (priceValue !== "" && priceValue === "j" && priceOptions) {
       setCategory(priceOptions[1].name);
       setSelectedPrice(priceOptions[1].price);
+      formDataModal["category"] = "Jumbo";
       formDataModal["price"] = formatNumber(parseFloat(priceOptions[1].price));
     } else if (priceValue !== "" && priceValue === "f" && priceOptions) {
       setCategory(priceOptions[2].name);
       setSelectedPrice(priceOptions[2].price);
+      formDataModal["category"] = "Family";
       formDataModal["price"] = formatNumber(parseFloat(priceOptions[2].price));
     } else if (priceValue !== "" && priceValue === "p" && priceOptions) {
       setCategory(priceOptions[3].name);
       setSelectedPrice(priceOptions[3].price);
+      formDataModal["category"] = "Party";
       formDataModal["price"] = formatNumber(parseFloat(priceOptions[3].price));
     }
     calculateTotal(count, extra.price, discount);
@@ -121,7 +125,9 @@ export const FormCreateOrder = ({
   };
 
   // Handler for discount change
+  const [isChangingDiscount, setIschangingDiscount] = useState<boolean>(false)
   const handleDiscountChange = (e: any) => {
+    setIschangingDiscount(true)
     let discountValue = e.target.value.trim();
     if (discountValue === "") {
       setDiscount(0);
@@ -196,7 +202,6 @@ export const FormCreateOrder = ({
   const firstInputRef = useRef<HTMLInputElement>(null); // Initialize useRef with proper type
 
   const handleSubmit = async (e: any) => {
-    console.log("test submithandle", e.target.form);
     try {
       await handleSubmitFormOrder(e);
       console.log("Test Form order submitted successfully", selectedPrice, priceOptions, count, extra);
@@ -211,7 +216,7 @@ export const FormCreateOrder = ({
       setCount(1);
       setCategory("");
       setCumpNum(0);
-      setDiscount(0);
+      // setDiscount(0);
       setTotal(0);
       setExtra({ id: 0, name: "", price: 0 });
       // Check if firstInputRef is not null or undefined before accessing its properties
@@ -235,30 +240,23 @@ export const FormCreateOrder = ({
     }
   };
 
-  function lastDiscounts(): number {
-    // Calculate total discount
-    const totalDiscount = lastOrders && lastOrders.reduce((acc, order) => Number(acc + order.discount), 0);
-    if (customerInfo.KNr === 245) {
-      return customerInfo.Rabatt!;
-    } else {
-      if (totalDiscount) {
-        return Number(totalDiscount);
-      }
-      return 0;
-    }
-  }
-
-  function lastDiscountAmount(): number {
+  const [discountedAmount, setDiscountedAmount] = useState<number>(0);
+  useEffect(() => {
     // Calculate total amount
-    const totalAmount = lastOrders && lastOrders.reduce((acc, order) => Number(acc + order.price), 0);
+    const totalAmount = lastOrders && lastOrders.reduce((acc, order) => Number(acc + order.total), 0);
     // Calculate total discount
     const totalDiscount = lastOrders && lastOrders.reduce((acc, order) => Number(acc + order.discount), 0);
+    // total = 100-totalDiscount (78)
+    // x     = totalDiscount
+    // x = total*totalDiscount/78
 
-    if (totalAmount && totalDiscount) {
-      return Number((totalAmount * totalDiscount) / 100) ?? 0;
+    if (totalAmount && totalDiscount && !isChangingDiscount) {
+      setDiscountedAmount(Number(totalAmount * totalDiscount) / (100 - totalDiscount / lastOrders.length));
+      setDiscount(Number(totalDiscount / lastOrders.length));
+    } else {
+      console.log("test totalAmount, discount", totalAmount, totalDiscount);
     }
-    return 0;
-  }
+  }, [lastOrders]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -362,12 +360,12 @@ export const FormCreateOrder = ({
             onChange={handleDiscountChange}
             onKeyUp={handleDiscountChange}
             onKeyDown={handleDiscountChange}
-            value={discount === 0 ? lastDiscounts() : discount}
+            value={discount === 0 ? "" : discount}
             // value={lastDiscounts()}
             className="w-16 mx-2 p-2 border-blue-500 bg-blue-900 placeholder-white  text-center"
             // placeholder={`${t("Form.Rabatt")} (%)`}
           />
-          <p className="text-red-600 my-2">(€-{lastDiscountAmount()})</p>
+          <p className="text-red-600 my-2">(€-{formatNumber(discountedAmount)})</p>
         </div>
         {<TableSummary list={orderList} />}
       </div>
