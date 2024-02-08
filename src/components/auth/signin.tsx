@@ -9,7 +9,7 @@ export default function Header() {
   if (session) {
     return (
       <div className="flex flex-row">
-        <span className="hidden sm:block md:block lg:block mx-2 my-4 text-sm font-bold text-gray-700">
+        <span className="hidden sm:block md:block lg:block mx-2 my-4 text-sm font-bold text-yellow-300">
           {session.user.name ? session.user.name : session.user.email}
         </span>
         <LocaleSwitcher />

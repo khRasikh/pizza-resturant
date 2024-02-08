@@ -50,10 +50,10 @@ export default function Body({ children, title }: Readonly<IBody>) {
     return (
       <div onKeyDown={(e) => handlePressKey(e)} className="bg-blue-900 w-full flex items-center justify-center mt-36">
         <div className="max-w-screen-xl p-4 text-center">
-          <h1 className="text-3xl font-semibold leading-tight tracking-tight text-black md:text-2xl">
+          <h1 className="text-3xl font-semibold leading-tight tracking-tight text-white md:text-2xl">
             {t("session.welcome")} {title}
           </h1>
-          <div className="mt-6 text-gray-800 md:text-lg">
+          <div className="mt-6 text-yellow-300 md:text-lg">
             <p>{t("session.unAuthorizedToAccessList")}</p>
           </div>
         </div>
@@ -73,7 +73,7 @@ export default function Body({ children, title }: Readonly<IBody>) {
             <div className="absolute left-0 top-1 h-[20500px] w-[20500px] -translate-x-[47.5%] rounded-full  from-slate-900 via-cyan-500" />
           </div>
           <div className="relative flex grow flex-col px-4">
-            <div className="mt-6 text-gray-800 md:text-lg text-left">{children}</div>
+            <div className="mt-6 text-black md:text-lg text-left">{children}</div>
           </div>
         </div>
       </div>
@@ -90,7 +90,7 @@ export default function Body({ children, title }: Readonly<IBody>) {
           <div className="absolute left-0 top-1 h-[20500px] w-[20500px] -translate-x-[47.5%] rounded-full  from-slate-900 via-cyan-500" />
         </div>
         <div className="container relative flex grow flex-col px-4">
-          <h1 className="text-3xl font-semibold leading-tight tracking-tight text-black md:text-2xl">
+          <h1 className="text-3xl font-semibold leading-tight tracking-tight text-yellow-300 md:text-2xl">
             {t("session.welcome")} {title}
           </h1>
           <div className="mt-6 text-gray-800 md:text-lg">
