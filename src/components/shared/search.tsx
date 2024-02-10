@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { ISearchBar } from "../interface/general";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { changeKasset } from "./kasset";
 
 const SearchBar = ({ onSearch, placeholderValue = "", searchTerm }: ISearchBar) => {
   const t = useTranslations("PageLayout");
@@ -29,19 +30,28 @@ const SearchBar = ({ onSearch, placeholderValue = "", searchTerm }: ISearchBar) 
 
   const route = useRouter();
   const handlePressKey = (e: any) => {
+    // a. close or reload window
     if (e.key === "Escape") {
-      // close update
       e.preventDefault();
       window.location.reload();
+    
+      // b. redirect to orders list
     } else if (e.key === "F3") {
-      e.preventDefault(); // Prevent default browser behavior
-      // Add your custom logic here
+      e.preventDefault();
       route.push("/orders");
-      console.log("test customer");
-    } else if (e.key === "F2") {
+      // c. reload or refresh page
+    } else if (e.key === "F2" && !e.ctrlKey) {
       window.location.reload();
+      // d. change kasset number 
+    } else if (e.ctrlKey && e.key === "1") {
+      e.preventDefault();
+      changeKasset("1");
+    } else if (e.ctrlKey && e.key === "2") {
+      e.preventDefault();
+      changeKasset("2");
     }
   };
+
   return (
     <div onKeyDown={(e) => handlePressKey(e)} className="max-w-2xl mx-auto p-2">
       <form className="flex items-center" onSubmit={handleSubmitSearch}>

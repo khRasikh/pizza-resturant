@@ -1,4 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+
+export const changeKasset = (value: string) => {
+  // change kasset 1 to 2 and reverse
+    sessionStorage.setItem("kasset", value);
+    window.location.reload();
+};
 
 export const Kasset = () => {
   const [isChecked, setIsChecked] = useState(false);
@@ -10,14 +16,12 @@ export const Kasset = () => {
     setIsChecked(isActiveTime);
   }, []);
 
-  const [selectedKasset, setSelectedKasset] = useState(
-    sessionStorage.getItem('kasset') ?? ''
-  );
+  const [selectedKasset, setSelectedKasset] = useState(sessionStorage.getItem("kasset") ?? "");
 
   const handleKassetChange = (e: any) => {
     const value = e.target.value;
     setSelectedKasset(value);
-    sessionStorage.setItem('kasset', value);
+    sessionStorage.setItem("kasset", value);
   };
 
   return (
