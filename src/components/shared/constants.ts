@@ -64,7 +64,16 @@ export const toastMessages = {
   },
 };
 
-export const MenuColumns = ["Type", "CompNum", "Name", "SinglPreis", "JumboPreis", "FamilyPreis", "PartyPreis", "Actions"];
+export const MenuColumns = [
+  "Type",
+  "CompNum",
+  "Name",
+  "SinglPreis",
+  "JumboPreis",
+  "FamilyPreis",
+  "PartyPreis",
+  "Actions",
+];
 
 export const CustomerProperties = ["KNr", "Name", "Tel", "Str", "Ort", "Bemerkung"];
 
@@ -139,11 +148,12 @@ export const extaListStatic = [
   { id: 48, name: "Chicken", SinglPreis: 1.9, JumboPreis: 2.5, FamilyPreis: 3.3, PartyPreis: 5.2 },
 ];
 
+// this default is used for discount 
 export const defaultCustomerZero = {
-  KNr: 245,
-  Name: "abholen",
+  KNr: 100000,
+  Name: "abholen 1",
   Tel: "-",
-  Str: "abholen",
+  Str: "abholen 1",
   Ort: "",
   Seit: "0",
   Mal: 0,
@@ -154,12 +164,11 @@ export const defaultCustomerZero = {
   Bemerkung: "no",
 };
 
-
 export const defaultCustomerDoubleZero = {
-  KNr: 542,
-  Name: "abholen",
+  KNr: 100001,
+  Name: "abholen 2",
   Tel: "-",
-  Str: "abholen",
+  Str: "abholen 2",
   Ort: "",
   Seit: "0",
   Mal: 0,

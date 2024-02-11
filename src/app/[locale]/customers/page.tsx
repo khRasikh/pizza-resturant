@@ -55,6 +55,7 @@ export default function Customers() {
   };
 
   const handleSearch = async (value: string) => {
+    console.log("test handlesearch", value);
     if (value === "0") {
       setPickup(true);
       setCustomer(defaultCustomerZero);
@@ -172,7 +173,9 @@ export default function Customers() {
             <div className="flex flex-col">
               <p>
                 <span className="bg-red-500 px-2 py-1 my-2 font-extrabold text-yellow-300 rounded-sm">K-Nr:</span>
-                <span className="px-2 py-1 my-2 font-extrabold text-yellow-300">{customer.KNr}</span>
+                <span className="px-2 py-1 my-2 font-extrabold text-yellow-300">
+                  {customer.KNr == defaultCustomerDoubleZero.KNr || customer.KNr == defaultCustomerZero.KNr ? "" : customer.KNr}
+                </span>
               </p>
             </div>
             <div className="flex flex-col">

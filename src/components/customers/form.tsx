@@ -2,7 +2,13 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { IArticles, IArticlesForm, ICustomers, IForm, IFormModal } from "../interface/general";
 import { useTranslations } from "next-intl";
-import { clearOrderFields, extaListStatic, formatNumber } from "../shared/constants";
+import {
+  clearOrderFields,
+  defaultCustomerDoubleZero,
+  defaultCustomerZero,
+  extaListStatic,
+  formatNumber,
+} from "../shared/constants";
 import { getMenusFromMongoDB } from "../shared/mongodbCrud";
 import clsx from "clsx";
 import { AddICon, PrintIcon } from "../shared/icons";
@@ -107,7 +113,7 @@ export const FormCreateOrder = ({
       }
 
       if (extraValue > 0 && extraValue !== 0 && extraValue !== "") {
-        console.log("test extrave1", extraValue);
+        // console.log("test extrave1", extraValue);
         setExtra({ id: extraNumber, name: getExtraObject[0].name, price: newExtrafromObject });
         formDataModal["extra"] = { id: extraNumber, name: getExtraObject[0].name, price: newExtrafromObject };
         calculateTotal(count, newExtrafromObject, discount);
@@ -117,7 +123,7 @@ export const FormCreateOrder = ({
         calculateTotal(count, extra.price, discount);
       }
     } else {
-      console.log("test extrave0", extraValue);
+      // console.log("test extrave0", extraValue);
       setExtra({ id: 0, name: "", price: 0 });
       formDataModal["extra"] = { id: 0, name: "", price: 0 };
       calculateTotal(count, 0, discount);
@@ -125,9 +131,9 @@ export const FormCreateOrder = ({
   };
 
   // Handler for discount change
-  const [isChangingDiscount, setIschangingDiscount] = useState<boolean>(false)
+  const [isChangingDiscount, setIschangingDiscount] = useState<boolean>(false);
   const handleDiscountChange = (e: any) => {
-    setIschangingDiscount(true)
+    setIschangingDiscount(true);
     let discountValue = e.target.value.trim();
     if (discountValue === "") {
       setDiscount(0);
@@ -204,7 +210,7 @@ export const FormCreateOrder = ({
   const handleSubmit = async (e: any) => {
     try {
       await handleSubmitFormOrder(e);
-      console.log("Test Form order submitted successfully", selectedPrice, priceOptions, count, extra);
+      // console.log("Test Form order submitted successfully", selectedPrice, priceOptions, count, extra);
       // Reset form fields and other necessary operations
       formDataModal["count"] = 1;
       formDataModal["id"] = "0";
@@ -242,19 +248,34 @@ export const FormCreateOrder = ({
 
   const [discountedAmount, setDiscountedAmount] = useState<number>(0);
   useEffect(() => {
-    // Calculate total amount
-    const totalAmount = lastOrders && lastOrders.reduce((acc, order) => Number(acc + order.total), 0);
+    // total = 100-totalDiscount (78) // Calculate total amount
+    const totalAmountWithDiscount = lastOrders && lastOrders.reduce((acc, order) => Number(acc + order.total), 0);
     // Calculate total discount
     const totalDiscount = lastOrders && lastOrders.reduce((acc, order) => Number(acc + order.discount), 0);
-    // total = 100-totalDiscount (78)
     // x     = totalDiscount
     // x = total*totalDiscount/78
-
-    if (totalAmount && totalDiscount && !isChangingDiscount) {
-      setDiscountedAmount(Number(totalAmount * totalDiscount) / (100 - totalDiscount / lastOrders.length));
+    // conditions:
+    /**
+     * if customer is default, then discount is defatul.rabbat and discountAmount is 0
+     * if customer is not default, then check last orders; get discount and discount amount 
+        example 1: 
+     *    totalAmountWithDiscount     = 5.8+5.8+14.95 => 26.55 
+          totalDiscount               = 12 + 12 + 12  => 36
+          discount                    = 12/3          => 12
+          totalAmountWithoutDiscount  = totalAmountWithDiscount*100(%)/100-12 => 30.17
+          totalDiscounted             = totalAmountWithoutDiscount-totalAmountWithDiscount => 30.17-26.55 => 3.62
+     * if customer is adding new orders, then check orders; get discount and discount amount 
+          same example 1
+     */
+    if (customerInfo === defaultCustomerZero || customerInfo === defaultCustomerDoubleZero) {
+      setDiscountedAmount(0);
+      setDiscount(customerInfo.Rabatt!);
+    } else if (totalAmountWithDiscount && totalDiscount && !isChangingDiscount) {
+      const totalAmountWithoutDiscount =
+        (totalAmountWithDiscount * 100) / (100 - Number(totalDiscount / lastOrders.length));
+      setDiscountedAmount(totalAmountWithoutDiscount - totalAmountWithDiscount);
       setDiscount(Number(totalDiscount / lastOrders.length));
-    } else {
-      console.log("test totalAmount, discount", totalAmount, totalDiscount);
+      formDataModal["discount"] = Number(totalDiscount / lastOrders.length);
     }
   }, [lastOrders]);
 

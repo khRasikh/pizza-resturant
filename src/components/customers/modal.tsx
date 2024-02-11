@@ -78,7 +78,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }, [customer.KNr]); 
+  }, [customer.KNr, lastOrders]); 
   
   useEffect(() => {
     
