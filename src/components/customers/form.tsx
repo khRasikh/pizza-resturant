@@ -55,9 +55,6 @@ export const FormCreateOrder = ({
       formDataModal["extra"] = { id: 0, name: "", price: 0 };
       calculateTotal(count, extra.price, discount);
     }
-    // else {
-    //     setSelectedPrice('');
-    // }
   };
 
   const handleChangePrice = (e: any) => {
@@ -83,7 +80,13 @@ export const FormCreateOrder = ({
       setSelectedPrice(priceOptions[3].price);
       formDataModal["category"] = "Party";
       formDataModal["price"] = formatNumber(parseFloat(priceOptions[3].price));
+    } else {
+      setCategory("Diverse");
+      setSelectedPrice(priceValue);
+      formDataModal["category"] = "Diverse";
+      formDataModal["price"] = formatNumber(parseFloat(priceValue));
     }
+
     calculateTotal(count, extra.price, discount);
   };
 
@@ -333,7 +336,7 @@ export const FormCreateOrder = ({
                     onKeyDown={handleChangePrice}
                     onKeyUp={handleChangePrice}
                     className="w-full p-2 border-blue-500 disabled bg-blue-900 placeholder-white uppercase"
-                    placeholder={t("Form.category")}
+                    placeholder={formDataModal["name"] == "Diverse" ? "Price" : "Category"}
                   />
                 </td>
 
