@@ -272,7 +272,7 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow })
   };
 
   return (
-    <table className="min-w-full justify-start text-start items-start pl-6 text-sm font-light">
+    <table className="min-w-full justify-start text-start items-start pl-6 text-sm font-light rounded-md">
       {isModalOpen && items != null && (
         <OrderModal toggleModal={toggleModal} customer={items as unknown as IConsumerInOrder} />
       )}
@@ -322,7 +322,7 @@ export const TableAllOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow
     deleteRow(id);
   };
   return (
-    <table className="min-w-full text-start text-sm font-light  justify-start items-start content-start">
+    <table className="min-w-full text-start text-sm font-light  justify-start items-start content-start rounded-md">
       <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
         <tr>
           <th className="ml-2">Kunde Name</th>

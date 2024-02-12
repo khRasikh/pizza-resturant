@@ -155,6 +155,7 @@ export async function getOrdersFromMongoDB(tableName: string) {
       .collection(tableName)
       .find({}, { projection: { _id: 0 } })
       .sort({ id: -1 })
+      .limit(20)
       .toArray();
 
     const sortedData: any[] = [...data].sort((a, b) => {

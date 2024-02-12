@@ -11,6 +11,7 @@ import { ICustomers, IOrder, IOrderModal } from "../interface/general";
 import { addDataToMongoDB, getOrdersByIDFromMongoDB, updateDataToMongoDB } from "../shared/mongodbCrud";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
+import { changeKasset } from "../shared/kasset";
 
 export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, customerFormLastData }) => {
   const t = useTranslations("Body");
@@ -129,6 +130,12 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
       e.preventDefault(); // Prevent default browser behavior
       // exit modal
       setIsDisplayLastOrder(false);
+    }else  if (e.ctrlKey && e.key === "1") {
+      e.preventDefault();
+      changeKasset("1");
+    } else if (e.ctrlKey && e.key === "2") {
+      e.preventDefault();
+      changeKasset("2");
     }
   };
 

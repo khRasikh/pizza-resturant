@@ -32,7 +32,7 @@ export const FormCreateOrder = ({
   const [count, setCount] = useState<number>(1);
   const [extra, setExtra] = useState<{ id: number; name: string; price: number }>({ id: 0, name: "", price: 0 });
   const [total, setTotal] = useState<number>(0);
-  const [discount, setDiscount] = useState<number>(customerInfo.Rabatt!);
+  const [discount, setDiscount] = useState<number>(typeof customerInfo.Rabatt === "number" ? customerInfo.Rabatt : 0);
   const [menu, setMenu] = useState<IArticles[]>([]);
   const [category, setCategory] = useState<string>("SinglPreis");
   const [compNum, setCumpNum] = useState<number>(0);
@@ -57,7 +57,7 @@ export const FormCreateOrder = ({
     }
   };
 
-  const handleChangePrice = (e: any) => {
+  const handleChangePriceBasedOnCategory = (e: any) => {
     const priceValue = e.target.value.trim();
 
     if (priceValue.toString().toLowerCase() === "s" && priceOptions) {
@@ -332,10 +332,10 @@ export const FormCreateOrder = ({
                     type="text"
                     // value={formDataModal["category"] === "" ? "" : formDataModal["category"]}
                     name="category"
-                    onChange={handleChangePrice}
-                    onKeyDown={handleChangePrice}
-                    onKeyUp={handleChangePrice}
-                    className="w-full p-2 border-blue-500 disabled bg-blue-900 placeholder-white uppercase"
+                    onChange={handleChangePriceBasedOnCategory}
+                    onKeyDown={handleChangePriceBasedOnCategory}
+                    onKeyUp={handleChangePriceBasedOnCategory}
+                    className={`w-full p-2 border-blue-500 bg-blue-900 placeholder-white uppercase`}
                     placeholder={formDataModal["name"] == "Diverse" ? "Price" : "Category"}
                   />
                 </td>
