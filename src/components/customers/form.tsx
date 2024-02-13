@@ -31,17 +31,18 @@ export const FormCreateOrder = ({
   const [priceOptions, setPriceOptions] = useState<any[]>();
   const [count, setCount] = useState<number>(1);
   const [extra, setExtra] = useState<{ id: number; name: string; price: number }>({ id: 0, name: "", price: 0 });
-  const [total, setTotal] = useState<number>(0);
   const [discount, setDiscount] = useState<number>(typeof customerInfo.Rabatt === "number" ? customerInfo.Rabatt : 0);
   const [menu, setMenu] = useState<IArticles[]>([]);
   const [category, setCategory] = useState<string>("SinglPreis");
-  const [compNum, setCumpNum] = useState<number>(0);
+  const [categoryShortCut, setCategoryShortCut] = useState<string>("");
+  const [compNum, setCompNum] = useState<number>(0);
+
 
   const handleChangeCompNum = (e: any) => {
     const value = e.target.value;
     // Find the price associated with the selected CompNum
+    setCompNum(value)
     const selectedMenu = menu.length > 0 && menu.find((item) => item.CompNum.toString() === value.toString());
-
     if (selectedMenu) {
       setSelectedPrice(selectedMenu.SinglPreis.toString()); // selected by default
       const priceDetails = sizes.map((priceKey) => ({
@@ -53,40 +54,51 @@ export const FormCreateOrder = ({
       formDataModal["name"] = selectedMenu.Name;
       formDataModal["price"] = "0";
       formDataModal["extra"] = { id: 0, name: "", price: 0 };
+
+      // set auto 
+      if (JSON.parse(value) > 0 && JSON.parse(value) < 30) {
+        setCategoryShortCut("")
+      } else if (JSON.parse(value) >= 30) {
+        setCategoryShortCut("S")
+      }
       calculateTotal(count, extra.price, discount);
     }
   };
 
   const handleChangePriceBasedOnCategory = (e: any) => {
     const priceValue = e.target.value.trim();
-
-    if (priceValue.toString().toLowerCase() === "s" && priceOptions) {
-      setCategory(priceOptions[0].name);
-      setSelectedPrice(priceOptions[0].price);
-      formDataModal["price"] = formatNumber(parseFloat(priceOptions[0].price));
-      formDataModal["category"] = "Single";
-    } else if (priceValue !== "" && priceValue === "j" && priceOptions) {
-      setCategory(priceOptions[1].name);
-      setSelectedPrice(priceOptions[1].price);
-      formDataModal["category"] = "Jumbo";
-      formDataModal["price"] = formatNumber(parseFloat(priceOptions[1].price));
-    } else if (priceValue !== "" && priceValue === "f" && priceOptions) {
-      setCategory(priceOptions[2].name);
-      setSelectedPrice(priceOptions[2].price);
-      formDataModal["category"] = "Family";
-      formDataModal["price"] = formatNumber(parseFloat(priceOptions[2].price));
-    } else if (priceValue !== "" && priceValue === "p" && priceOptions) {
-      setCategory(priceOptions[3].name);
-      setSelectedPrice(priceOptions[3].price);
-      formDataModal["category"] = "Party";
-      formDataModal["price"] = formatNumber(parseFloat(priceOptions[3].price));
+    if (e.key === "deleteContentBackward") {
+      setCategoryShortCut("")
     } else {
-      setCategory("Diverse");
-      setSelectedPrice(priceValue);
-      formDataModal["category"] = "Diverse";
-      formDataModal["price"] = formatNumber(parseFloat(priceValue));
-    }
+      setCategoryShortCut(priceValue);
+      if (priceValue.toString().toLowerCase() === "s" && priceOptions) {
+        setCategory(priceOptions[0].name);
+        setSelectedPrice(priceOptions[0].price);
+        formDataModal["price"] = formatNumber(parseFloat(priceOptions[0].price));
+        formDataModal["category"] = "Single";
+      } else if (priceValue !== "" && priceValue === "j" && priceOptions) {
+        setCategory(priceOptions[1].name);
+        setSelectedPrice(priceOptions[1].price);
+        formDataModal["category"] = "Jumbo";
+        formDataModal["price"] = formatNumber(parseFloat(priceOptions[1].price));
+      } else if (priceValue !== "" && priceValue === "f" && priceOptions) {
+        setCategory(priceOptions[2].name);
+        setSelectedPrice(priceOptions[2].price);
+        formDataModal["category"] = "Family";
+        formDataModal["price"] = formatNumber(parseFloat(priceOptions[2].price));
+      } else if (priceValue !== "" && priceValue === "p" && priceOptions) {
+        setCategory(priceOptions[3].name);
+        setSelectedPrice(priceOptions[3].price);
+        formDataModal["category"] = "Party";
+        formDataModal["price"] = formatNumber(parseFloat(priceOptions[3].price));
+      } else {
+        setCategory("Diverse");
+        setSelectedPrice(priceValue);
+        formDataModal["category"] = "Diverse";
+        formDataModal["price"] = formatNumber(parseFloat(priceValue));
+      }
 
+    }
     calculateTotal(count, extra.price, discount);
   };
 
@@ -164,8 +176,7 @@ export const FormCreateOrder = ({
       discountedTotal -= discountAmount;
 
       formDataModal["total"] = discountedTotal;
-      // Format the total to two decimal places using formatNumber function if needed
-      setTotal(Number(formatNumber(discountedTotal)));
+
     }
   };
 
@@ -214,6 +225,7 @@ export const FormCreateOrder = ({
     try {
       await handleSubmitFormOrder(e);
       // console.log("Test Form order submitted successfully", selectedPrice, priceOptions, count, extra);
+
       // Reset form fields and other necessary operations
       formDataModal["count"] = 1;
       formDataModal["id"] = "0";
@@ -224,9 +236,8 @@ export const FormCreateOrder = ({
       //clear display data in inputs
       setCount(1);
       setCategory("");
-      setCumpNum(0);
-      // setDiscount(0);
-      setTotal(0);
+      setCategoryShortCut("")
+      setCompNum(0)
       setExtra({ id: 0, name: "", price: 0 });
       // Check if firstInputRef is not null or undefined before accessing its properties
       if (firstInputRef.current !== null && firstInputRef.current !== undefined) {
@@ -294,7 +305,6 @@ export const FormCreateOrder = ({
                     autoFocus
                     ref={firstInputRef}
                     type="number"
-                    // value={formDataModal["count"] > 0 ? formDataModal["count"] : ""}
                     value={count}
                     name="count"
                     onChange={handleCountChangev2}
@@ -307,9 +317,8 @@ export const FormCreateOrder = ({
                 <td className={`${"pl-1 py-1 bg-blue-900 font-bold"} font-extrabold`}>
                   <input
                     type="number"
-                    // value={formDataModal["CompNum"] === 0 ? "" : formDataModal["CompNum"]}
-                    // value={formDataModal["id"] === "0" ? "" : formDataModal["id"]}
                     name="CompNum"
+                    value={compNum === 0 ? "" : compNum}
                     onChange={handleChangeCompNum}
                     onKeyDown={handleChangeCompNum}
                     onKeyUp={handleChangeCompNum}
@@ -323,14 +332,14 @@ export const FormCreateOrder = ({
                     className="w-full p-2 border-blue-500 disabled bg-blue-900 placeholder-white uppercase"
                     placeholder={t("Form.name")}
                   >
-                    {formDataModal["name"]}
+                    {compNum === 0 ? "" : formDataModal["name"]}
                   </div>
                 </td>
 
                 <td className={`${"pl-1 py-1 bg-blue-900 font-bold"}`}>
                   <input
                     type="text"
-                    // value={formDataModal["category"] === "" ? "" : formDataModal["category"]}
+                    value={categoryShortCut}
                     name="category"
                     onChange={handleChangePriceBasedOnCategory}
                     onKeyDown={handleChangePriceBasedOnCategory}
@@ -344,7 +353,6 @@ export const FormCreateOrder = ({
                   <input
                     type="number"
                     name="extra"
-                    // value={formDataModal["extra"] === 0 ? "" : formDataModal["extra"]}
                     onChange={handleExtraChangeV2}
                     onKeyUp={handleExtraChangeV2}
                     onKeyDown={handleExtraChangeV2}
@@ -387,7 +395,7 @@ export const FormCreateOrder = ({
             value={discount === 0 ? "" : discount}
             // value={lastDiscounts()}
             className="w-16 mx-2 p-2 border-blue-500 bg-blue-900 placeholder-white  text-center"
-            // placeholder={`${t("Form.Rabatt")} (%)`}
+          // placeholder={`${t("Form.Rabatt")} (%)`}
           />
           <p className="text-red-600 my-2">(€-{formatNumber(discountedAmount)})</p>
         </div>
