@@ -146,11 +146,10 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
           window.addEventListener('keydown', function (e) {
             if (e.key === 'Enter') {
               window.print(); // Trigger the print
-              location.reload(); // Reload the page
             }
-            else {
+            else if (e.key === 'F2') {
                 location.reload(); // Reload the page
-            }
+              }
           });
         </script>
     </body>
