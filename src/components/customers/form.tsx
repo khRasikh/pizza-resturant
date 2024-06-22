@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { IArticles, IArticlesForm, ICustomers, IForm, IFormModal } from "../interface/general";
 import { useTranslations } from "next-intl";
 import {
@@ -25,6 +25,7 @@ export const FormCreateOrder = ({
   lastOrders,
   customerInfo,
 }: IFormModal) => {
+  const formRef = useRef<HTMLFormElement>(null);
   const t = useTranslations("Body");
   const sizes = ["SinglPreis", "JumboPreis", "FamilyPreis", "PartyPreis"] as const;
   const [selectedPrice, setSelectedPrice] = useState<string>();
@@ -37,10 +38,25 @@ export const FormCreateOrder = ({
   const [categoryShortCut, setCategoryShortCut] = useState<string>("");
   const [compNum, setCompNum] = useState<number>(0);
 
+  const handleEnter=(e : any)=>{
+    e.preventDefault(); // Prevent form submission on Enter key press
+    // Find the next input element
+    const form = formRef.current;
+    const inputs = form ? Array.from(form.querySelectorAll('input')) : [];
+    const currentInputIndex = inputs.indexOf(e.target);
+    const nextInput = inputs[currentInputIndex === 3 ? currentInputIndex + 2 :  currentInputIndex + 1];
+
+    if (nextInput) {
+      nextInput.focus();
+    }
+  }
 
   const handleChangeCompNum = (e: any) => {
     const value = e.target.value;
     // Find the price associated with the selected CompNum
+    if (e.key === "Enter") {
+      handleEnter(e)
+    }
     setCompNum(value)
     const selectedMenu = menu.length > 0 && menu.find((item) => item.CompNum.toString() === value.toString());
     if (selectedMenu) {
@@ -55,7 +71,7 @@ export const FormCreateOrder = ({
       formDataModal["price"] = "0";
       formDataModal["extra"] = { id: 0, name: "", price: 0 };
 
-      // set auto 
+      // set auto
       if (JSON.parse(value) > 0 && JSON.parse(value) < 30) {
         setCategoryShortCut("")
       } else if (JSON.parse(value) >= 30) {
@@ -70,6 +86,9 @@ export const FormCreateOrder = ({
     if (e.key === "deleteContentBackward") {
       setCategoryShortCut("")
     } else {
+      if (e.key === "Enter") {
+        handleEnter(e)
+      }
       setCategoryShortCut(priceValue);
       if (priceValue.toString().toLowerCase() === "s" && priceOptions) {
         setCategory(priceOptions[0].name);
@@ -103,6 +122,9 @@ export const FormCreateOrder = ({
   };
 
   const handleExtraChangeV2 = (e: any) => {
+  if (e.key === "Enter") {
+    handleEnter(e)
+  }
     const extraValue = e.target.value;
     const extraNumber = Math.abs(parseInt(extraValue));
     if (
@@ -222,6 +244,7 @@ export const FormCreateOrder = ({
   const firstInputRef = useRef<HTMLInputElement>(null); // Initialize useRef with proper type
 
   const handleSubmit = async (e: any) => {
+    // console.log("formDataModal:",formDataModal)
     try {
       await handleSubmitFormOrder(e);
       // console.log("Test Form order submitted successfully", selectedPrice, priceOptions, count, extra);
@@ -252,7 +275,10 @@ export const FormCreateOrder = ({
     const inputValue = e.target.value;
     if (inputValue === "1" && e.key === "deleteContentBackward") {
       setCount(1); // Reset count to 1 if the input is '1' and backspace is pressed
-    } else {
+    }else {
+      if (e.key === "Enter") {
+        handleEnter(e)
+      }
       const newCount = parseInt(e.target.value);
       setCount(newCount);
       formDataModal["count"] = newCount;
@@ -271,14 +297,14 @@ export const FormCreateOrder = ({
     // conditions:
     /**
      * if customer is default, then discount is defatul.rabbat and discountAmount is 0
-     * if customer is not default, then check last orders; get discount and discount amount 
-        example 1: 
-     *    totalAmountWithDiscount     = 5.8+5.8+14.95 => 26.55 
+     * if customer is not default, then check last orders; get discount and discount amount
+        example 1:
+     *    totalAmountWithDiscount     = 5.8+5.8+14.95 => 26.55
           totalDiscount               = 12 + 12 + 12  => 36
           discount                    = 12/3          => 12
           totalAmountWithoutDiscount  = totalAmountWithDiscount*100(%)/100-12 => 30.17
           totalDiscounted             = totalAmountWithoutDiscount-totalAmountWithDiscount => 30.17-26.55 => 3.62
-     * if customer is adding new orders, then check orders; get discount and discount amount 
+     * if customer is adding new orders, then check orders; get discount and discount amount
           same example 1
      */
     if (customerInfo === defaultCustomerZero || customerInfo === defaultCustomerDoubleZero) {
@@ -294,7 +320,7 @@ export const FormCreateOrder = ({
   }, [lastOrders]);
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} ref={formRef}>
       <div className="overflow-hidden bg-blue-900 text-yellow-300 font-extrabold text-2xl">
         <div className="w-full">
           <table className="min-w-full text-left text-sm font-light items-center justify-center bg-blue-900">
@@ -309,7 +335,7 @@ export const FormCreateOrder = ({
                     name="count"
                     onChange={handleCountChangev2}
                     onKeyDown={handleCountChangev2}
-                    onKeyUp={handleCountChangev2}
+                    // onKeyUp={handleCountChangev2}
                     className="w-full p-2 border-blue-500 disabled bg-blue-900 placeholder-white"
                     placeholder={t("Form.count")}
                   />
@@ -321,7 +347,7 @@ export const FormCreateOrder = ({
                     value={compNum === 0 ? "" : compNum}
                     onChange={handleChangeCompNum}
                     onKeyDown={handleChangeCompNum}
-                    onKeyUp={handleChangeCompNum}
+                    // onKeyUp={handleChangeCompNum}
                     className="w-full p-2 border-blue-500 disabled bg-blue-900 placeholder-white"
                     placeholder={t("Form.CompNum")}
                   />
@@ -343,7 +369,7 @@ export const FormCreateOrder = ({
                     name="category"
                     onChange={handleChangePriceBasedOnCategory}
                     onKeyDown={handleChangePriceBasedOnCategory}
-                    onKeyUp={handleChangePriceBasedOnCategory}
+                    // onKeyUp={handleChangePriceBasedOnCategory}
                     className={`w-full p-2 border-blue-500 bg-blue-900 placeholder-white uppercase`}
                     placeholder={formDataModal["name"] == "Diverse" ? "Price" : "Category"}
                   />
@@ -354,7 +380,7 @@ export const FormCreateOrder = ({
                     type="number"
                     name="extra"
                     onChange={handleExtraChangeV2}
-                    onKeyUp={handleExtraChangeV2}
+                    // onKeyUp={handleExtraChangeV2}
                     onKeyDown={handleExtraChangeV2}
                     className="w-full p-2 border-blue-500 bg-blue-900 placeholder-white disabled"
                     placeholder={`${t("Form.extra")}(€)`}
@@ -390,7 +416,7 @@ export const FormCreateOrder = ({
             type="number"
             name="rabatt"
             onChange={handleDiscountChange}
-            onKeyUp={handleDiscountChange}
+            // onKeyUp={handleDiscountChange}
             onKeyDown={handleDiscountChange}
             value={discount === 0 ? "" : discount}
             // value={lastDiscounts()}
