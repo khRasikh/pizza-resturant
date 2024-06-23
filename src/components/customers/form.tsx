@@ -40,6 +40,7 @@ export const FormCreateOrder = ({
 
   const handleEnter=(e : any)=>{
     e.preventDefault(); // Prevent form submission on Enter key press
+    const value = e.target.value;
     // Find the next input element
     const form = formRef.current;
     const inputs = form ? Array.from(form.querySelectorAll('input')) : [];
@@ -54,7 +55,7 @@ export const FormCreateOrder = ({
   const handleChangeCompNum = (e: any) => {
     const value = e.target.value;
     // Find the price associated with the selected CompNum
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && value) {
       handleEnter(e)
     }
     setCompNum(value)
@@ -86,7 +87,7 @@ export const FormCreateOrder = ({
     if (e.key === "deleteContentBackward") {
       setCategoryShortCut("")
     } else {
-      if (e.key === "Enter") {
+      if (e.key === "Enter" && priceValue) {
         handleEnter(e)
       }
       setCategoryShortCut(priceValue);
@@ -244,7 +245,7 @@ export const FormCreateOrder = ({
   const firstInputRef = useRef<HTMLInputElement>(null); // Initialize useRef with proper type
 
   const handleSubmit = async (e: any) => {
-    // console.log("formDataModal:",formDataModal)
+    console.log("formDataModal:",formDataModal)
     try {
       await handleSubmitFormOrder(e);
       // console.log("Test Form order submitted successfully", selectedPrice, priceOptions, count, extra);
@@ -276,7 +277,7 @@ export const FormCreateOrder = ({
     if (inputValue === "1" && e.key === "deleteContentBackward") {
       setCount(1); // Reset count to 1 if the input is '1' and backspace is pressed
     }else {
-      if (e.key === "Enter") {
+      if (e.key === "Enter" && inputValue) {
         handleEnter(e)
       }
       const newCount = parseInt(e.target.value);
@@ -335,6 +336,7 @@ export const FormCreateOrder = ({
                     name="count"
                     onChange={handleCountChangev2}
                     onKeyDown={handleCountChangev2}
+                    required
                     // onKeyUp={handleCountChangev2}
                     className="w-full p-2 border-blue-500 disabled bg-blue-900 placeholder-white"
                     placeholder={t("Form.count")}
@@ -347,6 +349,7 @@ export const FormCreateOrder = ({
                     value={compNum === 0 ? "" : compNum}
                     onChange={handleChangeCompNum}
                     onKeyDown={handleChangeCompNum}
+                    required
                     // onKeyUp={handleChangeCompNum}
                     className="w-full p-2 border-blue-500 disabled bg-blue-900 placeholder-white"
                     placeholder={t("Form.CompNum")}
@@ -369,6 +372,7 @@ export const FormCreateOrder = ({
                     name="category"
                     onChange={handleChangePriceBasedOnCategory}
                     onKeyDown={handleChangePriceBasedOnCategory}
+                    required
                     // onKeyUp={handleChangePriceBasedOnCategory}
                     className={`w-full p-2 border-blue-500 bg-blue-900 placeholder-white uppercase`}
                     placeholder={formDataModal["name"] == "Diverse" ? "Price" : "Category"}
