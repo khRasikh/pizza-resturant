@@ -35,7 +35,7 @@ export default function Orders() {
 
   useEffect(() => {
     fetchOrders();
-  }, [orders]);
+  }, []);
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
