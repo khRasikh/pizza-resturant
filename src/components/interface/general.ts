@@ -99,6 +99,22 @@ export interface IOrder {
   total: string;
   order_date: string;
 }
+interface SuccessResponse {
+  status: true;
+  data: IOrder[];
+  page: number;
+  totalPages: number;
+  totalItems: number;
+  message: string;
+}
+
+interface ErrorResponse {
+  status: false;
+  data: [];
+  message: string;
+}
+
+export type OrdersResponse = SuccessResponse | ErrorResponse;
 export interface IPrint {
   orderList: IOrder[];
   toggleModal: () => void;

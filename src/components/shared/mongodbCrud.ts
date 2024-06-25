@@ -1,7 +1,7 @@
 "use server";
 
 import { Collection, ObjectId } from "mongodb";
-import { IArticles, ICustomers, IOrder } from "../interface/general";
+import {IArticles, ICustomers, IOrder, OrdersResponse} from "../interface/general";
 import clientPromise from "../lib/mongodb";
 
 export async function getMenusFromMongoDB(tableName: string) {
@@ -146,16 +146,18 @@ export async function getCustomersFromMongoDB(
   }
 }
 
-export async function getOrdersFromMongoDB(tableName: string) {
+export async function getOrdersFromMongoDB(tableName: string, page: number = 1, limit: number = 10): Promise<OrdersResponse> {
   try {
     const client = await clientPromise;
     const db = client.db("resturant");
-
+    const offset = (page - 1) * limit;
+    const totalItems = await db.collection(tableName).countDocuments();
     const data = await db
       .collection(tableName)
       .find({}, { projection: { _id: 0 } })
       .sort({ id: -1 })
-      .limit(20)
+      .skip(offset)
+      .limit(limit)
       .toArray();
 
     const sortedData: any[] = [...data].sort((a, b) => {
@@ -177,10 +179,13 @@ export async function getOrdersFromMongoDB(tableName: string) {
       total: i.total,
       order_date: i.order_date,
     }));
-
+    const totalPages = Math.ceil(totalItems / limit);
     return {
       status: true,
       data: organizedData,
+      page: page,
+      totalPages: totalPages,
+      totalItems: totalItems,
       message: "OK",
     };
   } catch (err) {

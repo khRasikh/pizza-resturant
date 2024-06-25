@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { DefaultPageNumber, OrderColumns, toastMessages } from "@/components/shared/constants";
 import { NoResultFound, PaginationCustomized, TableAllOrder, TableSummary } from "@/components/shared/table";
 import { filterData } from "@/components/lib/filter";
-import { IOrder } from "@/components/interface/general";
+import { IOrder , OrdersResponse } from "@/components/interface/general";
 import { deleteOrderFromMongoDB, getOrdersFromMongoDB } from "@/components/shared/mongodbCrud";
 
 export default function Orders() {
@@ -17,46 +17,39 @@ export default function Orders() {
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [count, setCount] = useState(0);
+  const [pageItemsSize, setPageItemsSize] = useState<number>(DefaultPageNumber);
+  const [pageNumber, setPageNumber] = useState<number>(1);
 
-  const fetchOrders = async () => {
-    // const orderList1: { status: boolean, body: IOrder[] } = await getData("orders")
-    const orderList: { status: boolean; data: IOrder[] } = await getOrdersFromMongoDB("orders");
+  const fetchOrders = async (pageN = 0, pageS = DefaultPageNumber) => {
+    setIsLoading(true)
+    const orderList: OrdersResponse = await getOrdersFromMongoDB("orders", pageN, pageS);
     if (orderList.status) {
       const sortedOrders = orderList.data.sort(
         (a, b) => Number(new Date(b.order_date!).getTime()) - Number(new Date(a.order_date!).getTime())
       );
       setOrders(sortedOrders);
+      setCount(orderList.totalItems)
       setIsLoading(false);
+      setPageNumber(orderList.page)
     } else {
       setOrders([]);
+      setCount(0)
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    fetchOrders(pageNumber, pageItemsSize);
+  }, [pageNumber, pageItemsSize]);
 
-  const handleSearch = (value: string) => {
-    setSearchTerm(value);
-    setPageNumber(1);
-  };
+  // const handleSearch = (value: string) => {
+  //   setSearchTerm(value);
+  //   setPageNumber(1);
+  // };
   //search & filter
   const filteredOrders = filterData(orders, searchTerm);
 
-  //pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentItems, setCurrentItems] = useState<IOrder[]>([]);
-  const [pageItemsSize, setPageItemsSize] = useState<number>(DefaultPageNumber);
-  const [pageNumber, setPageNumber] = useState<number>(1);
-
-  useEffect(() => {
-    const indexOfLastItem = currentPage * pageItemsSize;
-    const indexOfFirstItem = indexOfLastItem - pageItemsSize;
-    const updatedCurrentItems = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
-    setCurrentItems(updatedCurrentItems);
-    setCurrentPage(pageNumber);
-  }, [orders, pageItemsSize]);
 
   //delete
   const deleteOrder = async (orderId: string) => {
@@ -66,6 +59,7 @@ export default function Orders() {
 
       if (response.status) {
         toast.success(t1("Form.successMessage"), toastMessages.OPTION);
+        await fetchOrders(pageNumber, pageItemsSize);
       } else {
         toast.error(t1("Form.errorMessage"), toastMessages.OPTION);
       }
@@ -86,11 +80,11 @@ export default function Orders() {
 
       <div className="overflow-x-auto sm:-mx-6 lg:-mx-8  h-screen">
         <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8 rounded-md">
-          {currentItems.length > 0 && !isLoading ? (
+          {orders.length > 0 && !isLoading ? (
             <div>
               <TableAllOrder
                 // isLoading={isLoading}
-                items={currentItems}
+                items={orders}
                 deleteRow={deleteOrder}
                 columns={OrderColumns}
               />
@@ -98,11 +92,11 @@ export default function Orders() {
                 <div></div>
                 <div></div>
                 <div></div>
-                <TableSummary list={currentItems} />
+                <TableSummary list={orders}/>
               </div>
               <PaginationCustomized
                 pageItemsSize={pageItemsSize}
-                totalItems={filteredOrders.length}
+                totalItems={count}
                 pageNumber={pageNumber}
                 setPageItemsSize={setPageItemsSize}
                 setPageNumber={setPageNumber}
