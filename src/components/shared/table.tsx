@@ -322,15 +322,15 @@ export const TableAllOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow
     deleteRow(id);
   };
   return (
-    <table className="min-w-full text-start text-sm font-light  justify-start items-start content-start rounded-md">
+    <table className="min-w-full text-start text-sm font-light text-xs  justify-start items-start content-start rounded-md">
       <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
         <tr>
-          <th className="ml-2">Kunde Name</th>
-          <th className="ml-4">Kunde Nr.</th>
+          <th className="px-4 text-left">Kunde Name</th>
+          <th className="px-4 text-left">Kunde Nr.</th>
           {OrderColumns.length > 0 &&
             OrderColumns.map((l) => {
               return (
-                <th scope="col" key={l} className={clsx(`px-6 py-2 ${l == "Bez." ? "text-left" : ""}`)}>
+                  <th scope="col" key={l} className={clsx(`px-4 py-2 text-left ${l == "Bez." ? "text-left" : ""}`)}>
                   {l}
                 </th>
               );
@@ -347,10 +347,10 @@ export const TableAllOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow
               className={clsx(
                 `${
                   (index + 1) % 2 !== 0 ? "bg-neutral-100" : "bg-white"
-                }  justify-center items-center content-center text-black border-b hover:bg-slate-300 hover:font-bold hover:rounded-md`
+                }  justify-center items-center content-center text-black border-b hover:bg-slate-300 hover:font-bold hover:rounded-md `
               )}
             >
-              <td className="whitespace-nowrap px-4 py-2 ml-2">{i.customer_name}</td>
+              <td className="whitespace-nowrap px-4 py-2">{i.customer_name}</td>
               <td className="whitespace-nowrap px-4 py-2">{i.customer_id}</td>
               <td className="whitespace-nowrap px-4 py-2">{i.count}</td>
               <td className="whitespace-nowrap px-4 py-2">{i.id}</td>
@@ -360,9 +360,9 @@ export const TableAllOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow
                 {i.extra.price == 0 ? "Nein" : i.extra.name + "(€" + formatNumber(Number(i.extra.price)) + ")"}{" "}
               </td>
               <td className="whitespace-nowrap px-4 py-2">€ {formatNumber(Number(i.total))}</td>
-              <td className="whitespace-nowrap px-4 py-2">% {i.discount}</td>
+              <td className="whitespace-nowrap px-4 py-2 text-center">% {i.discount}</td>
               <td className="whitespace-nowrap px-6 py-4">
-                <div className="flex flex-row">
+                <div className="flex flex-row justify-center">
                   <button onClick={() => confirmDelete(i.id)}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
