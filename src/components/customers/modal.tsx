@@ -19,6 +19,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [orderList, setOrderList] = useState<IOrder[]>([]);
   const [lastOrders, setLastOrders] = useState<any[]>([]);
+  const [isLastOrdersLoading, setIsLastOrdersLoading] = useState<boolean>(false);
   const [isDisplayLastOrder, setIsDisplayLastOrder] = useState<boolean>(true);
   formDataModal["customer_id"] = customer.KNr ?? 542;
   formDataModal["customer_name"] = customer.Name ?? "Kein";
@@ -66,6 +67,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
 
   const fetchOrders = useCallback(async () => {
     try {
+      setIsLastOrdersLoading(true)
       if (customer.KNr !== 0) {
         // const getLastOrders = await getDataByID("orders", customer.KNr!)
         const getLastOrders = await getOrdersByIDFromMongoDB("orders", customer.KNr!);
@@ -78,13 +80,18 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+    }finally {
+      setIsLastOrdersLoading(false)
     }
   }, [customer.KNr, lastOrders]); 
   
   useEffect(() => {
-    
+    //everytime customer has changed, the form will be cleaned and table will refresh
+    setOrderList([])
+    setLastOrders([])
+    setFormDataModal(clearOrderFields);
     fetchOrders();
-  }, [lastOrders]);
+  }, [customer]);
 
   const handlePrintAsync = async () => {
     const addOrder = await addDataToMongoDB(orderList, "orders");
@@ -202,12 +209,16 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
           </tr>
         </thead>
       </table>
-      <div className="flex flex-row w-full mt-0 text-left">
-        {orderList.length > 0 ? (
-          <TableOrder items={orderList} columns={OrderColumns} deleteRow={() => console.log("under construction F")} />
-        ) : (
-          <>{isDisplayLastOrder && <TableLastOrders ordered={lastOrders} />}</>
-        )}
+      <div className="flex flex-row w-full mt-0 text-left min-h-[28px]">
+        {isLastOrdersLoading ?
+          <div className="bg-blue-900 text-white w-full flex items-center justify-center ">
+            <p className="mb-0">Loading...</p>
+          </div>
+          : (orderList.length > 0 ? (
+            <TableOrder items={orderList} columns={OrderColumns} deleteRow={() => console.log("under construction F")}/>
+          ) : (
+            <>{isDisplayLastOrder && <TableLastOrders ordered={lastOrders}/>}</>
+          ))}
       </div>
 
       <div className="flex flex-row mx-2 my-4 p-2 bg-blue-900 justify-between w-full">

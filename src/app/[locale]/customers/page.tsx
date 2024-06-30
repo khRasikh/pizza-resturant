@@ -56,6 +56,8 @@ export default function Customers() {
 
   const handleSearch = async (value: string) => {
     console.log("test handlesearch", value);
+    setCustomer(clearCustomerForm);
+    setPickup(false);
     if (value === "0") {
       setPickup(true);
       setCustomer(defaultCustomerZero);
