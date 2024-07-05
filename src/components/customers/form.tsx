@@ -358,17 +358,50 @@ export const FormCreateOrder = ({
      * if customer is adding new orders, then check orders; get discount and discount amount
           same example 1
      */
-    if (customerInfo === defaultCustomerZero || customerInfo === defaultCustomerDoubleZero) {
+    // if (customerInfo === defaultCustomerZero || customerInfo === defaultCustomerDoubleZero) {
+    //   setDiscountedAmount(0);
+    //   setDiscount(customerInfo.Rabatt!);
+    // } else if (totalAmountWithDiscount && totalDiscount && !isChangingDiscount) {
+    //   const totalAmountWithoutDiscount =
+    //     (totalAmountWithDiscount * 100) / (100 - Number(totalDiscount / lastOrders.length));
+    //   setDiscountedAmount(totalAmountWithoutDiscount - totalAmountWithDiscount);
+    //   setDiscount(Number(totalDiscount / lastOrders.length));
+    //   formDataModal["discount"] = Number(totalDiscount / lastOrders.length);
+    // }
+  }, [lastOrders]);
+
+  useEffect(() => {
+    // total = 100-totalDiscount (78) // Calculate total amount
+    const totalAmountWithDiscount = orderList && orderList.reduce((acc, order) => Number(acc + order.total), 0);
+    // Calculate total discount
+    const totalDiscount = orderList && orderList.reduce((acc, order) => Number(acc + order.discount), 0);
+    // x     = totalDiscount
+    // x = total*totalDiscount/78
+    // conditions:
+    /**
+     * if customer is default, then discount is defatul.rabbat and discountAmount is 0
+     * if customer is not default, then check last orders; get discount and discount amount
+        example 1:
+     *    totalAmountWithDiscount     = 5.8+5.8+14.95 => 26.55
+          totalDiscount               = 12 + 12 + 12  => 36
+          discount                    = 12/3          => 12
+          totalAmountWithoutDiscount  = totalAmountWithDiscount*100(%)/100-12 => 30.17
+          totalDiscounted             = totalAmountWithoutDiscount-totalAmountWithDiscount => 30.17-26.55 => 3.62
+     * if customer is adding new orders, then check orders; get discount and discount amount
+          same example 1
+     */
+    const ordersLn = orderList.length;
+    if (JSON.stringify(customerInfo) === JSON.stringify(defaultCustomerZero) || JSON.stringify(customerInfo) === JSON.stringify(defaultCustomerDoubleZero)) {
       setDiscountedAmount(0);
       setDiscount(customerInfo.Rabatt!);
-    } else if (totalAmountWithDiscount && totalDiscount && !isChangingDiscount) {
+    } else if (totalAmountWithDiscount && totalDiscount && isChangingDiscount) {
       const totalAmountWithoutDiscount =
-        (totalAmountWithDiscount * 100) / (100 - Number(totalDiscount / lastOrders.length));
+        (totalAmountWithDiscount * 100) / (100 - Number(totalDiscount / ordersLn));
       setDiscountedAmount(totalAmountWithoutDiscount - totalAmountWithDiscount);
-      setDiscount(Number(totalDiscount / lastOrders.length));
-      formDataModal["discount"] = Number(totalDiscount / lastOrders.length);
+      setDiscount(Number(totalDiscount / ordersLn));
+      formDataModal["discount"] = Number(totalDiscount / ordersLn);
     }
-  }, [lastOrders]);
+  }, [orderList]);
 
   return (
     <form onSubmit={handleSubmit} ref={formRef}>
