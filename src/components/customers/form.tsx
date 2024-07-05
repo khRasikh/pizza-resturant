@@ -30,7 +30,7 @@ export const FormCreateOrder = ({
   const sizes = ["SinglPreis", "JumboPreis", "FamilyPreis", "PartyPreis"] as const;
   const [selectedPrice, setSelectedPrice] = useState<string>();
   const [priceOptions, setPriceOptions] = useState<any[]>();
-  const [count, setCount] = useState<number | string>('');
+  const [count, setCount] = useState<number | null>(null);
   const [extra, setExtra] = useState<{ id: number; name: string; price: number }>({ id: 0, name: "", price: 0 });
   const [discount, setDiscount] = useState<number>(typeof customerInfo.Rabatt === "number" ? customerInfo.Rabatt : 0);
   const [menu, setMenu] = useState<IArticles[]>([]);
@@ -188,18 +188,20 @@ export const FormCreateOrder = ({
   };
 
   // Function to calculate the total with discount
-  const calculateTotal = (newCount: number, newExtra: number, newDiscount: number) => {
-    const c = newCount === 0 ? formDataModal["count"] : newCount;
-    if (selectedPrice) {
-      // console.log("test newCount, newExtra, newDiscount, selectedPrice", newCount, newExtra, newDiscount, formDataModal["price"])
-      let discountedTotal = c * parseFloat(formDataModal["price"]) + newExtra;
-      // Calculate the discount amount
-      const discountAmount = (discountedTotal * newDiscount) / 100;
-      // Apply the discount to the total
-      discountedTotal -= discountAmount;
+  const calculateTotal = (newCount: number | null, newExtra: number, newDiscount: number) => {
+    if(newCount !== null){
+      const c = newCount === 0 ? formDataModal["count"] : newCount;
+      if (selectedPrice) {
+        // console.log("test newCount, newExtra, newDiscount, selectedPrice", newCount, newExtra, newDiscount, formDataModal["price"])
+        let discountedTotal = c * parseFloat(formDataModal["price"]) + newExtra;
+        // Calculate the discount amount
+        const discountAmount = (discountedTotal * newDiscount) / 100;
+        // Apply the discount to the total
+        discountedTotal -= discountAmount;
 
-      formDataModal["total"] = discountedTotal;
+        formDataModal["total"] = discountedTotal;
 
+      }
     }
   };
 
