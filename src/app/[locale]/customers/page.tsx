@@ -29,7 +29,7 @@ export default function Customers() {
   const t1 = useTranslations("Body");
   const [customers, setCustomers] = useState<ICustomers[]>([clearCustomerForm]);
   const [customer, setCustomer] = useState<ICustomers>(clearCustomerForm);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showForm, setShowForm] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -56,15 +56,22 @@ export default function Customers() {
 
   const handleSearch = async (value: string) => {
     console.log("test handlesearch", value);
+    setIsLoading(true);
     setCustomer(clearCustomerForm);
     setPickup(false);
     if (value === "0") {
-      setPickup(true);
-      setCustomer(defaultCustomerZero);
+      setTimeout(()=> {
+        setPickup(true);
+        setCustomer(defaultCustomerZero);
+        setIsLoading(false)
+      },200)
       console.log("test handleSearch zero", customer);
     } else if (value === "00") {
-      setPickup(true);
-      setCustomer(defaultCustomerDoubleZero);
+      setTimeout(()=> {
+        setPickup(true);
+        setCustomer(defaultCustomerDoubleZero);
+        setIsLoading(false)
+      },200)
       console.log("test handleSearch doublezero", customer);
     } else if (value !== "0" && value !== "00" && value !== "") {
       const getConsumerBySearch: ICustomerList = await getCustomersFromMongoDB("customers", value.trim().toString());
@@ -77,6 +84,7 @@ export default function Customers() {
         setPickup(true);
       } else {
         confirmNewCustomer(value);
+        setIsLoading(false);
       }
     }
 
@@ -224,9 +232,11 @@ export default function Customers() {
           />
         </div>
       )}
-      {pickup && customer && (
+      {isLoading ? <div className="bg-blue-900 text-white w-full flex items-center justify-center ">
+        <p className="mb-0">Loading...</p>
+      </div> : (pickup && customer && (
         <OrderModal customer={customer} toggleModal={handleToggelModal} customerFormLastData={customerFormDataLast} />
-      )}
+      ))}
     </PageLayout>
   );
 }
