@@ -51,12 +51,27 @@ export const FormCreateOrder = ({
       nextInput.focus();
     }
   }
+  const handleBackSpace=(e : any)=>{
+    e.preventDefault(); // Prevent form submission on Enter key press
+    const value = e.target.value;
+    // Find the next input element
+    const form = formRef.current;
+    const inputs = form ? Array.from(form.querySelectorAll('input')) : [];
+    const currentInputIndex = inputs.indexOf(e.target);
+    const preInput = inputs[currentInputIndex === 5 ? currentInputIndex - 2 : currentInputIndex - 1];
+
+    if (preInput) {
+      preInput.focus();
+    }
+  }
 
   const handleChangeCompNum = (e: any) => {
     const value = e.target.value;
     // Find the price associated with the selected CompNum
     if (e.key === "Enter" && value) {
       handleEnter(e)
+    } else if (e.key === "Backspace" && !value) {
+      handleBackSpace(e)
     }
     setCompNum(value)
     const selectedMenu = menu.length > 0 && menu.find((item) => item.CompNum.toString() === value.toString());
@@ -79,6 +94,12 @@ export const FormCreateOrder = ({
         setCategoryShortCut("S")
       }
       calculateTotal(count, extra.price, discount);
+    } else {
+      setPriceOptions([]);
+      formDataModal["id"] = 0;
+      formDataModal["name"] = '';
+      formDataModal["price"] = "0";
+      formDataModal["extra"] = { id: 0, name: "", price: 0 };
     }
   };
 
@@ -89,6 +110,8 @@ export const FormCreateOrder = ({
     } else {
       if (e.key === "Enter" && priceValue) {
         handleEnter(e)
+      } else if (e.key === "Backspace" && !priceValue) {
+        handleBackSpace(e)
       }
       setCategoryShortCut(priceValue);
       if (priceValue.toString().toLowerCase() === "s" && priceOptions) {
@@ -123,10 +146,14 @@ export const FormCreateOrder = ({
   };
 
   const handleExtraChangeV2 = (e: any) => {
-  if (e.key === "Enter") {
-    handleEnter(e)
-  }
     const extraValue = e.target.value;
+
+    if (e.key === "Enter") {
+      handleEnter(e)
+    } else if (e.key === "Backspace" && !extraValue) {
+      handleBackSpace(e)
+    }
+
     const extraNumber = Math.abs(parseInt(extraValue));
     if (
       extaListStatic.length > 0 &&
@@ -173,6 +200,9 @@ export const FormCreateOrder = ({
   const handleDiscountChange = (e: any) => {
     setIschangingDiscount(true);
     let discountValue = e.target.value.trim();
+    if (e.key === "Backspace" && !discountValue) {
+      handleBackSpace(e)
+    }
     if (discountValue === "") {
       setDiscount(0);
       formDataModal["discount"] = 0;
