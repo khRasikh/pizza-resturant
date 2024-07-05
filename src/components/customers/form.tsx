@@ -37,6 +37,7 @@ export const FormCreateOrder = ({
   const [category, setCategory] = useState<string>("SinglPreis");
   const [categoryShortCut, setCategoryShortCut] = useState<string>("");
   const [compNum, setCompNum] = useState<number>(0);
+  const [discountedAmount, setDiscountedAmount] = useState<number>(0);
 
   const handleEnter=(e : any)=>{
     e.preventDefault(); // Prevent form submission on Enter key press
@@ -251,6 +252,23 @@ export const FormCreateOrder = ({
     fetchMenus();
   }, []);
 
+  useEffect(() => {
+    setSelectedPrice('')
+    setPriceOptions([])
+    setCount('')
+    setExtra({ id: 0, name: "", price: 0 })
+    setDiscount(typeof customerInfo.Rabatt === "number" ? customerInfo.Rabatt : 0);
+    setCategory("SinglPreis");
+    setCategoryShortCut("");
+    setCompNum(0);
+    formDataModal["count"] = '';
+    formDataModal["id"] = "0";
+    formDataModal["price"] = "0";
+    formDataModal["category"] = "";
+    formDataModal["total"] = "0";
+    formDataModal["extra"] = { id: 0, name: "", price: 0 };
+  }, [customerInfo]);
+
   const updatePrices = (menu: IArticles[]) => {
     const updatedList = menu.map((item, index) => {
       if (index >= 1 && index <= 29) {
@@ -283,7 +301,7 @@ export const FormCreateOrder = ({
       // console.log("Test Form order submitted successfully", selectedPrice, priceOptions, count, extra);
 
       // Reset form fields and other necessary operations
-      formDataModal["count"] = 1;
+      formDataModal["count"] = '';
       formDataModal["id"] = "0";
       formDataModal["price"] = "0";
       formDataModal["category"] = "";
@@ -319,7 +337,7 @@ export const FormCreateOrder = ({
     // }
   };
 
-  const [discountedAmount, setDiscountedAmount] = useState<number>(0);
+
   useEffect(() => {
     // total = 100-totalDiscount (78) // Calculate total amount
     const totalAmountWithDiscount = lastOrders && lastOrders.reduce((acc, order) => Number(acc + order.total), 0);
