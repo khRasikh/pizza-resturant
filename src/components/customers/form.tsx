@@ -30,7 +30,7 @@ export const FormCreateOrder = ({
   const sizes = ["SinglPreis", "JumboPreis", "FamilyPreis", "PartyPreis"] as const;
   const [selectedPrice, setSelectedPrice] = useState<string>();
   const [priceOptions, setPriceOptions] = useState<any[]>();
-  const [count, setCount] = useState<number>(1);
+  const [count, setCount] = useState<number | string>('');
   const [extra, setExtra] = useState<{ id: number; name: string; price: number }>({ id: 0, name: "", price: 0 });
   const [discount, setDiscount] = useState<number>(typeof customerInfo.Rabatt === "number" ? customerInfo.Rabatt : 0);
   const [menu, setMenu] = useState<IArticles[]>([]);
@@ -258,7 +258,7 @@ export const FormCreateOrder = ({
       formDataModal["total"] = "0";
       formDataModal["extra"] = { id: 0, name: "", price: 0 };
       //clear display data in inputs
-      setCount(1);
+      setCount('');
       setCategory("");
       setCategoryShortCut("")
       setCompNum(0)
@@ -274,9 +274,9 @@ export const FormCreateOrder = ({
 
   const handleCountChangev2 = (e: any) => {
     const inputValue = e.target.value;
-    if (inputValue === "1" && e.key === "deleteContentBackward") {
-      setCount(1); // Reset count to 1 if the input is '1' and backspace is pressed
-    }else {
+    // if (inputValue === "1" && e.key === "deleteContentBackward") {
+    //   setCount(''); // Reset count to '' if the input is '1' and backspace is pressed
+    // }else {
       if (e.key === "Enter" && inputValue) {
         handleEnter(e)
       }
@@ -284,7 +284,7 @@ export const FormCreateOrder = ({
       setCount(newCount);
       formDataModal["count"] = newCount;
       calculateTotal(newCount, extra.price > 0 ? extra.price : 0, discount);
-    }
+    // }
   };
 
   const [discountedAmount, setDiscountedAmount] = useState<number>(0);
