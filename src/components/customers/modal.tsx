@@ -83,15 +83,15 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
     }finally {
       setIsLastOrdersLoading(false)
     }
-  }, [customer.KNr, lastOrders]); 
-  
+  }, [customer.KNr]);
+
   useEffect(() => {
     //everytime customer has changed, the form will be cleaned and table will refresh
     setOrderList([])
     setLastOrders([])
     setFormDataModal(clearOrderFields);
     fetchOrders();
-  }, [customer]);
+  }, []);
 
   const handlePrintAsync = async () => {
     const addOrder = await addDataToMongoDB(orderList, "orders");
