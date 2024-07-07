@@ -224,13 +224,13 @@ export const FormCreateOrder = ({
       const c = newCount === 0 ? formDataModal["count"] : newCount;
       if (selectedPrice) {
         // console.log("test newCount, newExtra, newDiscount, selectedPrice", newCount, newExtra, newDiscount, formDataModal["price"])
-        let discountedTotal = c * parseFloat(formDataModal["price"]) + newExtra;
+        let discountedTotal = c * parseFloat(formDataModal["price"]);
         // Calculate the discount amount
         const discountAmount = (discountedTotal * newDiscount) / 100;
         // Apply the discount to the total
         discountedTotal -= discountAmount;
 
-        formDataModal["total"] = discountedTotal;
+        formDataModal["total"] = discountedTotal + newExtra;
 
       }
     }
@@ -401,7 +401,7 @@ export const FormCreateOrder = ({
       setDiscount(Number(totalDiscount / ordersLn));
       formDataModal["discount"] = Number(totalDiscount / ordersLn);
     }
-  }, [orderList]);
+  }, [orderList , customerInfo , isChangingDiscount]);
 
   return (
     <form onSubmit={handleSubmit} ref={formRef}>
