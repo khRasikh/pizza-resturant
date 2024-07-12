@@ -299,7 +299,8 @@ export const FormCreateOrder = ({
     try {
       await handleSubmitFormOrder(e);
       // console.log("Test Form order submitted successfully", selectedPrice, priceOptions, count, extra);
-
+      if(formRef?.current)
+         formRef.current.reset()
       // Reset form fields and other necessary operations
       formDataModal["count"] = '';
       formDataModal["id"] = "0";
@@ -339,8 +340,9 @@ export const FormCreateOrder = ({
 
 
   useEffect(() => {
+    if(orderList.length < 1){
     // total = 100-totalDiscount (78) // Calculate total amount
-    const totalAmountWithDiscount = lastOrders && lastOrders.reduce((acc, order) => Number(acc + order.total), 0);
+    const totalAmountWithDiscount = lastOrders && lastOrders.reduce((acc, order) => Number(acc + order.total) - Number(order.extra?.id ? order.extra?.price : 0), 0);
     // Calculate total discount
     const totalDiscount = lastOrders && lastOrders.reduce((acc, order) => Number(acc + order.discount), 0);
     // x     = totalDiscount
@@ -358,38 +360,24 @@ export const FormCreateOrder = ({
      * if customer is adding new orders, then check orders; get discount and discount amount
           same example 1
      */
-    // if (customerInfo === defaultCustomerZero || customerInfo === defaultCustomerDoubleZero) {
-    //   setDiscountedAmount(0);
-    //   setDiscount(customerInfo.Rabatt!);
-    // } else if (totalAmountWithDiscount && totalDiscount && !isChangingDiscount) {
-    //   const totalAmountWithoutDiscount =
-    //     (totalAmountWithDiscount * 100) / (100 - Number(totalDiscount / lastOrders.length));
-    //   setDiscountedAmount(totalAmountWithoutDiscount - totalAmountWithDiscount);
-    //   setDiscount(Number(totalDiscount / lastOrders.length));
-    //   formDataModal["discount"] = Number(totalDiscount / lastOrders.length);
-    // }
-  }, [lastOrders]);
+    if (JSON.stringify(customerInfo) === JSON.stringify(defaultCustomerZero) || JSON.stringify(customerInfo) === JSON.stringify(defaultCustomerDoubleZero)) {
+      setDiscountedAmount(0);
+      setDiscount(customerInfo.Rabatt!);
+    } else if (totalAmountWithDiscount && totalDiscount && !isChangingDiscount) {
+      const totalAmountWithoutDiscount =
+        (totalAmountWithDiscount * 100) / (100 - Number(totalDiscount / lastOrders.length));
+      setDiscountedAmount(totalAmountWithoutDiscount - totalAmountWithDiscount);
+      setDiscount(Number(totalDiscount / lastOrders.length));
+      formDataModal["discount"] = Number(totalDiscount / lastOrders.length);
+    }
+    }
+  }, [lastOrders , customerInfo , isChangingDiscount , orderList]);
 
   useEffect(() => {
-    // total = 100-totalDiscount (78) // Calculate total amount
-    const totalAmountWithDiscount = orderList && orderList.reduce((acc, order) => Number(acc + order.total), 0);
+    // calculating discount for orderList
+    const totalAmountWithDiscount = orderList && orderList.reduce((acc, order) => Number(acc + order.total) - Number(order.extra?.id ? order.extra?.price : 0), 0);
     // Calculate total discount
     const totalDiscount = orderList && orderList.reduce((acc, order) => Number(acc + order.discount), 0);
-    // x     = totalDiscount
-    // x = total*totalDiscount/78
-    // conditions:
-    /**
-     * if customer is default, then discount is defatul.rabbat and discountAmount is 0
-     * if customer is not default, then check last orders; get discount and discount amount
-        example 1:
-     *    totalAmountWithDiscount     = 5.8+5.8+14.95 => 26.55
-          totalDiscount               = 12 + 12 + 12  => 36
-          discount                    = 12/3          => 12
-          totalAmountWithoutDiscount  = totalAmountWithDiscount*100(%)/100-12 => 30.17
-          totalDiscounted             = totalAmountWithoutDiscount-totalAmountWithDiscount => 30.17-26.55 => 3.62
-     * if customer is adding new orders, then check orders; get discount and discount amount
-          same example 1
-     */
     const ordersLn = orderList.length;
     if (JSON.stringify(customerInfo) === JSON.stringify(defaultCustomerZero) || JSON.stringify(customerInfo) === JSON.stringify(defaultCustomerDoubleZero)) {
       setDiscountedAmount(0);
@@ -400,6 +388,9 @@ export const FormCreateOrder = ({
       setDiscountedAmount(totalAmountWithoutDiscount - totalAmountWithDiscount);
       setDiscount(Number(totalDiscount / ordersLn));
       formDataModal["discount"] = Number(totalDiscount / ordersLn);
+    } else if (!totalDiscount){
+      setDiscountedAmount(0);
+      setDiscount(typeof customerInfo.Rabatt === "number" ? customerInfo.Rabatt : 0);
     }
   }, [orderList , customerInfo , isChangingDiscount]);
 
