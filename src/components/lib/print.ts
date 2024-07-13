@@ -19,7 +19,13 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
                 <td>${order.count}X</td>
                 <td>${order.id}:</td>
                 <td>${order.name}</td>
-                <td>${formatNumber(Number(order.total))}</td>
+                <td>
+                    ${order.category === "Single" ? "S" : ''}
+                    ${order.category === "Jumbo" ? "J": ''}
+                    ${order.category === "Family" ? "F": ''}
+                    ${order.category === "Party" ? "P": ''}
+                </td>
+                <td>${formatNumber(Number(order.total) - (order.extra.id !== 0 ? order.extra.price : 0))}</td>
                 <td>${formatNumber((Number(order.price) * 0.7) / 100)}</td>
             </tr>
            ${
@@ -28,7 +34,8 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
                 <td>-</td>
                 <td>${order.extra.id}</td>
                 <td>${order.extra.name}</td>
-                <td>Kein</td>
+                <td>-</td>
+                <td>${order.extra.price}</td>
             </tr>`
                : ""
            }
@@ -100,6 +107,7 @@ export const handlePrint = ({ customer, orderList, toggleModal }: IPrint) => {
                             <th>Anz</th>
                             <th>Nr.</th>
                             <th>Bez.</th>
+                            <th>Kategorie</th>
                             <th>Pr</th>
                             <th>%MW</th>
                         </tr>

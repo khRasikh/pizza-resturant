@@ -195,20 +195,20 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
         </div>
       )}
 
-      <table className="min-w-full text-left rounded-sm text-sm font-light  pb-1">
-        <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
-          <tr>
-            {OrderColumns.length > 0 &&
-              OrderColumns.map((l) => {
-                return (
-                  <th scope="col" key={l} className={clsx(`px-6 py-2 text-left`)}>
-                    {l}
-                  </th>
-                );
-              })}
-          </tr>
-        </thead>
-      </table>
+      {/*<table className="min-w-full text-left rounded-sm text-sm font-light  pb-1">*/}
+      {/*  <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">*/}
+      {/*    <tr>*/}
+      {/*      {OrderColumns.length > 0 &&*/}
+      {/*        OrderColumns.map((l) => {*/}
+      {/*          return (*/}
+      {/*            <th scope="col" key={l} className={clsx(`px-6 py-2 text-left`)}>*/}
+      {/*              {l}*/}
+      {/*            </th>*/}
+      {/*          );*/}
+      {/*        })}*/}
+      {/*    </tr>*/}
+      {/*  </thead>*/}
+      {/*</table>*/}
       <div className="flex flex-row w-full mt-0 text-left min-h-[28px]">
         {isLastOrdersLoading ?
           <div className="bg-blue-900 text-white w-full flex items-center justify-center ">
@@ -217,7 +217,7 @@ export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, custo
           : (orderList.length > 0 ? (
             <TableOrder items={orderList} columns={OrderColumns} deleteRow={() => console.log("under construction F")}/>
           ) : (
-            <>{isDisplayLastOrder && <TableLastOrders ordered={lastOrders}/>}</>
+            <>{isDisplayLastOrder && <TableLastOrders columns={OrderColumns} ordered={lastOrders}/>}</>
           ))}
       </div>
 

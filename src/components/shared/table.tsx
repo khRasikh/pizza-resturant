@@ -1,7 +1,7 @@
 "use client";
 import clsx from "clsx";
 import { IConsumerInOrder, ICustomers, IOrder, ITable, ITableOrder, NoResultFoundProps } from "../interface/general";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { timeZone, dateTimeFormat, OrderColumns, formatNumber } from "./constants";
 import { useTranslations } from "next-intl";
 import { OrderModal } from "../customers/modal";
@@ -230,11 +230,24 @@ export const TableMenu: React.FC<ITable> = ({ isLoading, items, columns, deleteR
 
 interface ITableLastOrders {
   ordered: any[];
+  columns: any[];
 }
 
-export const TableLastOrders: React.FC<ITableLastOrders> = ({ ordered }) => {
+export const TableLastOrders: React.FC<ITableLastOrders> = ({ ordered , columns=[] }) => {
   return (
     <table className="min-w-full text-start items-start justify-start text-sm font-light">
+      <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
+      <tr>
+        {columns.length > 0 &&
+          columns.map((l) => {
+            return (
+              <th scope="col" key={l} className={clsx(`px-6 py-2 text-left`)}>
+                {l}
+              </th>
+            );
+          })}
+      </tr>
+      </thead>
       <tbody>
         {ordered.length > 0 &&
           ordered.map((i) => (
@@ -246,15 +259,15 @@ export const TableLastOrders: React.FC<ITableLastOrders> = ({ ordered }) => {
                 } hover:bg-slate-300 hover:font-bold hover:rounded-md border-b dark:border-neutral-500 dark:bg-neutral-600`
               )}
             >
-              <td className="whitespace-nowrap pl-8 py-1">{i.count}</td>
-              <td className="whitespace-nowrap px-4 py-1 text-right">{i.id}</td>
+              <td className="whitespace-nowrap px-6 py-1">{i.count}</td>
+              <td className="whitespace-nowrap px-6 py-1">{i.id}</td>
               <td className="whitespace-nowrap px-6 py-1">{i.name}</td>
               <td className="whitespace-nowrap px-6 py-1">{i.category}</td>
               <td className="whitespace-nowrap px-6 py-1">
                 {i.extra.name + "(€" + formatNumber(Number(i.extra.price)) + ")"}
               </td>
               {/* <td className="whitespace-nowrap px-2 py-1">% {i.discount ? i.discount : 0} </td> */}
-              <td className="whitespace-nowrap px-2 py-1">€{formatNumber(Number(i.total))}</td>
+              <td className="whitespace-nowrap px-6 py-1">€{formatNumber(Number(i.total))}</td>
               {/* <td className="whitespace-nowrap px-1 py-2">{i.order_date && formattedDate(i.order_date?.toString())}</td> */}
             </tr>
           ))}
@@ -263,7 +276,7 @@ export const TableLastOrders: React.FC<ITableLastOrders> = ({ ordered }) => {
   );
 };
 
-export const TableOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow }) => {
+export const TableOrder: React.FC<ITableOrder> = ({items, columns, deleteRow}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const t = useTranslations("Body");
 
@@ -274,8 +287,20 @@ export const TableOrder: React.FC<ITableOrder> = ({ items, columns, deleteRow })
   return (
     <table className="min-w-full justify-start text-start items-start pl-6 text-sm font-light rounded-md">
       {isModalOpen && items != null && (
-        <OrderModal toggleModal={toggleModal} customer={items as unknown as IConsumerInOrder} />
+        <OrderModal toggleModal={toggleModal} customer={items as unknown as IConsumerInOrder}/>
       )}
+      <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
+      <tr>
+        {columns.length > 0 &&
+          columns.map((l) => {
+            return (
+              <th scope="col" key={l} className={clsx(`px-4 py-2 text-left`)}>
+                {l}
+              </th>
+            );
+          })}
+      </tr>
+      </thead>
       <tbody>
         {items.length > 0 ? (
           items.map((i, index = 0) => (
