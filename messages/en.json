@@ -1,7 +1,7 @@
 {
   "IndexPage": {
-    "title": "Pizza Resturant",
-    "description": "<p>Welcome to Pizza Restaurant Information System</p>. <p>In this system, everything is consized in three pages. This is the first page.</p><p> In the second page (Menu), you can add all your own customized foods under different categories.</p><p> In the last Page (Customers), you will be able to reivew, search, add, update and delete your customers. </p><p>Please feel free to contact me using the following link if you are facing any problem or question!</p><p>Thank you. </p>"
+    "title": "Hebamedia",
+    "description": "<p>Welcome to Hebamedia Information System</p> <p>In this system, everything is consized in three pages. This is the first page.</p><p> In the second page (Menu), you can add all your own customized foods under different categories.</p><p> In the last Page (Customers), you will be able to reivew, search, add, update and delete your customers. </p><p>Please feel free to contact me using the following link if you are facing any problem or question!</p><p>Thank you</p>"
   },
   "AuthorizationPage": {
     "title": "Authorization",
@@ -9,7 +9,11 @@
   },
   "CustomerPage": {
     "title": "Customers",
-    "description": "<p>The routing is internationalized too.</p><p>If you're using the default language English, you'll see <code>/about</code> in the browser address bar on this page.</p><p>If you change the locale to German, the URL is prefixed with the locale (<code>/de/about</code>).</p>"
+    "description": "<p>Welcome to Hebamedia Customers page</p>. <p>In this system, everything is consized in three pages. This is the first page.</p><p> In the second page (Menu), you can add all your own customized foods under different categories.</p><p> In the last Page (Customers), you will be able to reivew, search, add, update and delete your customers. </p><p>Please feel free to contact me using the following link if you are facing any problem or question!</p><p>Thank you. </p>"
+  },
+  "OrderPage": {
+    "title": "Orders",
+    "description": "<p>Welcome to Hebamedia orders page</p>. <p>In this system, everything is consized in three pages. This is the first page.</p><p> In the second page (Menu), you can add all your own customized foods under different categories.</p><p> In the last Page (Customers), you will be able to reivew, search, add, update and delete your customers. </p><p>Please feel free to contact me using the following link if you are facing any problem or question!</p><p>Thank you. </p>"
   },
   "MenuPage": {
     "title": "Menu",
@@ -20,7 +24,7 @@
     "description": "Please double-check the browser address bar or use the navigation to go to a known page."
   },
   "LocaleLayout": {
-    "title": "Pizza Resturant"
+    "title": "Hebamedia"
   },
   "LocaleSwitcher": {
     "label": "Change language",
@@ -33,7 +37,8 @@
     "authorized": "Authorized",
     "menu": "Menu",
     "signOut": "Sign Out",
-    "login": "Login"
+    "login": "Login",
+    "orders": "Orders"
   },
   "PageLayout": {
     "links": {
@@ -59,7 +64,7 @@
   },
   "Body": {
     "session": {
-      "unAuthorizedToAccessList": " Welcome to the page, you are not authorized to view all list! Only super admin knows!",
+      "unAuthorizedToAccessList": "Welcome to the page, you are not authorized to view all list! Please login to the system.",
       "welcome": "Welcome to ",
       "unAuthorizedToPage": "Not authorized, please signin to see the details!"
     },
@@ -71,24 +76,63 @@
       "street": "Street Name",
       "postalCode": "Postal Code",
       "phone": "Phone Number",
-      "category": "category",
+      "category": "Category",
       "description": "Description",
       "extra": "Extra",
       "price": "Price",
       "shift": "Shift",
       "actions": "Actions",
-      "select": "select",
+      "select": "Select",
       "total": "Total",
       "count": "Count",
       "successMessage": "A new record has been added",
       "inCompleteMessage": "Please fill in the ID field",
-      "errorMessage": "Faild to add new record"
+      "errorMessage": "Failed to add new record",
+      "Type": "Type",
+      "CompNum": "Article Number",
+      "IhreNum": "Ihre Number",
+      "Name": "Pizza Name",
+      "MenuID": "Menu ID",
+      "Size": "Size",
+      "SinglPreis": "Single Price",
+      "JumboPreis": "Jumbo Price",
+      "FamilyPreis": "Family Price",
+      "PartyPreis": "Party Price",
+      "MWSt": "MWSt",
+      "Rabatt": "Discount",
+      "letzte": "letzte",
+      "DM": "DM",
+      "Mal": "Mal",
+      "Seit": "Seit",
+      "Bemerkung": "Bemerkung",
+      "Ort": "Ort",
+      "Str": "Str",
+      "Tel": "Tel",
+      "KNr": "KNr"
     },
     "Button": {
-      "add": "New Record"
+      "add": "Add",
+      "addMenu": "New Menu",
+      "addCustomer": "New Customer",
+      "submit": "Submit",
+      "save": "Save",
+      "close": "Close",
+      "print": "Print"
     },
     "Table": {
-      "confirmDelete": "Are you sure you want to delete this record?"
+      "confirmDelete": "Are you sure you want to delete this record?",
+      "pagination": "Per Page"
+    },
+    "Label": {
+      "createNewOrder": "Create New Order for",
+      "lastOrders": "Last Orders by",
+      "noNewOrdersYet": "No New Orders Yet",
+      "notAvailable": "Not Available",
+      "records": "Records",
+      "count": "Count",
+      "discount": "Discount",
+      "total": "Total",
+      "select": "Select"
     },
     "notFound": "No Menu Found!",
     "loading": "Loading..."

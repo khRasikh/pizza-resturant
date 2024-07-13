@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS menus;
 
 
 CREATE TABLE users (
-    user_id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
@@ -71,15 +71,15 @@ ALTER TABLE customer DROP COLUMN address
 CREATE TABLE orders (
     order_id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
+    customer_id VARCHAR(50) NOT NULL,
     id INTEGER NOT NULL,
     count VARCHAR(50) NOT NULL,
     extra VARCHAR(50) NOT NULL,
-    price VARCHAR(50) NOT NULL,
+    price VARCHAR(50) NOT NULL,  
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    discount  INTEGER NULL DEFAULT 0,
     total NUMERIC(10, 2) NOT NULL,
     status VARCHAR(50) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (id) REFERENCES customer(id)
 );
 
 
@@ -88,7 +88,7 @@ INSERT INTO users (username, email, password_hash, created_at, updated_at)
 VALUES
     ('khudadad', 'kh.rasikh542@gmail.com', 'password_hash_1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     ('secureapp.me', 'secureapp.me@gmail.com', 'password_hash_2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('test', 'test@gmail.com', 'password_hash_3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('pizza resturant', 'pizza.resturant@gmail.com', 'password_hash_3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     ('admin', 'admin@gmail.com', 'password_hash_4', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO category (name, description, created_date, updated_date)

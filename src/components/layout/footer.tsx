@@ -8,7 +8,7 @@ const Footer = () => {
 
   if (session) {
     return (
-      <footer className="text-center lg:text-left bg-slate-200 text-gray-800">
+      <footer className="text-center lg:text-left bg-slate-200 text-gray-800 z-50">
         <div className="text-center p-4 bg-slate-200">
           <div className="flex justify-center">
             <span className="mx-2">Developed by</span> <a target="_blank" href="https://www.facebook.com/profile.php?id=100063511213618" className="mr-2 text-gray-800">

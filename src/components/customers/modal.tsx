@@ -1,134 +1,239 @@
-"use client"
-import React, { useEffect, useState } from 'react';
-import { FormCreateOrder } from './form';
-import { OrderColumns, clearOrderFields, toastMessages } from '../shared/constants';
-import { useTranslations } from 'next-intl';
-import { toast } from 'react-toastify';
-import { TableOrder, TableOrderList } from '../shared/table';
-import { handlePrint } from '../lib/print';
-import { IOrderModal } from '../interface/general';
+"use client";
+import React, { useCallback, useEffect, useState } from "react";
+import Form, { FormCreateOrder } from "./form";
+import { OrderColumns, Tables, clearCustomerForm, clearOrderFields, toastMessages } from "../shared/constants";
+import { useLocale, useTranslations } from "next-intl";
+import { toast } from "react-toastify";
+import { TableOrder, TableLastOrders, TableSummary } from "../shared/table";
+import { handlePrint } from "../lib/print";
+import { ICustomers, IOrder, IOrderModal } from "../interface/general";
+// import { getDataByID } from '../shared/psqlCrud';
+import { addDataToMongoDB, getOrdersByIDFromMongoDB, updateDataToMongoDB } from "../shared/mongodbCrud";
+import clsx from "clsx";
+import { useRouter } from "next/navigation";
+import { changeKasset } from "../shared/kasset";
 
-export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer }) => {
-    const [formData, setFormData] = useState(clearOrderFields);
-    const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-    const t = useTranslations("Body")
+export const OrderModal: React.FC<IOrderModal> = ({ toggleModal, customer, customerFormLastData }) => {
+  const t = useTranslations("Body");
+  const [formDataModal, setFormDataModal] = useState(clearOrderFields);
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [orderList, setOrderList] = useState<IOrder[]>([]);
+  const [lastOrders, setLastOrders] = useState<any[]>([]);
+  const [isLastOrdersLoading, setIsLastOrdersLoading] = useState<boolean>(false);
+  const [isDisplayLastOrder, setIsDisplayLastOrder] = useState<boolean>(true);
+  formDataModal["customer_id"] = customer.KNr ?? 542;
+  formDataModal["customer_name"] = customer.Name ?? "Kein";
 
-    const orderFields = [
-        { name: "id", value: formData.id, placeholder: `${t("Form.id")}` },
-        // { name: "name", value: formData.name, placeholder: `${t("Form.name")}` },
-        { name: "count", value: formData.count, placeholder: `${t("Form.count")}` },
-        { name: "price", value: formData.price, placeholder: `${t("Form.price")}` },
-        { name: "extra", value: formData.extra, placeholder: `${t("Form.extra")}` },
-        { name: "total", value: formData.total, placeholder: `${t("Form.total")}` },
-    ]
-    const [orderList, setOrderList] = useState<any[]>([]); // Step 1: New state for array of values
+  // formDataModal["discount"] = customer.Rabatt!
+  // Function to add values to the array in formDataModal
+  const addToOrderList = () => {
+    const newOrder = { ...formDataModal };
 
-    // Function to add values to the array in formData
-    const addToOrderList = () => {
+    const { id, price, count, total, customer_id } = formDataModal;
+    formDataModal["order_date"] = new Date().toString();
 
-        const newOrder = { ...formData };
-        const { id, name, price, count, extra, total, created_at } = formData;
+    if (!id || !count || !price || !total || !customer_id) {
+      return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
+    }
+    setOrderList([...orderList, newOrder]);
+    setFormDataModal(clearOrderFields);
+  };
 
-        if (!id) {
-            return toast.error(t("Form.inCompleteMessage").replace("record", id), toastMessages.OPTION);
-        } else if (!count) {
-            return toast.error(t("Form.inCompleteMessage").replace("record", count), toastMessages.OPTION);
-        } else if (!price) {
-            return toast.error(t("Form.inCompleteMessage").replace("record", price), toastMessages.OPTION);
-        } else if (!extra) {
-            return toast.error(t("Form.inCompleteMessage").replace("record", extra), toastMessages.OPTION);
-        }
+  const submitAsync = async (e: any) => {
+    e.preventDefault();
 
-        setOrderList([...orderList, newOrder]);
-    };
+    const { id, price, count, total, customer_id } = formDataModal;
 
-    const submit = async (e: any) => {
-        e.preventDefault();
+    if (!id || !count || !price || !customer_id || !total) {
+      return toast.error(t("Form.inCompleteMessage"), toastMessages.OPTION);
+    }
 
-        const { id, name, price, count, extra, total, created_at, } = formData;
+    addToOrderList();
+    setFormDataModal(clearOrderFields);
+  };
 
-        if (!id) {
-            return toast.error(t("Form.inCompleteMessage").replace("record", id), toastMessages.OPTION);
-        } else if (!count) {
-            return toast.error(t("Form.inCompleteMessage").replace("record", count), toastMessages.OPTION);
-        } else if (!price) {
-            return toast.error(t("Form.inCompleteMessage").replace("record", price), toastMessages.OPTION);
-        } else if (!extra) {
-            return toast.error(t("Form.inCompleteMessage").replace("record", extra), toastMessages.OPTION);
-        }
-        
-        // Here, implement your code to send formData to your backend API
-        const addOrder = await fetch("/api/psql/order/add", {
-            method: "POST",
-            body: JSON.stringify(orderList),
-            headers: {
-                "Content-Type": "application/json",
-            },
-            cache: "no-cache",
-        });
+  const change = (e: any) => {
+    const { name, value } = e.target;
+    let newValue = value;
 
-        if (addOrder.status == 200) {
-            setFormData(clearOrderFields);
-            toast.success(t("Form.successMessage").replace("record", "Customer"), toastMessages.OPTION);
-            // toggleModal()
-            setIsSubmitted(true)
+    if (name === "total") {
+      newValue = parseFloat(value).toFixed(2);
+    }
+    setFormDataModal({
+      ...formDataModal,
+      [name]: newValue,
+    });
+  };
+
+  const fetchOrders = useCallback(async () => {
+    try {
+      setIsLastOrdersLoading(true)
+      if (customer.KNr !== 0) {
+        // const getLastOrders = await getDataByID("orders", customer.KNr!)
+        const getLastOrders = await getOrdersByIDFromMongoDB("orders", customer.KNr!);
+
+        if (getLastOrders.data.length > 0) {
+          setLastOrders(getLastOrders.data);
         } else {
-            toast.error(t("Form.errorMessage").replace("record", "Customer"), toastMessages.OPTION);
+          setLastOrders([]); // Make sure to clear lastOrders if no data is found
         }
-    };
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }finally {
+      setIsLastOrdersLoading(false)
+    }
+  }, [customer.KNr]);
 
-    const change = (e: any) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
-    };
+  useEffect(() => {
+    //everytime customer has changed, the form will be cleaned and table will refresh
+    setOrderList([])
+    setLastOrders([])
+    setFormDataModal(clearOrderFields);
+    fetchOrders();
+  }, []);
 
-   
-    return (
-        <div className="overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-300 bg-opacity-70 z-50">
-            <div className="bg-white overflow-x-hidden rounded-lg p-4 md:p-8 min-w-[95%] md:min-w-[80%] lg:max-w-[50%]">
-                <div className="overflow-y-auto overflow-x-hidden relative h-[70vh] max-h-[70vh]">
-                    <div className="overflow-y-auto overflow-x-hidden flex items-center justify-between border-b mb-5">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                            Create New Order for Customer {customer.name} {customer.last_name}
-                        </h3>
-                        <button
-                            type="button"
-                            onClick={toggleModal}
-                            className="text-red-400 hover:bg-red-200 mb-4 hover:text-gray-900 rounded-lg text-sm w-8 h-8 flex justify-center items-center"
-                            data-modal-toggle="crud-modal"
-                        >
-                            <svg
-                                className="w-3 h-3"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 14 14"
-                            >
-                                <path
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                                />
-                            </svg>
-                            <span className="sr-only ">Close modal</span>
-                        </button>
-                    </div>
+  const handlePrintAsync = async () => {
+    const addOrder = await addDataToMongoDB(orderList, "orders");
 
-                    <FormCreateOrder formDataModal={formData} fields={orderFields} handleChange={change} handleSubmit={submit} addToOrderList={addToOrderList}
-                        handlePrint={() => handlePrint({ orderList, toggleModal })} isSubmitted={isSubmitted} />
+    if (addOrder.status) {
+      toast.success(t("Form.successMessage"), toastMessages.OPTION);
+      setIsSubmitted(true);
+      setFormDataModal(clearOrderFields);
+      handlePrint({ customer, orderList, toggleModal });
+    } else {
+      toast.error(t("Form.errorMessage"), toastMessages.OPTION);
+    }
+  };
 
-                    {orderList.length > 0 && <div className="overflow-scroll max-h-[40vh]">
-                        <TableOrder items={orderList} columns={OrderColumns} />
-                    </div>
-                    }
-                    {/* {<TableOrderList id={"69"}/>} */}
-                </div>
-            </div>
+  // update customer
+  const [newCustomer, setNewCustomer] = useState(false);
+  const route = useRouter();
+  const local = useLocale();
+  const handlePressKey = (e: any) => {
+    if (e.key === "F12") {
+      e.preventDefault(); // Prevent default browser behavior
+      route.push(`/${local}/orders`);
+    } else if (e.key === "F9") {
+      e.preventDefault(); // Prevent default browser behavior
+      // pring and save
+      orderList.length > 0 ? handlePrintAsync() : toast.error(t("Form.errorMessage"), toastMessages.OPTION);
+    } else if (e.key === "Escape" && newCustomer) {
+      e.preventDefault(); // Prevent default browser behavior
+      // close update
+      setNewCustomer(false);
+    } else if (e.key === "Escape" && !newCustomer) {
+      e.preventDefault(); // Prevent default browser behavior
+      // close update
+      window.location.reload();
+    } else if (e.key === "F3") {
+      e.preventDefault(); // Prevent default browser behavior
+      setNewCustomer(true);
+    } else if (e.key === "F2") {
+      e.preventDefault(); // Prevent default browser behavior
+      // redirect to orders list
+      window.location.reload();
+    } else if (e.key === "F1" && !newCustomer && lastOrders.length > 0) {
+      e.preventDefault(); // Prevent default browser behavior
+      // exit modal
+      setIsDisplayLastOrder(false);
+    }else  if (e.ctrlKey && e.key === "1") {
+      e.preventDefault();
+      changeKasset("1");
+    } else if (e.ctrlKey && e.key === "2") {
+      e.preventDefault();
+      changeKasset("2");
+    }
+  };
+
+  const t1 = useTranslations("Body");
+
+  // update form
+  const [formData, setFormData] = useState(customer);
+
+  const handleUpdateChange = (e: any) => {
+    const { name, value } = e.target;
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleUpdateCustomerAsync = async (e: any) => {
+    e.preventDefault();
+
+    const { Name, Tel, Str }: ICustomers = formData;
+
+    if (!Name || !Tel || !Str) {
+      return toast.error(t1("Form.inCompleteMessage"), toastMessages.OPTION);
+    }
+
+    // const addCustomer = await addDataToTextFile<ICustomers>(formData, Tables.Customers)
+    const updateCustomer = await updateDataToMongoDB(`${customer.KNr!}` ?? "0", formData, Tables.Customers);
+
+    if (updateCustomer.status) {
+      toast.success(t1("Form.successMessage"), toastMessages.OPTION);
+      setNewCustomer(false);
+    } else {
+      toast.error(t1("Form.errorMessage"), toastMessages.OPTION);
+    }
+  };
+
+  return (
+    <div onKeyDown={(e) => handlePressKey(e)}>
+      {newCustomer && customerFormLastData && (
+        <div className="flex flex-row w-full justify-center">
+          <Form
+            formData={formData}
+            fields={customerFormLastData?.inputFields}
+            handleChange={handleUpdateChange}
+            handleSubmit={handleUpdateCustomerAsync}
+            handleClose={() => setNewCustomer(false)}
+            filteredStr={customerFormLastData.filteredStr} //TOOD: UPDATE
+          />
         </div>
-    );
-}
+      )}
+
+      <table className="min-w-full text-left rounded-sm text-sm font-light  pb-1">
+        <thead className="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600 rounded-md">
+          <tr>
+            {OrderColumns.length > 0 &&
+              OrderColumns.map((l) => {
+                return (
+                  <th scope="col" key={l} className={clsx(`px-6 py-2 text-left`)}>
+                    {l}
+                  </th>
+                );
+              })}
+          </tr>
+        </thead>
+      </table>
+      <div className="flex flex-row w-full mt-0 text-left min-h-[28px]">
+        {isLastOrdersLoading ?
+          <div className="bg-blue-900 text-white w-full flex items-center justify-center ">
+            <p className="mb-0">Loading...</p>
+          </div>
+          : (orderList.length > 0 ? (
+            <TableOrder items={orderList} columns={OrderColumns} deleteRow={() => console.log("under construction F")}/>
+          ) : (
+            <>{isDisplayLastOrder && <TableLastOrders ordered={lastOrders}/>}</>
+          ))}
+      </div>
+
+      <div className="flex flex-row mx-2 my-4 p-2 bg-blue-900 justify-between w-full">
+        <FormCreateOrder
+          formDataModal={formDataModal}
+          handleChange={change}
+          handleSubmitFormOrder={submitAsync}
+          addToOrderList={addToOrderList}
+          handlePrint={handlePrintAsync}
+          isSubmitted={isSubmitted}
+          orderList={orderList}
+          lastOrders={lastOrders}
+          customerInfo={customer}
+        />
+      </div>
+    </div>
+  );
+};

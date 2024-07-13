@@ -8,8 +8,9 @@ export interface ITable {
 }
 
 export interface ITableOrder {
-  items: any[];
+  items: IOrder[];
   columns: any[];
+  deleteRow: (id: string) => void;
 }
 
 export type IBody = {
@@ -38,9 +39,16 @@ export interface IField {
   placeholder: string;
 }
 
+export interface IFieldCustomer {
+  name: string;
+  value: string | object | number;
+  placeholder: string;
+}
+
 export interface IForm {
   formData: any;
-  fields: IField[];
+  fields: IFieldCustomer[];
+  filteredStr?: any;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
   handleClose: () => void;
@@ -52,30 +60,109 @@ export interface IPagination {
   changePage: (pageNumber: number) => void;
   rowCount: number;
 }
-
-export interface MENUFORM {
+export interface IMenuForm {
   formData: any;
   fields: IField[];
   handleChange: (e: any) => void;
   handleSubmit: (e: any) => void;
 }
+export interface IArticlesForm {
+  formData: any;
+  fields: IField[];
+  handleChange: (e: any) => void;
+  toggleForm: (e: any) => void;
+  handleSubmit: (e: any) => void;
+}
 
 export interface IFormModal {
   formDataModal: any;
-  fields: IField[];
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  handleSubmitFormOrder: (e: FormEvent<HTMLFormElement>) => void;
   addToOrderList: () => void;
   handlePrint: () => void;
   isSubmitted: boolean;
+  orderList: IOrder[]
+  lastOrders?: IOrder[]
+  customerInfo: ICustomers
 }
 
+export interface IOrder {
+  id: string;
+  customer_id: number;
+  customer_name: string
+  category: string
+  name: string;
+  price: string;
+  count: number;
+  extra: { id: number; name: string; price: number };
+  discount: number;
+  total: string;
+  order_date: string;
+}
+interface SuccessResponse {
+  status: true;
+  data: IOrder[];
+  page: number;
+  totalPages: number;
+  totalItems: number;
+  message: string;
+}
+
+interface ErrorResponse {
+  status: false;
+  data: [];
+  message: string;
+}
+
+export type OrdersResponse = SuccessResponse | ErrorResponse;
 export interface IPrint {
-  orderList: any[];
+  orderList: IOrder[];
   toggleModal: () => void;
+  customer: ICustomers;
+}
+export interface IConsumerInOrder {
+  KNr: number;
+  Name: string;
+  Tel: string;
+}
+
+export interface ICustomerFormLastData {
+  inputFields: any[];
+  change: (e: any) => void;
+  filteredStr: any;
 }
 
 export interface IOrderModal {
   toggleModal: () => void;
-  customer: { id: string; name: string; last_name: string };
+  customer: ICustomers;
+  customerFormLastData?: ICustomerFormLastData;
+}
+
+//Files Interfaces
+export interface IArticles {
+  Type: string;
+  CompNum: number;
+  IhreNum: string;
+  Name: string;
+  SinglPreis: number;
+  JumboPreis: number;
+  FamilyPreis: number;
+  PartyPreis?: number;
+  MWSt?: number;
+  Rabatt?: number;
+}
+
+export interface ICustomers {
+  KNr?: number;
+  Name: string;
+  Tel: string;
+  Str?: string;
+  Ort?: string;
+  Seit?: string;
+  Mal?: number;
+  DM?: string;
+  letzte?: string;
+  Rabatt?: number;
+  Fix?: number;
+  Bemerkung?: string;
 }

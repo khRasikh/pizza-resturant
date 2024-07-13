@@ -24,11 +24,11 @@ export async function POST(request: NextRequest) {
       await client.query("BEGIN");
 
       for (const order of ordersList) {
-        const { id, count, price, extra, total } = order;
+        const { id, customer_id, count, price, extra, discount, total } = order;
         // Add your logic here to validate or process each order before insertion
         await client.query(
-          "INSERT INTO orders (user_id, id, count, price, extra, total, status) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-          [1, id, count, price, extra, total, false]
+          "INSERT INTO orders (user_id, customer_id, id, count, price, extra, discount, total, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+          [1, customer_id, id, count, price, extra, discount, total, false]
         );
       }
 
